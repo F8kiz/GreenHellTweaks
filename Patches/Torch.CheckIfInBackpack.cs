@@ -3,7 +3,8 @@ using System.Reflection;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatch(typeof(Torch), "CheckIfInBackPack")]
+    // TODO: Find a way to determine if the torch is inside the backpack or not
+    //[HarmonyPatch(typeof(Torch), "CheckIfInBackPack")]
     internal class TorchCheckIfInBackPack
     {
         static void Prefix(Torch __instance)
