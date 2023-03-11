@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{76B0CA7E-7B12-4AC8-A91E-F1CEC6866500}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GHTweaks</RootNamespace>
+    <AssemblyName>GHTweaks</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Accessibility" />
+    <Reference Include="Assembly-CSharp-2.4.2">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp-2.4.2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Enumeration.cs" />
+    <Compile Include="ItemSpawner.cs" />
+    <Compile Include="Mod.InputHandler.cs" />
+    <Compile Include="Mod.cs" />
+    <Compile Include="Patches\Construction.DestroyMe.cs" />
+    <Compile Include="Patches\ConstructionGhost.IsReady.cs" />
+    <Compile Include="Patches\ConstructionGhost.UpdateProhibitionType.cs" />
+    <Compile Include="Patches\FireCamp.UpdateFireLevel.cs" />
+    <Compile Include="Patches\FoodInfo.SpoilTime.cs" />
+    <Compile Include="Patches\HUDItemSlot.UpdateSlots.cs" />
+    <Compile Include="Patches\Inventory3DManager.TryAttractCarriedItemToSlot.cs" />
+    <Compile Include="Patches\InventoryBackpack.MaxWeight.cs" />
+    <Compile Include="Patches\ItemInfoConfig.Health.cs" />
+    <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />
+    <Compile Include="Patches\ItemsManager.UpdateDebug.cs" />
+    <Compile Include="Patches\LiquidContainerInfo.Capacity.cs" />
+    <Compile Include="Patches\MainMenu.Start.cs" />
+    <Compile Include="Patches\PlayerConditionModule.HP.cs" />
+    <Compile Include="Patches\FPPController.UpdateWantedSpeed.cs" />
+    <Compile Include="Patches\PlayerConditionModule.Hydration.cs" />
+    <Compile Include="Patches\PlayerConditionModule.NutritionProteins.cs" />
+    <Compile Include="Patches\PlayerConditionModule.NutritionCarbo.cs" />
+    <Compile Include="Patches\PlayerConditionModule.NutritionFat.cs" />
+    <Compile Include="Patches\PlayerConditionModule.UpdateDirtiness.cs" />
+    <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
+    <Compile Include="Patches\Torch.UpdateBurning.cs" />
+    <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializable\Config.cs" />
+    <Compile Include="Serializable\ConstructionConfig.cs" />
+    <Compile Include="Serializable\FireCampConfig.cs" />
+    <Compile Include="Serializable\FoodInfoConfig.cs" />
+    <Compile Include="Serializable\InventoryBackpackConfig.cs" />
+    <Compile Include="Serializable\ItemInfoConfig.cs" />
+    <Compile Include="Serializable\LiquidContainerInfoConfig.cs" />
+    <Compile Include="Serializable\PlayerConditionModuleConfig.cs" />
+    <Compile Include="Serializable\PlayerMovementConfig.cs" />
+    <Compile Include="Serializable\SerializeVector3.cs" />
+    <Compile Include="Serializable\TODTimeConfig.cs" />
+    <Compile Include="Serializable\TorchConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <Compile Include="Patches\Construction.SetUpperLevel.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
