@@ -67,9 +67,8 @@ namespace GHTweaks
             }
             if (Input.GetKeyUp(KeyCode.Keypad0))
             {
-                if (TryLoadConfig(out Config config))
+                if (TryLoadConfig())
                 {
-                    Config = config;
                     WriteLog("Config reloaded");
                     PrintMessage("Config reloaded");
                     return;

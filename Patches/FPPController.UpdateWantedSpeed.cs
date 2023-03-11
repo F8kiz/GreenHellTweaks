@@ -3,10 +3,10 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatch(typeof(FPPController), ".ctor", MethodType.Constructor)]
+    [HarmonyPatch(typeof(FPPController), "UpdateWantedSpeed")]
     internal class FPPControllerUpdateWantedSpeed
     {
-        static void Postfix(FPPController __instance)
+        static void Prefix(FPPController __instance)
         {
             PlayerMovementConfig config = Mod.Instance.Config.PlayerMovementConfig;
             if (config.WalkSpeed > 0)
@@ -23,6 +23,7 @@ namespace GHTweaks.Patches
 
             if (config.MaxOverloadSpeedMultiplier > 0)
                 __instance.m_MaxOverloadSpeedMul = config.MaxOverloadSpeedMultiplier;
+
         }
     }
 }

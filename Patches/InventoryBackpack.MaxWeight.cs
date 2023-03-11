@@ -2,15 +2,15 @@
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatch(typeof(InventoryBackpack), ".ctor", MethodType.Constructor)]
+    [HarmonyPatch(typeof(InventoryBackpack), "Awake")]
     internal class InventoryBackpackMaxWeight
     {
-        static void Postfix(InventoryBackpack __instance)
+        static void Prefix(InventoryBackpack __instance)
         {
             if (Mod.Instance.Config.InventoryBackpackConfig.MaxWeight > 0)
             {
-                AccessTools.FieldRef<InventoryBackpack, float> maxWeight = AccessTools.FieldRefAccess<InventoryBackpack, float>("m_MaxWeight");
-                maxWeight(__instance) = Mod.Instance.Config.InventoryBackpackConfig.MaxWeight;
+                __instance.m_MaxWeight = Mod.Instance.Config.InventoryBackpackConfig.MaxWeight;
+                Mod.Instance.WriteLog($"InventoryBackpack.m_MaxWeight: {__instance.m_MaxWeight}");
             }
         }
     }

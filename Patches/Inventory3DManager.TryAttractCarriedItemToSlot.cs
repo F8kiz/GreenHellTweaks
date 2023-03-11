@@ -1,8 +1,9 @@
-﻿using HarmonyLib;
+﻿
+using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatch(typeof(Inventory3DManager), "TryAttractCarriedItemToSlot")]
+    //[HarmonyPatch(typeof(Inventory3DManager), "TryAttractCarriedItemToSlot")]
     internal class Inventory3DManagerTryAttractCarriedItemToSlot
     {
         static void Postfix(Inventory3DManager __instance)

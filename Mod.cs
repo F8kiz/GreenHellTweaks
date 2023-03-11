@@ -90,11 +90,8 @@ namespace GHTweaks
             if (File.Exists(harmonyLogFile))
                 File.Delete(harmonyLogFile);
 
-            if (TryLoadConfig(out Config cfg))
-                Config = cfg;
-            else 
-                Config = new Config();
-                
+            TryLoadConfig();
+
             try
             {
                 WriteLog("Apply patches...");
@@ -105,10 +102,7 @@ namespace GHTweaks
                 WriteLog("Check patches...");
                 IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
                 foreach(MethodBase mb in methods)
-                    WriteLog($"Patched Method '{mb.Name}'");
-
-                Cheats.m_OneShotConstructions = Config.ConstructionConfig.OneShotConstructions;
-                Cheats.m_InstantBuild = Config.ConstructionConfig.InstantBuild;
+                    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
             }
             catch (Exception ex) 
             {
@@ -195,9 +189,9 @@ namespace GHTweaks
         /// </summary>
         /// <param name="cfg">Config instance</param>
         /// <returns>True if the config was loaded successfully, otherwise false.</returns>
-        private bool TryLoadConfig(out Config cfg)
+        private bool TryLoadConfig()
         {
-            cfg = null;
+            Config cfg = null;
             try
             {
                 if (!File.Exists(strModConfigFileName))
@@ -209,6 +203,8 @@ namespace GHTweaks
                 XmlSerializer serializer = new XmlSerializer(typeof(Config));
                 using (FileStream fs = new FileStream(strModConfigFileName, FileMode.Open))
                     cfg = serializer.Deserialize(fs) as Config;
+
+                Config = cfg;
             }
             catch (System.Exception ex)
             {
@@ -218,10 +214,16 @@ namespace GHTweaks
 
             if (cfg == null)
             {
+                Config = new Config();
                 WriteLog("Failed to load config.", LogType.Error);
                 return false;
             }
+
+            Cheats.m_OneShotConstructions = Config.ConstructionConfig.OneShotConstructions;
+            Cheats.m_InstantBuild = Config.ConstructionConfig.InstantBuild;
             return true;
         }
+
+
     }
 }

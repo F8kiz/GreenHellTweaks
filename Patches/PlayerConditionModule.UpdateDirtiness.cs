@@ -17,9 +17,9 @@ namespace GHTweaks.Patches
                 if (sc.IsActive())
                 {
                     if (sc.GetState() == SwimState.Dive)
-                        __instance.m_Dirtiness -= (config.DecreaseDirtinessOnRainValue - 30) * Time.deltaTime;
+                        __instance.m_Dirtiness -= (config.DecreaseDirtinessOnDiveValue - 30) * Time.deltaTime;
                     else
-                        __instance.m_Dirtiness -= (config.DecreaseDirtinessOnRainValue - 10) * Time.deltaTime;
+                        __instance.m_Dirtiness -= (config.DecreaseDirtinessOnSwimValue - 10) * Time.deltaTime;
                 }
             }
 
