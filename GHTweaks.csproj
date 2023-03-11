@@ -80,11 +80,14 @@
     <Compile Include="Mod.cs" />
     <Compile Include="Patches\Construction.DestroyMe.cs" />
     <None Include="Patches\ConstructionGhost.IsReady.cs.old" />
+    <Compile Include="Patches\ConstructionGhost.CalcPosition.cs" />
+    <Compile Include="Patches\ConstructionGhost.CanBeAttachedToSlotBelow.cs" />
     <Compile Include="Patches\ConstructionGhost.UpdateProhibitionType.cs" />
     <Compile Include="Patches\FireCamp.UpdateFireLevel.cs" />
     <Compile Include="Patches\FoodInfo.SpoilTime.cs" />
     <Compile Include="Patches\HUDItemSlot.UpdateSlots.cs" />
     <Compile Include="Patches\Inventory3DManager.TryAttractCarriedItemToSlot.cs" />
+    <Compile Include="Patches\InventoryBackpack.InsertItemMain.cs" />
     <Compile Include="Patches\InventoryBackpack.MaxWeight.cs" />
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />

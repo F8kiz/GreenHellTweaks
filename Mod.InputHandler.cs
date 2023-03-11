@@ -8,8 +8,23 @@ namespace GHTweaks
     {
         public void OnUpdate()
         {
+            if (Input.GetKeyUp(KeyCode.Mouse2))
+            {
+                instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
+                return;
+            }
+            if (Input.GetKeyUp(KeyCode.RightShift))
+            {
+                RainManager.Get().ToggleDebug();
+                RainManager.Get().ToggleRain();
+            }
             if (Input.GetKeyUp(KeyCode.F1))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    ItemSpawner.SpawnItem(ItemID.Charcoal);
+                    return;
+                }
                 ItemSpawner.SpawnItem(ItemID.Machete);
                 return;
             }
