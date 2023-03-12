@@ -11,11 +11,6 @@ namespace GHTweaks
     {
         public void OnUpdate()
         {
-            if (Input.GetKeyUp(KeyCode.DownArrow))
-            {
-                HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
-                return;
-            }
             if (Input.GetKeyUp(KeyCode.Mouse2))
             {
                 instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
@@ -90,13 +85,7 @@ namespace GHTweaks
             }
             if (Input.GetKeyUp(KeyCode.Keypad0))
             {
-                if (TryLoadConfig())
-                {
-                    WriteLog("Config reloaded");
-                    PrintMessage("Config reloaded");
-                    return;
-                }
-                WriteLog("Failed to reload config!", LogType.Error);
+                HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
                 return;
             }
             if (Input.GetKeyUp(KeyCode.Keypad7))
