@@ -33,30 +33,6 @@ namespace GreenHellTweaks.Serializable
 
         public bool DebugModeEnabled { get; set; }
 
-
-        /*
-        MainMenu : base() 
-        {
-		    if (!GreenHellTweaks.Mod.Config.SkipIntro)
-		    {							
-				this.m_FadeInDuration = 1f;
-				this.m_FadeOutDuration = 1.7f;
-				this.m_FadeOutSceneDuration = 3f;
-			    this.m_CompanyLogoDuration = 5f;
-			    this.m_GameLogoDuration = 7f;
-				this.m_BlackScreenDuration = 1f;
-		    }
-		    else 
-		    {
-				this.m_FadeInDuration = 0f;
-				this.m_FadeOutDuration = 0;
-				this.m_FadeOutSceneDuration = 0f;
-			    this.m_CompanyLogoDuration = 0f;
-			    this.m_GameLogoDuration = 0f;
-				this.m_BlackScreenDuration = 0f;
-		    }
-        }
-        */
         public bool SkipIntro { get; set; }
 
 
