@@ -9,6 +9,7 @@ namespace GHTweaks.Patches
         static void Postfix()
         {
             Mod.Instance.OnUpdate();
+            HighlightVicinityItems.OnUpdate();
         }
     }
 }

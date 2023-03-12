@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enumeration.cs" />
+    <Compile Include="HighlightVicinityItems.cs" />
     <Compile Include="ItemSpawner.cs" />
     <Compile Include="Mod.InputHandler.cs" />
     <Compile Include="Mod.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Patches\FoodInfo.SpoilTime.cs" />
     <Compile Include="Patches\HUDItemSlot.UpdateSlots.cs" />
     <Compile Include="Patches\Inventory3DManager.TryAttractCarriedItemToSlot.cs" />
-    <Compile Include="Patches\InventoryBackpack.InsertItemMain.cs" />
     <Compile Include="Patches\InventoryBackpack.MaxWeight.cs" />
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />

@@ -8,6 +8,11 @@ namespace GHTweaks
     {
         public void OnUpdate()
         {
+            if (Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
+                return;
+            }
             if (Input.GetKeyUp(KeyCode.Mouse2))
             {
                 instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
