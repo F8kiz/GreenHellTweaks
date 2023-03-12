@@ -163,6 +163,23 @@ namespace GHTweaks
         }
 
 
+
+        /// <summary>
+        /// Saves the current player location inside the configuration file.
+        /// </summary>
+        private void SaveCurrentPlayerPosition()
+        {
+            Vector3 worldPosition = Player.Get().GetWorldPosition();
+            Config.PlayerHomePosition = new SerializeVector3(worldPosition.x, worldPosition.y, worldPosition.z);
+            WriteLog(string.Format("Current player position: {0}", Config.PlayerHomePosition));
+            if (!TrySaveConfig())
+            {
+                PrintMessage("Failed to save ModConfig.xml", LogType.Error);
+                return;
+            }
+            PrintMessage("Saved new PlayerHomePosition", LogType.Info);
+        }
+
         /// <summary>
         /// Saves the current config.
         /// </summary>

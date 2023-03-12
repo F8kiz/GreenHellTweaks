@@ -1,8 +1,9 @@
 ﻿using Enums;
-
 using GHTweaks.Utilities;
-
 using GreenHellTweaks.Serializable;
+
+using HarmonyLib;
+
 using UnityEngine;
 
 namespace GHTweaks
@@ -13,86 +14,160 @@ namespace GHTweaks
         {
             if (Input.GetKeyUp(KeyCode.Mouse2))
             {
-                instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
+                Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.RightShift))
             {
                 RainManager.Get().ToggleDebug();
                 RainManager.Get().ToggleRain();
+                return;
             }
+
             if (Input.GetKeyUp(KeyCode.F1))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    ItemSpawner.SpawnItem(ItemID.Charcoal);
+                    GameDebug.ShowMenuDebugAchievements();
                     return;
                 }
+
                 ItemSpawner.SpawnItem(ItemID.Machete);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F2))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugAI();
+                    return;
+                }
+
                 ItemSpawner.SpawnItem(ItemID.Tribe_Spear_ArenaTribe);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F3))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugArena();
+                    return;
+                }
+
                 ItemSpawner.SpawnItem(ItemID.Axe_professional);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F4))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugCamera();
+                    return;
+                }
+
                 ItemSpawner.SpawnItem(ItemID.Modern_Axe);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F5))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugItem();
+                    return;
+                }
+
                 ItemSpawner.SpawnItem(ItemID.Tribe_Bow);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F6))
             {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugLog();
+                    return;
+                }
+
+                ItemSpawner.SpawnItem(ItemID.Charcoal);
+                return;
+            }
+
+            if (Input.GetKeyUp(KeyCode.F7))
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugP2P();
+                    return;
+                }
+
+                return;
+            }
+
+            if (Input.GetKeyUp(KeyCode.F8))
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugScenario();
+                    return;
+                }
+            }
+
+            if (Input.GetKeyUp(KeyCode.F9))
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugSounds();
+                    return;
+                }
+
                 MenuInGameManager.Get().ShowScreen(typeof(SaveGameMenu));
                 return;
             }
-            if (Input.GetKeyUp(KeyCode.F7))
-            {
-                Vector3 worldPosition = Player.Get().GetWorldPosition();
-                Config.PlayerHomePosition = new SerializeVector3(worldPosition.x, worldPosition.y, worldPosition.z);
-                WriteLog(string.Format("Current player position: {0}", Config.PlayerHomePosition));
-                if (!TrySaveConfig())
-                {
-                    PrintMessage("Failed to save ModConfig.xml", LogType.Error);
-                    return;
-                }
-                PrintMessage("Saved new PlayerHomePosition", LogType.Info);
-            }
-            if (Input.GetKeyUp(KeyCode.F9))
-            {
-                MenuInGameManager.Get().ShowScreen(typeof(MenuDebugLog));
-                return;
-            }
+
             if (Input.GetKeyUp(KeyCode.F10))
             {
-                MenuInGameManager.Get().ShowScreen(typeof(MenuDebugAI));
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugSpawners();
+                    return;
+                }
+
+                SaveCurrentPlayerPosition();
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.F11))
             {
-                MenuInGameManager.Get().ShowScreen(typeof(MenuDebugSpawners));
-                return;
-            }
-            if (Input.GetKeyUp(KeyCode.Keypad0))
-            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugTeleport();
+                    return;
+                }
                 HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
                 return;
             }
+
+            if (Input.GetKeyUp(KeyCode.F12))
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    GameDebug.ShowMenuDebugWounds();
+                    return;
+                }
+                return;
+            }
+
             if (Input.GetKeyUp(KeyCode.Keypad7))
             {
                 Player.Get().Reposition(Config.PlayerLastPosition, null);
                 return;
             }
+
             if (Input.GetKeyUp(KeyCode.Keypad9))
             {
                 SerializeVector3 playerHomePosition = Config.PlayerHomePosition;

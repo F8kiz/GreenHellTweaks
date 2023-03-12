@@ -75,6 +75,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enumeration.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
+    <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
+    <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />
     <Compile Include="Utilities\ItemSpawner.cs" />
     <Compile Include="Mod.InputHandler.cs" />
@@ -117,6 +121,7 @@
     <Compile Include="Serializable\SerializeVector3.cs" />
     <Compile Include="Serializable\TODTimeConfig.cs" />
     <Compile Include="Serializable\TorchConfig.cs" />
+    <Compile Include="Utilities\ItemsUnlocker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
