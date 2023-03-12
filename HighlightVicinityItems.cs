@@ -23,6 +23,8 @@ namespace GHTweaks
         private static readonly HashSet<Trigger> highlightedItems = new HashSet<Trigger>();
         
 
+        public static bool ContainsTrigger(Trigger trigger) => highlightedItems.Contains(trigger);
+
         public static void OnUpdate()
         {
             if (!Enabled || !HUDItem.Get().m_Active && InputsManager.Get().m_TextInputActive)
@@ -55,7 +57,10 @@ namespace GHTweaks
                             case Enums.ItemID.small_plant_14_cut:
                             case Enums.ItemID.medium_plant_02_cut:
                             case Enums.ItemID.medium_plant_04_cut:
-                            case Enums.ItemID.medium_plant_10_cut: break;
+                            case Enums.ItemID.medium_plant_10_cut:
+                            case Enums.ItemID.tribe_shelter_big:
+                            case Enums.ItemID.tribe_shelter_small:
+                                break;
                             default: continue;
                         }
                     }
