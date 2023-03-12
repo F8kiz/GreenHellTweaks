@@ -7,6 +7,9 @@ namespace GHTweaks.Patches
     {
         static bool Prefix(ref bool __result)
         {
+            if (!Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled)
+                return true;
+
             if (!Mod.Instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow)
             {
                 __result = false;

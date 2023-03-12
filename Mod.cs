@@ -223,7 +223,5 @@ namespace GHTweaks
             Cheats.m_InstantBuild = Config.ConstructionConfig.InstantBuild;
             return true;
         }
-
-
     }
 }

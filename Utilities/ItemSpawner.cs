@@ -1,7 +1,7 @@
 ﻿using Enums;
 using UnityEngine;
 
-namespace GHTweaks
+namespace GHTweaks.Utilities
 {
     internal static class ItemSpawner
     {

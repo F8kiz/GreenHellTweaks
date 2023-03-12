@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace GHTweaks
+namespace GHTweaks.Utilities
 {
     internal class HighlightVicinityItems
     {
@@ -92,6 +92,7 @@ namespace GHTweaks
             // Remove destroyed items from HashSet
             highlightedItems.RemoveWhere((trigger) => !trigger);
         }
+
 
         private static void ClearHighlights()
         {

@@ -9,27 +9,30 @@ namespace GHTweaks.Patches
     {
         static void Prefix(Torch __instance)
         {
-            FieldInfo fiWasInBackpack = AccessTools.Field(typeof(Torch), "m_WasInBackPackLastFrame");
-            bool wasInBackpack = (bool)fiWasInBackpack.GetValue(__instance);
-
-            FieldInfo fiIsBurning = AccessTools.Field(typeof(Torch), "m_Burning");
-            bool isBurning = (bool)fiIsBurning.GetValue(__instance);
-
-            if (!InventoryBackpack.Get().Contains(__instance))
+            if (Mod.Instance.Config.TorchConfig.InfiniteBurn)
             {
-                if (InventoryBackpack.Get().Contains(__instance) != wasInBackpack)
+                FieldInfo fiWasInBackpack = AccessTools.Field(typeof(Torch), "m_WasInBackPackLastFrame");
+                bool wasInBackpack = (bool)fiWasInBackpack.GetValue(__instance);
+
+                FieldInfo fiIsBurning = AccessTools.Field(typeof(Torch), "m_Burning");
+                bool isBurning = (bool)fiIsBurning.GetValue(__instance);
+
+                if (!InventoryBackpack.Get().Contains(__instance))
                 {
-                    Mod.Instance.WriteLog("Backpack does not contains instance");
-                    if (!isBurning)
-                        __instance.StartBurning();
-                    return;
+                    if (InventoryBackpack.Get().Contains(__instance) != wasInBackpack)
+                    {
+                        Mod.Instance.WriteLog("Backpack does not contains instance");
+                        if (!isBurning)
+                            __instance.StartBurning();
+                        return;
+                    }
                 }
-            }
-            else
-            {
-                Mod.Instance.WriteLog("Backpack contains instance");
-                if (isBurning)
-                    __instance.Extinguish();
+                else
+                {
+                    Mod.Instance.WriteLog("Backpack contains instance");
+                    if (isBurning)
+                        __instance.Extinguish();
+                }
             }
         }
     }
