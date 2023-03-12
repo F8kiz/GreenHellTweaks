@@ -9,8 +9,11 @@ namespace GHTweaks.Patches
     {
         static void Postfix(ref float value)
         {
-            if (Mod.Instance.Config.PlayerConditionModuleConfig.MinHealthPoints > 0)
-                value = Mod.Instance.Config.PlayerConditionModuleConfig.MinHealthPoints;
+            if (ScenarioManager.Get().LoadingCompleted())
+            {
+                if (Mod.Instance.Config.PlayerConditionModuleConfig.MinHealthPoints > 0)
+                    value = Mod.Instance.Config.PlayerConditionModuleConfig.MinHealthPoints;
+            }
         }
     }
 }

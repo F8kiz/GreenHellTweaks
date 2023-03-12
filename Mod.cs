@@ -111,6 +111,14 @@ namespace GHTweaks
         }
 
 
+        public void ReloadConfig()
+        {
+            if (TryLoadConfig())
+                PrintMessage("Config reloaded", LogType.Info);
+            else
+                PrintMessage("Failed to reload config!", LogType.Error);
+        }
+
         /// <summary>
         /// Print a text message on the screen.
         /// </summary>

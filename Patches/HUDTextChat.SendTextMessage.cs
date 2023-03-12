@@ -36,6 +36,9 @@ namespace GHTweaks.Patches
                     Cheats.m_InstantBuild = !Cheats.m_InstantBuild;
                     Mod.Instance.PrintMessage($"InstantBuild {Cheats.m_InstantBuild.ToKnownState()}", LogType.Info);
                     return false;
+                case "reload config":
+                    Mod.Instance.ReloadConfig();
+                    return false;
                 default:break;
             }
 
