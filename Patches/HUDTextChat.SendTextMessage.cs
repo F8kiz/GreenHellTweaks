@@ -14,27 +14,27 @@ namespace GHTweaks.Patches
             {
                 case "GodMode":
                     Cheats.m_GodMode = !Cheats.m_GodMode;
-                    Mod.Instance.PrintMessage($"GodMode {Cheats.m_GodMode.ToKnownState()}");
+                    Mod.Instance.PrintMessage($"GodMode {Cheats.m_GodMode.ToKnownState()}", LogType.Info);
                     return false;
                 case "ImmortalItems":
                     Cheats.m_ImmortalItems = !Cheats.m_ImmortalItems;
-                    Mod.Instance.PrintMessage($"ImmortalItems {Cheats.m_ImmortalItems.ToKnownState()}");
+                    Mod.Instance.PrintMessage($"ImmortalItems {Cheats.m_ImmortalItems.ToKnownState()}", LogType.Info);
                     return false;
                 case "GhostMode":
-                    Cheats.m_GodMode = !Cheats.m_GhostMode;
-                    Mod.Instance.PrintMessage($"GhostMode {Cheats.m_GhostMode.ToKnownState()}");
+                    Cheats.m_GhostMode = !Cheats.m_GhostMode;
+                    Mod.Instance.PrintMessage($"GhostMode {Cheats.m_GhostMode.ToKnownState()}", LogType.Info);
                     return false;
                 case "OneShotAI":
                     Cheats.m_OneShotAI = !Cheats.m_OneShotAI;
-                    Mod.Instance.PrintMessage($"OneShotAI {Cheats.m_OneShotAI.ToKnownState()}");
+                    Mod.Instance.PrintMessage($"OneShotAI {Cheats.m_OneShotAI.ToKnownState()}", LogType.Info);
                     return false;
                 case "OneShotConstructions":
                     Cheats.m_OneShotConstructions = !Cheats.m_OneShotConstructions;
-                    Mod.Instance.PrintMessage($"OneShotConstructions {Cheats.m_OneShotConstructions.ToKnownState()}");
+                    Mod.Instance.PrintMessage($"OneShotConstructions {Cheats.m_OneShotConstructions.ToKnownState()}", LogType.Info);
                     return false;
                 case "InstantBuild":
                     Cheats.m_InstantBuild = !Cheats.m_InstantBuild;
-                    Mod.Instance.PrintMessage($"InstantBuild {Cheats.m_InstantBuild.ToKnownState()}");
+                    Mod.Instance.PrintMessage($"InstantBuild {Cheats.m_InstantBuild.ToKnownState()}", LogType.Info);
                     return false;
                 default:break;
             }

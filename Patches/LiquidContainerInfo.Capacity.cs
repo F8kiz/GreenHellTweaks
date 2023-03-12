@@ -7,7 +7,7 @@ namespace GHTweaks.Patches
     {
         static void Postfix(LiquidContainerInfo __instance)
         {
-            if (Mod.Instance.Config.LiquidContainerInfoConfig.MinCapacity < 0)
+            if (Mod.Instance.Config.LiquidContainerInfoConfig.MinCapacity < 1)
                 return;
 
             if (__instance.m_LiquidType == Enums.LiquidType.Water || __instance.m_LiquidType == Enums.LiquidType.DirtyWater || 

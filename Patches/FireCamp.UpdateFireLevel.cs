@@ -1,11 +1,9 @@
 ﻿using HarmonyLib;
-
-using System.IO;
 using System.Reflection;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatch(typeof(Firecamp), "Start")]
+    [HarmonyPatch(typeof(Firecamp), "UpdateFireLevel")]
     internal class FireCampUpdateFireLevel
     {
         static bool Prefix(Firecamp __instance)

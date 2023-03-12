@@ -16,7 +16,6 @@ namespace GHTweaks.Patches
                 showTextChat = !showTextChat;
                 AccessTools.FieldRef<HUDTextChat, bool> hudChatShouldBeVisible = AccessTools.FieldRefAccess<HUDTextChat, bool>("m_ShouldBeVisible");
                 hudChatShouldBeVisible(__instance) = showTextChat;
-                Mod.Instance.PrintMessage($"shouldBeVisible: {hudChatShouldBeVisible(__instance)}, showTextChat: {showTextChat}");
             }
         }
     }

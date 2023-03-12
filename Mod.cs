@@ -95,7 +95,7 @@ namespace GHTweaks
             try
             {
                 WriteLog("Apply patches...");
-                Harmony.DEBUG = true;
+                Harmony.DEBUG = Config.DebugModeEnabled;
                 Harmony harmony = new Harmony("de.fakiz.gh.tweaks");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
                 
