@@ -77,7 +77,7 @@ namespace GHTweaks
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    GameDebug.ShowMenuDebugItem();
+                    GameDebug.ShowMenuDebugSkills();
                     return;
                 }
 

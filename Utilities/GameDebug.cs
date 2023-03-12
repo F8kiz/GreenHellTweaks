@@ -14,7 +14,7 @@ namespace GHTweaks.Utilities
 
         //public static void ShowMenuDebugDialogs() => ShowScreen(typeof(MenuDebugDialogs));
 
-        public static void ShowMenuDebugItem() => ShowScreen(typeof(MenuDebugItem));
+        //public static void ShowMenuDebugItem() => ShowScreen(typeof(MenuDebugItem));
 
         public static void ShowMenuDebugLog() => ShowScreen(typeof(MenuDebugLog));
 
@@ -28,7 +28,7 @@ namespace GHTweaks.Utilities
 
         //public static void ShowMenuDebugSelectMode() => ShowScreen(typeof(MenuDebugSelectMode));
 
-        //public static void ShowMenuDebugSkills() => ShowScreen(typeof(MenuDebugSkills));
+        public static void ShowMenuDebugSkills() => ShowScreen(typeof(MenuDebugSkills));
 
         public static void ShowMenuDebugSounds() => ShowScreen(typeof(MenuDebugSounds));
 
