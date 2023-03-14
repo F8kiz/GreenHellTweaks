@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />

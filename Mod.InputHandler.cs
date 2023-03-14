@@ -104,7 +104,7 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugP2P();
                     return;
                 }
-
+                ItemSpawner.SpawnItem(ItemID.Campfire_ash);
                 return;
             }
 
@@ -115,6 +115,7 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugScenario();
                     return;
                 }
+                ItemSpawner.SpawnItem(ItemID.iron_ore_stone);
             }
 
             if (Input.GetKeyUp(KeyCode.F9))

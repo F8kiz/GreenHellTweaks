@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AIs;
+
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GHTweaks.Utilities
@@ -13,8 +15,6 @@ namespace GHTweaks.Utilities
                 isEnabled = value;
                 if (!isEnabled)
                     ClearHighlights();
-
-                Mod.Instance.PrintMessage($"HighlightVicinityItems.Enabled: {isEnabled}", LogType.Info);
             } 
         }
         private static bool isEnabled;
@@ -36,8 +36,8 @@ namespace GHTweaks.Utilities
             // Find items within radius
             foreach (Trigger trigger in Trigger.s_ActiveTriggers)
             {
-                if (!trigger)
-                    continue;
+                //if (!trigger)
+                //    continue;
 
                 Item item = trigger as Item;
                 if (item)

@@ -1,5 +1,5 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System;
 
 namespace GHTweaks.Patches
 {
@@ -9,6 +9,7 @@ namespace GHTweaks.Patches
         static void Postfix(ref float __result)
         {
             Mod.Instance.WriteLog($"Multiply {__result}");
+            __result = Math.Max(1, __result);
             __result *= 10;
         }
     }
