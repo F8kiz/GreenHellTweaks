@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using GHTweaks.Serializable;
+
+using System.Xml.Serialization;
 using UnityEngine;
 
 namespace GreenHellTweaks.Serializable
@@ -25,6 +27,8 @@ namespace GreenHellTweaks.Serializable
 
         public TorchConfig TorchConfig { get; set; }
 
+        public SkillConfig SkillConfig { get; set; }
+
         [XmlElement(IsNullable = true)]
         public SerializeVector3 PlayerHomePosition { get; set; }
 
@@ -49,6 +53,7 @@ namespace GreenHellTweaks.Serializable
             TODTimeConfig = new TODTimeConfig();
             FireCampConfig = new FireCampConfig();
             TorchConfig = new TorchConfig();
+            SkillConfig = new SkillConfig();
         }
     }
 }
