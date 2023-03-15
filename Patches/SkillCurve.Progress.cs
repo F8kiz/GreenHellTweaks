@@ -8,9 +8,11 @@ namespace GHTweaks.Patches
     {
         static void Postfix(ref float __result)
         {
-            Mod.Instance.WriteLog($"Multiply {__result}");
-            __result = Math.Max(1, __result);
-            __result *= 10;
+            if (Mod.Instance.Config.SkillConfig.SkillProgressMultiplier > 0)
+            {
+                __result = Math.Max(1, __result);
+                __result *= Mod.Instance.Config.SkillConfig.SkillProgressMultiplier;
+            }
         }
     }
 }

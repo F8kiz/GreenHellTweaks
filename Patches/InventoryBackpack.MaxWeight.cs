@@ -8,10 +8,7 @@ namespace GHTweaks.Patches
         static void Prefix(InventoryBackpack __instance)
         {
             if (Mod.Instance.Config.InventoryBackpackConfig.MaxWeight > 0)
-            {
                 __instance.m_MaxWeight = Mod.Instance.Config.InventoryBackpackConfig.MaxWeight;
-                Mod.Instance.WriteLog($"InventoryBackpack.m_MaxWeight: {__instance.m_MaxWeight}");
-            }
         }
     }
 }

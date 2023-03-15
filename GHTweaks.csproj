@@ -81,6 +81,7 @@
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
+    <Compile Include="Serializable\SkillConfig.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />
     <Compile Include="Utilities\ItemSpawner.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Patches\FireCamp.UpdateFireLevel.cs" />
     <Compile Include="Patches\FoodInfo.SpoilTime.cs" />
     <Compile Include="Patches\HUDItemSlot.UpdateSlots.cs" />
-    <Compile Include="Patches\Inventory3DManager.TryAttractCarriedItemToSlot.cs" />
     <Compile Include="Patches\InventoryBackpack.MaxWeight.cs" />
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />

@@ -23,10 +23,10 @@ namespace GHTweaks.Patches
         {
             Player p = Player.Get();
             Item currentItem = p.GetCurrentItem(Enums.Hand.Right);
-            if (currentItem && (currentItem.m_Info.IsMachete() || currentItem.m_Info.IsAxe()))
+            if (currentItem && currentItem.m_Info.IsMachete())
                 return true;
 
-            return InventoryBackpack.Get().m_Items.FirstOrDefault(x => x.m_Info.IsMachete() || x.m_Info.IsAxe()) != null;
+            return InventoryBackpack.Get().m_Items.FirstOrDefault(x => x.m_Info.IsMachete()) != null;
         }
     }
 }
