@@ -9,7 +9,7 @@ namespace GHTweaks.Patches
     {
         static void Postfix(ConstructionGhost __instance)
         {
-            if (!Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled || !Input.GetKey(KeyCode.LeftControl))
+            if (!Input.GetKey(KeyCode.LeftControl))
                 return;
 
             float camY = Player.Get().GetHeadTransform().forward.y;

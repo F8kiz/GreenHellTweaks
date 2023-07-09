@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 
-using System.Reflection;
-
 namespace GHTweaks.Patches
 {
 	[HarmonyPatch(typeof(Construction), "SetUpperLevel")]

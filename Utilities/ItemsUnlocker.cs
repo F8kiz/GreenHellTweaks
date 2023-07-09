@@ -1,8 +1,4 @@
-﻿using HarmonyLib;
-using System;
-using System.Reflection;
-
-namespace GHTweaks.Utilities
+﻿namespace GHTweaks.Utilities
 {
     internal class ItemsUnlocker
     {

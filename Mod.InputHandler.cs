@@ -2,8 +2,6 @@
 using GHTweaks.Utilities;
 using GreenHellTweaks.Serializable;
 
-using HarmonyLib;
-
 using UnityEngine;
 
 namespace GHTweaks
