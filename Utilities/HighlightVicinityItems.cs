@@ -1,6 +1,9 @@
 ﻿using AIs;
 
+using System;
 using System.Collections.Generic;
+using System.Reflection;
+
 using UnityEngine;
 
 namespace GHTweaks.Utilities
@@ -81,11 +84,18 @@ namespace GHTweaks.Utilities
 
                     if (trigger.m_ForcedLayer != trigger.m_OutlineLayer)
                         trigger.m_ForcedLayer = trigger.m_OutlineLayer;
+
+                    TryDisableCollisionWithPlayer(ref item);
                 }
                 else if (highlightedItems.Contains(trigger))
                 {
                     highlightedItems.Remove(trigger);
                     trigger.m_ForcedLayer = 0;
+
+                    if (item)
+                    {
+                        item.EnableCollisionWithPlayer();
+                    }
                 }
             }
 
@@ -104,6 +114,33 @@ namespace GHTweaks.Utilities
             {
                 if (items[i])
                     items[i].m_ForcedLayer = 0;
+            }
+        }
+
+        private static void TryDisableCollisionWithPlayer(ref Item item)
+        {
+            try
+            {
+                Mod.Instance.WriteLog("Try to disable collision with player", LogType.Debug);
+                if (item == null)
+                {
+                    Mod.Instance.WriteLog("Unable to disable player collision item is null", LogType.Debug);
+                    return;
+                }
+
+                var methodInfo = item.GetType().GetMethod("DisableCollisionsWithPlayer", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (methodInfo == null)
+                {
+                    Mod.Instance.WriteLog("Failed to get DisableCollisionsWithPlayer method info", LogType.Debug);
+                    return;
+                }
+
+                methodInfo.Invoke(item, null);
+                Mod.Instance.WriteLog("Called DisableCollisionsWithPlayer method", LogType.Debug);
+            }
+            catch(Exception ex)
+            {
+                Mod.Instance.WriteLog(ex.ToString(), LogType.Exception);
             }
         }
     }
