@@ -1,4 +1,4 @@
-﻿namespace GreenHellTweaks.Serializable
+﻿namespace GHTweaks.Serializable
 {
     public class LiquidContainerInfoConfig
     {

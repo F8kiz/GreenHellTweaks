@@ -3,7 +3,7 @@
 using System.Xml.Serialization;
 using UnityEngine;
 
-namespace GreenHellTweaks.Serializable
+namespace GHTweaks.Serializable
 {
     public class Config
     {

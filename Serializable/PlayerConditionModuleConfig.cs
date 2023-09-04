@@ -1,7 +1,9 @@
-﻿namespace GreenHellTweaks.Serializable
+﻿namespace GHTweaks.Serializable
 {
     public class PlayerConditionModuleConfig
     {
+        public float StaminaConsumptionThreshold { get; set; } = -1f;
+
         public float MinHealthPoints { get; set; } = -1f;
 
         public float DecreaseDirtinessOnRainValue { get; set; } = -1f;

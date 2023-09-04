@@ -34,7 +34,7 @@ using System;
 using System.Reflection;
 using HarmonyLib;
 using System.Xml.Serialization;
-using GreenHellTweaks.Serializable;
+using GHTweaks.Serializable;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -54,7 +54,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 1, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 1, 2, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -63,14 +63,19 @@ namespace GHTweaks
 
 
         /// <summary>
-        /// Get or set the GHTweaksConfig.xml file path.
+        /// Get the GHTweaksConfig.xml file path.
         /// </summary>
         private readonly string strModConfigFileName;
 
         /// <summary>
-        /// Get or set the GHTweaks.log file path.
+        /// Get the GHTweaks.log file path.
         /// </summary>
         private readonly string strLogFileName;
+
+        /// <summary>
+        /// Get the Harmony.log file path.
+        /// </summary>
+        private readonly string strHarmonyLogFileName;
 
 
         /// <summary>
@@ -82,18 +87,18 @@ namespace GHTweaks
             string rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             strModConfigFileName = Path.Combine(rootDir, "GHTweaksConfig.xml");
             strLogFileName = Path.Combine(rootDir, "GHTweaks.log");
+            strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
 
-            if (File.Exists(strLogFileName))
-                File.Delete(strLogFileName);
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => WriteLog((e.ExceptionObject as Exception)?.ToString() ?? "AppDomain.CurrentDomain.UnhandledException invalid ExceptionObject", LogType.Exception);
 
-            string harmonyLogFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "harmony.log.txt");
-            if (File.Exists(harmonyLogFile))
-                File.Delete(harmonyLogFile);
-
+            TryDeleteLogFiles();
             TryLoadConfig();
 
             try
             {
+                WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
+                Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
+
                 WriteLog("Apply patches...");
                 Harmony.DEBUG = Config.DebugModeEnabled;
                 Harmony harmony = new Harmony("de.fakiz.gh.tweaks");
@@ -167,7 +172,7 @@ namespace GHTweaks
                     sw.WriteLine(string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message));
                 }
             }
-            catch (System.Exception) { }
+            catch (Exception) { }
         }
 
 
@@ -247,6 +252,29 @@ namespace GHTweaks
             Cheats.m_OneShotConstructions = Config.ConstructionConfig.OneShotConstructions;
             Cheats.m_InstantBuild = Config.ConstructionConfig.InstantBuild;
             return true;
+        }
+
+        /// <summary>
+        /// Delete the GHTweaks.log and Harmony.log from the last session.
+        /// </summary>
+        /// <returns>True if no exception occurred, otherwise false.</returns>
+        private bool TryDeleteLogFiles()
+        {
+            try
+            {
+                if (File.Exists(strLogFileName))
+                    File.Delete(strLogFileName);
+
+                if (File.Exists(strHarmonyLogFileName))
+                    File.Delete(strHarmonyLogFileName);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                WriteLog(ex.ToString(), LogType.Exception);
+            }
+            return false;
         }
     }
 }

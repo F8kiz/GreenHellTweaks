@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace GreenHellTweaks.Serializable
+namespace GHTweaks.Serializable
 {
     public class ConstructionConfig
     {

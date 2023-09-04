@@ -1,4 +1,4 @@
-﻿using GreenHellTweaks.Serializable;
+﻿using GHTweaks.Serializable;
 
 using HarmonyLib;
 

@@ -1,6 +1,6 @@
 ﻿using Enums;
 using GHTweaks.Utilities;
-using GreenHellTweaks.Serializable;
+using GHTweaks.Serializable;
 
 using UnityEngine;
 

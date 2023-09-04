@@ -41,7 +41,7 @@
     <Reference Include="Accessibility" />
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\thirdparty\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -79,6 +79,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
+    <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
