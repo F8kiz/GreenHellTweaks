@@ -2,8 +2,6 @@
 
 using HarmonyLib;
 
-using static P2PStats.ReplicationStat;
-
 namespace GHTweaks.Patches
 {
     [HarmonyPatch(typeof(PlayerConditionModule), "m_HP", MethodType.Setter)]

@@ -9,8 +9,6 @@ namespace GHTweaks.Patches
     {
         static void Prefix(PlayerConditionModule __instance, ref float value)
         {
-            Mod.Instance.WriteLog($"Set Stamina, new value: {value}, old value: {__instance.m_Stamina}");
-
             FieldInfo fiMaxStamina = AccessTools.Field(typeof(PlayerConditionModule), "m_MaxStamina");
             float maxStamina = (float)fiMaxStamina.GetValue(__instance);
             if (value == maxStamina)

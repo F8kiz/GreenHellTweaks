@@ -1,35 +1,4 @@
-﻿/*
-// Injection point
-// ===============
-
-public MainMenu() : base()
-{
-    if (!GHTweaks.Mod.Instance.Config.SkipIntro)
-    {
-        this.m_FadeInDuration = 1f;
-        this.m_FadeOutDuration = 1.7f;
-        this.m_FadeOutSceneDuration = 3f;
-        this.m_CompanyLogoDuration = 5f;
-        this.m_GameLogoDuration = 7f;
-        this.m_BlackScreenDuration = 1f;
-    }
-    else
-    {
-        this.m_FadeInDuration = 0f;
-        this.m_FadeOutDuration = 0f;
-        this.m_FadeOutSceneDuration = 0f;
-        this.m_CompanyLogoDuration = 0f;
-        this.m_GameLogoDuration = 0f;
-        this.m_BlackScreenDuration = 0f;
-    }
-    this.m_StateStartTime = -1f;
-    this.m_ButtonActivationTime = -1f;
-    this.m_ButtonsFadeInDuration = 2f;
-    this.m_EarlyAccess = (GreenHellGame.s_GameVersion < GreenHellGame.s_GameVersionEarlyAccessUpdate13);
-    this.m_GameVersionInitialPosLocal = Vector3.zero;
-}
-*/
-using System.IO;
+﻿using System.IO;
 using System;
 using System.Reflection;
 using HarmonyLib;
@@ -54,13 +23,14 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 1, 3, 0);
+        public Version Version { get; private set; } = new Version(2, 3, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
         /// </summary>
         public Config Config { get; private set; }
 
+        public bool IsPatchesApplied { get; private set; }
 
         /// <summary>
         /// Get the GHTweaksConfig.xml file path.
@@ -78,6 +48,7 @@ namespace GHTweaks
         private readonly string strHarmonyLogFileName;
 
 
+
         /// <summary>
         /// Private constructor.
         /// Provides single ton implementation.
@@ -90,31 +61,37 @@ namespace GHTweaks
             strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) => WriteLog((e.ExceptionObject as Exception)?.ToString() ?? "AppDomain.CurrentDomain.UnhandledException invalid ExceptionObject", LogType.Exception);
+            
+            WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
+            Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
 
             TryDeleteLogFiles();
             TryLoadConfig();
+        }
 
+        public void ApplyPatches()
+        {
             try
             {
-                WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
-                Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
-
+                if (IsPatchesApplied)
+                    return;
+                
+                IsPatchesApplied = true;
                 WriteLog("Apply patches...");
                 Harmony.DEBUG = Config.DebugModeEnabled;
                 Harmony harmony = new Harmony("de.fakiz.gh.tweaks");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
-                
-                WriteLog("Check patches...");
+
+                WriteLog("Patched methods:");
                 IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
-                foreach(MethodBase mb in methods)
+                foreach (MethodBase mb in methods)
                     WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 WriteLog(ex.ToString(), LogType.Exception);
             }
         }
-
 
         public void ReloadConfig()
         {

@@ -9,7 +9,11 @@ namespace GHTweaks.Serializable
     {
         public ConstructionConfig ConstructionConfig { get; set; }
 
+        public PocketGridConfig PocketGridConfig { get; set; }
+
         public InventoryBackpackConfig InventoryBackpackConfig { get; set; }
+
+        public PlayerConfig PlayerConfig { get; set; }
 
         public PlayerConditionModuleConfig PlayerConditionModuleConfig { get; set; }
 
@@ -44,7 +48,9 @@ namespace GHTweaks.Serializable
         public Config()
         {
             ConstructionConfig = new ConstructionConfig();
+            PocketGridConfig = new PocketGridConfig();
             InventoryBackpackConfig = new InventoryBackpackConfig();
+            PlayerConfig = new PlayerConfig();
             PlayerConditionModuleConfig = new PlayerConditionModuleConfig();
             PlayerMovementConfig = new PlayerMovementConfig();
             LiquidContainerInfoConfig = new LiquidContainerInfoConfig();

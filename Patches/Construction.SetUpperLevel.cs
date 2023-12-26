@@ -7,8 +7,8 @@ namespace GHTweaks.Patches
 	{
 		static void Prefix(ref int level)
 		{
-			if (Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled && level > 1)
-				level = 1;
-		}
+            if (Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled && level > 1)
+                level = 1;
+        }
     }
 }
