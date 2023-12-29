@@ -3,6 +3,7 @@ using GHTweaks.Utilities;
 using GHTweaks.Serializable;
 
 using UnityEngine;
+using System;
 
 namespace GHTweaks
 {
@@ -30,9 +31,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugAchievements();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Machete);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F2))
@@ -42,9 +40,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugAI();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Tribe_Spear_ArenaTribe);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F3))
@@ -54,9 +49,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugArena();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Axe_professional);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F4))
@@ -66,9 +58,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugCamera();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Modern_Axe);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F5))
@@ -78,9 +67,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugSkills();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Tribe_Bow);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F6))
@@ -90,9 +76,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugLog();
                     return;
                 }
-
-                ItemSpawner.SpawnItem(ItemID.Charcoal);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F7))
@@ -102,8 +85,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugP2P();
                     return;
                 }
-                ItemSpawner.SpawnItem(ItemID.Campfire_ash);
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F8))
@@ -113,7 +94,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugScenario();
                     return;
                 }
-                ItemSpawner.SpawnItem(ItemID.iron_ore_stone);
             }
 
             if (Input.GetKeyUp(KeyCode.F9))
@@ -135,9 +115,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugSpawners();
                     return;
                 }
-
-                SaveCurrentPlayerPosition();
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F11))
@@ -161,19 +138,31 @@ namespace GHTweaks
                 return;
             }
 
-            if (Input.GetKeyUp(KeyCode.Keypad7))
+            if (Input.GetKeyUp(KeyCode.PageUp))
             {
-                Player.Get().Reposition(Config.PlayerLastPosition, null);
+                SaveCurrentPlayerPosition();
                 return;
             }
 
-            if (Input.GetKeyUp(KeyCode.Keypad9))
+            if (Input.GetKeyUp(KeyCode.PageDown))
             {
                 SerializeVector3 playerHomePosition = Config.PlayerHomePosition;
                 if (playerHomePosition != null)
                 {
                     Vector3 position = new Vector3(playerHomePosition.X, playerHomePosition.Y, playerHomePosition.Z);
                     Player.Get().Reposition(position, null);
+                }
+            }
+
+            if (Config.KeyBindings.Count < 1)
+                return;
+
+            foreach(KeyBinding binding in Config.KeyBindings)
+            {
+                if (Input.GetKeyUp(binding.Key))
+                {
+                    if (Enum.TryParse(binding.Value, out ItemID itemId))
+                        ItemSpawner.SpawnItem(itemId);
                 }
             }
         }

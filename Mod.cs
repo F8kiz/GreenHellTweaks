@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using GHTweaks.Serializable;
 using UnityEngine;
 using System.Collections.Generic;
+using Enums;
 
 namespace GHTweaks
 {
@@ -23,7 +24,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 3, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 4, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.

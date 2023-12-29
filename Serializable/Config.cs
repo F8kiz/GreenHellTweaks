@@ -1,5 +1,6 @@
 ﻿using GHTweaks.Serializable;
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -43,6 +44,7 @@ namespace GHTweaks.Serializable
 
         public bool SkipIntro { get; set; }
 
+        public List<KeyBinding> KeyBindings { get; set; }
 
 
         public Config()
@@ -60,6 +62,7 @@ namespace GHTweaks.Serializable
             FireCampConfig = new FireCampConfig();
             TorchConfig = new TorchConfig();
             SkillConfig = new SkillConfig();
+            KeyBindings = new List<KeyBinding>();
         }
     }
 }
