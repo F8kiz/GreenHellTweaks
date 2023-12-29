@@ -1,4 +1,6 @@
 ﻿using Enums;
+using System;
+
 using UnityEngine;
 
 namespace GHTweaks.Utilities
@@ -11,6 +13,16 @@ namespace GHTweaks.Utilities
             Vector3 vector = Player.Get().GetHeadTransform().position + 0.5f * forward;
             vector = (Physics.Raycast(vector, forward, out RaycastHit raycastHit, 3f) ? raycastHit.point : (vector + forward * 2f));
             ItemsManager.Get().CreateItem(itemId, true, vector - forward * 0.2f, Player.Get().transform.rotation);
+        }
+
+        public static bool TrySpawnItem(string itemName)
+        {
+            if (!string.IsNullOrEmpty(itemName) && Enum.TryParse(itemName, out ItemID itemId))
+            {
+                SpawnItem(itemId);
+                return true;
+            }
+            return false;
         }
     }
 }

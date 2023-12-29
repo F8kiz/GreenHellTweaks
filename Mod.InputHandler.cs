@@ -115,6 +115,7 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugSpawners();
                     return;
                 }
+                GameDebug.ShowMenuDebugItem();
             }
 
             if (Input.GetKeyUp(KeyCode.F11))
@@ -161,8 +162,8 @@ namespace GHTweaks
             {
                 if (Input.GetKeyUp(binding.Key))
                 {
-                    if (Enum.TryParse(binding.Value, out ItemID itemId))
-                        ItemSpawner.SpawnItem(itemId);
+                    if (!ItemSpawner.TrySpawnItem(binding.Value))
+                        PrintMessage($"The item ({binding.Value}) could not be spawned.", LogType.Error);
                 }
             }
         }

@@ -96,6 +96,7 @@
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
+    <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
     <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
     <Compile Include="Patches\PocketGrid.Initialize.cs" />
@@ -132,7 +133,7 @@
     <Compile Include="Patches\PlayerConditionModule.NutritionFat.cs" />
     <Compile Include="Patches\PlayerConditionModule.UpdateDirtiness.cs" />
     <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
-    <Compile Include="Patches\Torch.CheckIfInBackpack.cs" />
+    <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
     <Compile Include="Patches\Torch.UpdateBurning.cs" />
     <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
