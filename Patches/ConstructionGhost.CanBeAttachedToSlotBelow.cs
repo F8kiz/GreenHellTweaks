@@ -5,17 +5,15 @@ namespace GHTweaks.Patches
     [HarmonyPatch(typeof(ConstructionGhost), "CanBeAttachedToSlotBelow")]
     internal class ConstructionGhostCanBeAttachedToSlotBelow
     {
-        static bool Prefix(ref bool __result)
+        static void Postfix(ref bool __result)
         {
             if (!Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled)
-                return true;
+                return;
 
-            if (!Mod.Instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow)
+            if (Mod.Instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow)
             {
-                __result = false;
-                return false;
+                __result = true;
             }
-            return true;
         }
     }
 }
