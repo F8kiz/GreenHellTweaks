@@ -84,6 +84,12 @@ namespace GHTweaks.Patches
                 case "unlock all known injuries":
                     ItemsUnlocker.Instance.UnlockAllKnownInjuries();
                     break;
+                case "unlock map":
+                    ItemsUnlocker.Instance.UnlockMap(false);
+                    break;
+                case "unlock full map":
+                    ItemsUnlocker.Instance.UnlockMap(true);
+                    break;
                 default: return false;
             }
             return true;

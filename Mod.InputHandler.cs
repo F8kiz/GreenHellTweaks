@@ -3,7 +3,6 @@ using GHTweaks.Utilities;
 using GHTweaks.Serializable;
 
 using UnityEngine;
-using System;
 
 namespace GHTweaks
 {
