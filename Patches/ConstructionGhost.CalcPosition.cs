@@ -11,17 +11,7 @@ namespace GHTweaks.Patches
             if (!Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled || !Input.GetKey(KeyCode.LeftControl))
                 return;
 
-            float py = Player.Get().GetHeadTransform().forward.y;
-            Vector3 vector = __instance.gameObject.transform.position;
-            vector.y += py * 16f;
-
-            float ground = Player.Get().GetWorldPosition().y;
-            if (vector.y < ground && Input.GetKey(KeyCode.LeftAlt))
-                vector.y += ground - 2.5f - vector.y;
-
-           __instance.m_PositionOffsetMax += Input.mouseScrollDelta.y;
-            __instance.gameObject.transform.position = vector;
-            // base.gameObject.transform.position = vector;
+            Utilities.ConstructionGhostHelper.CalcPosition(ref __instance, 2.5f, 16f);
         }
     }
 }

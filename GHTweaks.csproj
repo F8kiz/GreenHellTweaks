@@ -107,6 +107,7 @@
     <Compile Include="Serializable\PlayerConfig.cs" />
     <Compile Include="Serializable\PocketGridConfig.cs" />
     <Compile Include="Serializable\SkillConfig.cs" />
+    <Compile Include="Utilities\ConstructionGhostHelper.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />
     <Compile Include="Utilities\ItemSpawner.cs" />
