@@ -1,4 +1,4 @@
-﻿using GHTweaks.Serializable;
+﻿using GHTweaks.Configuration;
 using HarmonyLib;
 using UnityEngine;
 

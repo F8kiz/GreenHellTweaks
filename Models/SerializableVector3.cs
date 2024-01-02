@@ -1,6 +1,6 @@
-﻿namespace GHTweaks.Serializable
+﻿namespace GHTweaks.Models
 {
-    public class SerializeVector3
+    public class SerializableVector3
     {
         public float X { get; set; }
 
@@ -9,9 +9,9 @@
         public float Z { get; set; }
 
 
-        public SerializeVector3() { }
+        public SerializableVector3() { }
 
-        public SerializeVector3(float x, float y, float z)
+        public SerializableVector3(float x, float y, float z)
         {
             X = x;
             Y = y;

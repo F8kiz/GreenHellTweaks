@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace GHTweaks.Serializable
+namespace GHTweaks.Configuration
 {
     public class ConstructionConfig
     {

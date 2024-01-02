@@ -1,6 +1,5 @@
-﻿using Enums;
+﻿using GHTweaks.Models;
 using GHTweaks.Utilities;
-using GHTweaks.Serializable;
 
 using UnityEngine;
 
@@ -146,7 +145,7 @@ namespace GHTweaks
 
             if (Input.GetKeyUp(KeyCode.PageDown))
             {
-                SerializeVector3 playerHomePosition = Config.PlayerHomePosition;
+                SerializableVector3 playerHomePosition = Config.PlayerHomePosition;
                 if (playerHomePosition != null)
                 {
                     Vector3 position = new Vector3(playerHomePosition.X, playerHomePosition.Y, playerHomePosition.Z);

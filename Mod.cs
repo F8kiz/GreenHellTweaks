@@ -3,9 +3,10 @@ using System;
 using System.Reflection;
 using HarmonyLib;
 using System.Xml.Serialization;
-using GHTweaks.Serializable;
 using UnityEngine;
 using System.Collections.Generic;
+using GHTweaks.Configuration;
+using GHTweaks.Models;
 
 namespace GHTweaks
 {
@@ -160,7 +161,7 @@ namespace GHTweaks
         private void SaveCurrentPlayerPosition()
         {
             Vector3 worldPosition = Player.Get().GetWorldPosition();
-            Config.PlayerHomePosition = new SerializeVector3(worldPosition.x, worldPosition.y, worldPosition.z);
+            Config.PlayerHomePosition = new SerializableVector3(worldPosition.x, worldPosition.y, worldPosition.z);
             WriteLog(string.Format("Current player position: {0}", Config.PlayerHomePosition));
             if (!TrySaveConfig())
             {

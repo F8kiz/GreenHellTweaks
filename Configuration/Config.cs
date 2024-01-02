@@ -1,10 +1,10 @@
-﻿using GHTweaks.Serializable;
+﻿using GHTweaks.Models;
 
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
 
-namespace GHTweaks.Serializable
+namespace GHTweaks.Configuration
 {
     public class Config
     {
@@ -34,8 +34,10 @@ namespace GHTweaks.Serializable
 
         public SkillConfig SkillConfig { get; set; }
 
+        public DestroyableFallingObjectConfig DestroyableFallingObjectConfig { get; set; }
+
         [XmlElement(IsNullable = true)]
-        public SerializeVector3 PlayerHomePosition { get; set; }
+        public SerializableVector3 PlayerHomePosition { get; set; }
 
         [XmlIgnore]
         public Vector3 PlayerLastPosition { get; set; }
@@ -62,6 +64,7 @@ namespace GHTweaks.Serializable
             FireCampConfig = new FireCampConfig();
             TorchConfig = new TorchConfig();
             SkillConfig = new SkillConfig();
+            DestroyableFallingObjectConfig = new DestroyableFallingObjectConfig();
             KeyBindings = new List<KeyBinding>();
         }
     }

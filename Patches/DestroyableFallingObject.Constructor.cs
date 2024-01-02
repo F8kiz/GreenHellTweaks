@@ -7,8 +7,11 @@ namespace GHTweaks.Patches
     {
         static void Postfix(DestroyableFallingObject __instance)
         {
-			AccessTools.FieldRef<DestroyableFallingObject, float> minFallingHeightToDealDamage = AccessTools.FieldRefAccess<DestroyableFallingObject, float>("m_MaxTimeToDestroy");
-			minFallingHeightToDealDamage(__instance) = float.MaxValue;
+            if (Mod.Instance.Config.DestroyableFallingObjectConfig.MaxTimeToDestroy > 0)
+            {
+                AccessTools.FieldRef<DestroyableFallingObject, float> minFallingHeightToDealDamage = AccessTools.FieldRefAccess<DestroyableFallingObject, float>("m_MaxTimeToDestroy");
+                minFallingHeightToDealDamage(__instance) = Mod.Instance.Config.DestroyableFallingObjectConfig.MaxTimeToDestroy;
+            }
 		}
     }
 }

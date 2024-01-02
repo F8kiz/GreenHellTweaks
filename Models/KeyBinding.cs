@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
 using UnityEngine;
 
-namespace GHTweaks.Serializable
+namespace GHTweaks.Models
 {
     public class KeyBinding
     {
