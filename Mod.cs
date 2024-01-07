@@ -7,6 +7,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using GHTweaks.Configuration;
 using GHTweaks.Models;
+using GHTweaks.UI;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace GHTweaks
 {
@@ -24,7 +27,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 6, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 8, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -48,6 +51,9 @@ namespace GHTweaks
         /// </summary>
         private readonly string strHarmonyLogFileName;
 
+        private DebugForm debugForm;
+
+        private CancellationTokenSource debugTaskCancellationTokenSource;
 
 
         /// <summary>
@@ -62,13 +68,21 @@ namespace GHTweaks
             strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
 
             AppDomain.CurrentDomain.UnhandledException += (s, e) => WriteLog((e.ExceptionObject as Exception)?.ToString() ?? "AppDomain.CurrentDomain.UnhandledException invalid ExceptionObject", LogType.Exception);
-            
+
             WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
             Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
 
             TryDeleteLogFiles();
             TryLoadConfig();
+            InitDebugForm();
         }
+
+        ~Mod()
+        {
+            debugForm?.Close();
+            debugTaskCancellationTokenSource.Cancel();
+        }
+
 
         public void ApplyPatches()
         {
@@ -145,10 +159,12 @@ namespace GHTweaks
                 if (logType == LogType.Debug && !Config.DebugModeEnabled)
                     return;
 
+                string msg = string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message);
                 using (StreamWriter sw = new StreamWriter(strLogFileName, true))
-                {
-                    sw.WriteLine(string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message));
-                }
+                    sw.WriteLine(msg);
+
+                if (debugForm != null)
+                    debugForm.AddMessage(logType, msg);
             }
             catch (Exception) { }
         }
@@ -253,6 +269,39 @@ namespace GHTweaks
                 WriteLog(ex.ToString(), LogType.Exception);
             }
             return false;
+        }
+
+        private void InitDebugForm()
+        {
+            if (Config == null)
+                return;
+
+            if (Config.DebugModeEnabled)
+            {
+                if (debugForm != null)
+                    return;
+
+                debugTaskCancellationTokenSource = new CancellationTokenSource();
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        debugForm = new DebugForm();
+                        debugForm.OnDebugFormClosing += (s, e) =>
+                        {
+                            debugForm = null;
+                            WriteLog($"DebugForm closed, reason: {e.CloseReason}", LogType.Debug);
+                        };
+                        System.Windows.Forms.Application.EnableVisualStyles();
+                        System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+                        System.Windows.Forms.Application.Run(debugForm);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog(ex.Message, LogType.Exception);
+                    }
+                }, debugTaskCancellationTokenSource.Token);
+            }
         }
     }
 }

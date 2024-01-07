@@ -1,7 +1,12 @@
 ﻿using Enums;
 using GHTweaks.Models;
 using HarmonyLib;
+
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+
 using UnityEngine;
 
 namespace GHTweaks.Patches
@@ -18,9 +23,11 @@ namespace GHTweaks.Patches
             GridSize size;
             if (pocket == BackpackPocket.Storage)
                 size = Mod.Instance.Config.PocketGridConfig.StorageGridSize;
-            else if (pocket == BackpackPocket.Main || pocket == BackpackPocket.Front)
-                size = Mod.Instance.Config.PocketGridConfig.BackpackGridSize;
-            else 
+            else if (pocket == BackpackPocket.Main)
+                size = Mod.Instance.Config.PocketGridConfig.BackpackMainGridSize;
+            else if (pocket == BackpackPocket.Front)
+                size = Mod.Instance.Config.PocketGridConfig.BackpackFrontGridSize;
+            else
                 return true;
 
             if (size.RowCount <= 0 || size.ColumnCount <= 0)
@@ -41,11 +48,11 @@ namespace GHTweaks.Patches
 
             AccessTools.FieldRef<PocketGrid, Vector2> fiGridSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_GridSize");
             Vector2 gridSize = fiGridSize(__instance);
-            Mod.Instance.WriteLog($"Default grid size {pocket}: {gridSize}");
+            Mod.Instance.WriteLog($"PocketGrid.Initialize.Prefix default grid size {pocket}: {gridSize}");
 
             fiGridSize(__instance) = new Vector2(size.ColumnCount, size.RowCount);
             gridSize = fiGridSize(__instance);
-            Mod.Instance.WriteLog($"New grid size: {gridSize}");
+            Mod.Instance.WriteLog($"PocketGrid.Initialize.Prefix new grid size: {gridSize}");
 
             FieldInfo fiGrid = AccessTools.Field(typeof(PocketGrid), "m_Grid");
             GameObject grid = (GameObject)fiGrid.GetValue(__instance);
@@ -57,15 +64,13 @@ namespace GHTweaks.Patches
             //one.y = 1f / (float)((int)this.m_GridSize.y);
             one.y = 1f / ((int)gridSize.y);
 
-            Mod.Instance.WriteLog($"Vector.one: {one}");
-
             //this.m_CellSize.x = one.x * this.m_Grid.transform.localScale.x;
             //this.m_CellSize.y = one.y * this.m_Grid.transform.localScale.y;
             Vector2 cellSize = new Vector2(one.x * grid.transform.localScale.x, one.y * grid.transform.localScale.y);
             AccessTools.FieldRef<PocketGrid, Vector2> fiCellSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_CellSize");
             fiCellSize(__instance) = cellSize;
 
-            Mod.Instance.WriteLog("m_CellSize: " + fiCellSize(__instance));
+            Mod.Instance.WriteLog("PocketGrid.m_CellSize: " + fiCellSize(__instance));
 
             int num = 0;
             //this.m_Cells = new InventoryCell[(int)this.m_GridSize.x, (int)this.m_GridSize.y];
@@ -100,27 +105,70 @@ namespace GHTweaks.Patches
 
             return false;
         }
+    }
 
-        //static void Postfix(PocketGrid __instance, BackpackPocket pocket)
-        //{
-        //    if (pocket != BackpackPocket.Storage && pocket != BackpackPocket.Main)
-        //    {
-        //        Mod.Instance.WriteLog($"Skip PocketGrid.Initialize.Postfix, invalid BackpackPocket: {pocket}");
-        //        return;
-        //    }
 
-        //    float size = Mod.Instance.Config.PocketGridConfig.CellSize;
-        //    if (size > 0)
-        //    { 
-        //        FieldInfo fiCellSize = AccessTools.Field(typeof(PocketGrid), "m_CellSize");
-        //        Vector2 cellSize = (Vector2)fiCellSize.GetValue(__instance);
-                
-        //        Mod.Instance.WriteLog($"PocketGridInitialize.Postfix old m_CellSize: {cellSize}");
-        //        fiCellSize.SetValue(__instance, new Vector2(cellSize.x * size, cellSize.y * size));
-                
-        //        cellSize = (Vector2)fiCellSize.GetValue(__instance);
-        //        Mod.Instance.WriteLog($"PocketGridInitialize.Postfix new m_CellSize: {cellSize}");
-        //    }
-        //}
+    [HarmonyPatch(typeof(Item), nameof(Item.Initialize))]
+    internal class ItemInitialize
+    {
+        static void Postfix(Item __instance)
+        {
+            if (!__instance.m_Info.m_CanBePlacedInStorage)
+                return;
+
+            float itemScale = Mod.Instance.Config.PocketGridConfig.ItemScale;
+            float minItemScale = Mod.Instance.Config.PocketGridConfig.MinItemScale;
+            float maxItemScale = Mod.Instance.Config.PocketGridConfig.MaxItemScale;
+
+            if (itemScale <= minItemScale || itemScale >= maxItemScale)
+                return;
+
+            Vector3 scale = __instance.m_InventoryLocalScale;
+            float x = (scale.x / 100) * itemScale;
+            float y = (scale.y / 100) * itemScale;
+            float z = (scale.z / 100) * itemScale;
+
+            Vector3 newScale = new Vector3(x, y, z);
+
+            //Mod.Instance.WriteLog($"Item.Initialize update {__instance.name}.InventoryLocalScale: OldValue: {scale}, NewValue: {newScale}");
+
+            __instance.m_InventoryLocalScale = newScale;
+            __instance.m_Info.m_InventoryScale = newScale.x;
+
+            if (__instance.m_InInventory)
+            {
+                Mod.Instance.WriteLog($"Item.Initialize call UpdateScale() for item: {__instance.name}");
+                __instance.m_UpdateScaleRequest = true;
+                __instance.UpdateScale();
+            }
+
+        }
+    }
+
+
+    [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.CalcRequiredCells))]
+    internal class PocketGridCalcRequiredCells
+    {
+        // The patch is just required for debug purpose
+
+        static bool Prefix(PocketGrid __instance, Item item, ref int x, ref int y)
+        {
+            AccessTools.FieldRef<PocketGrid, Vector2> fiCellSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_CellSize");
+            Vector2 cellSize = fiCellSize(__instance);
+
+            Mod.Instance.WriteLog($"PocketGrid.CalcRequiredCells: {item.name}.InventoryLocalScale: {item.m_InventoryLocalScale}, m_CellSize: {cellSize}");
+
+            if (item.m_Info.m_InventoryRotated)
+            {
+                x = Mathf.CeilToInt(item.m_DefaultSize.z * item.m_InventoryLocalScale.z / cellSize.x);
+                y = Mathf.CeilToInt(item.m_DefaultSize.x * item.m_InventoryLocalScale.x / cellSize.y);
+            }
+            else
+            {
+                x = Mathf.CeilToInt(item.m_DefaultSize.x * item.m_InventoryLocalScale.x / cellSize.x);
+                y = Mathf.CeilToInt(item.m_DefaultSize.z * item.m_InventoryLocalScale.z / cellSize.y);
+            }
+            return false;
+        }
     }
 }
