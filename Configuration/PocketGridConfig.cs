@@ -5,9 +5,11 @@ namespace GHTweaks.Configuration
 {
     public class PocketGridConfig
     {
-        public GridSize BackpackGridSize { get; set; } = new GridSize(5,10);
+        public GridSize BackpackMainGridSize { get; set; } = new GridSize(15,10);
 
-        public GridSize StorageGridSize { get; set; } = new GridSize(5, 10);
+        public GridSize BackpackFrontGridSize { get; set; } = new GridSize(10,10);
+
+        public GridSize StorageGridSize { get; set; } = new GridSize(15, 10);
 
         public float ItemScale 
         {

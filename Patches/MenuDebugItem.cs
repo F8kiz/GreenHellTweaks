@@ -1,6 +1,7 @@
 ﻿using Enums;
 using GHTweaks.Utilities;
 using HarmonyLib;
+
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -34,7 +35,8 @@ namespace GHTweaks.Patches
             string selectedElementText = __instance.m_List.GetSelectedElementText();
             if (!string.IsNullOrEmpty(selectedElementText))
             {
-                if (!ItemSpawner.TrySpawnItem(selectedElementText))
+                int amount = Mod.Instance.Config.DebugModeEnabled ? 10 : 1;
+                if (!ItemSpawner.TrySpawnItem(selectedElementText, amount))
                     Mod.Instance.PrintMessage($"The item ({selectedElementText}) could not be spawned.", LogType.Error);
             }
         }
@@ -48,14 +50,14 @@ namespace GHTweaks.Patches
             if (!__instance.m_List)
                 return;
 
-            FieldInfo fiItems = AccessTools.Field(typeof(MenuDebugItem), "m_Items");
-            Dictionary<int, ItemInfo> items = (Dictionary<int, ItemInfo>)fiItems.GetValue(__instance);
+            //FieldInfo fiItems = AccessTools.Field(typeof(MenuDebugItem), "m_Items");
+            //Dictionary<int, ItemInfo> items = (Dictionary<int, ItemInfo>)fiItems.GetValue(__instance);
 
             FieldInfo fiLastField = AccessTools.Field(typeof(MenuDebugItem), "m_LastField");
             string lastField = (string)fiLastField.GetValue(__instance);
 
             __instance.m_List.Clear();
-            items = ItemsManager.Get().GetAllInfos();
+            Dictionary<int, ItemInfo> items = ItemsManager.Get().GetAllInfos();
             foreach(int value in items.Keys)
             {
                 string text = ((ItemID)value).ToString();

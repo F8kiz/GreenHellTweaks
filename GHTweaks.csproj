@@ -65,6 +65,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -92,17 +93,17 @@
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Models\GridSize.cs" />
+    <Compile Include="Models\LogMessage.cs" />
     <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
-    <Compile Include="Patches\Item.Initialize.cs" />
+    <Compile Include="Patches\ConfigurableStorageSize.cs" />
+    <None Include="Patches\FoodInfo.DryingLength.cs.disabled" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
     <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
-    <Compile Include="Patches\PocketGrid.CalcRequiredCells.cs" />
-    <Compile Include="Patches\PocketGrid.Initialize.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
@@ -111,6 +112,12 @@
     <Compile Include="Configuration\PlayerConfig.cs" />
     <Compile Include="Configuration\PocketGridConfig.cs" />
     <Compile Include="Configuration\SkillConfig.cs" />
+    <Compile Include="UI\DebugForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\DebugForm.Designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ConstructionGhostHelper.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />
@@ -159,6 +166,11 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Patches\Construction.SetUpperLevel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
