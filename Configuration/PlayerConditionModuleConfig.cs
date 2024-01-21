@@ -27,5 +27,7 @@
         public float HydrationConsumptionThreshold { get; set; } = -1f;
 
         public float HydrationConsumptionMultiplier { get; set; } = -1f;
+
+        public float EnergyConsumptionPerInGameSeconds { get; set; } = -1f;
     }
 }

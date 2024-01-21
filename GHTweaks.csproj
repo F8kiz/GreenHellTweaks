@@ -98,11 +98,12 @@
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
-    <None Include="Patches\FoodInfo.DryingLength.cs.disabled" />
+    <Compile Include="Patches\FoodInfo.DryingLength.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
+    <Compile Include="Patches\PlayerConditionalModule.Energy.cs" />
     <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />

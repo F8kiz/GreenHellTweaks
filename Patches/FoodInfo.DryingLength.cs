@@ -12,7 +12,7 @@ namespace GHTweaks.Patches
 
             Mod.Instance.WriteLog($"FoodInfo {__instance.m_ID}.m_DryingLength: {value}");
             if (!__instance.IsMeat())
-                value = 0.5f;
+                value = 0.25f;
         }
     }
 }

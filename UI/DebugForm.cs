@@ -6,8 +6,6 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using static RootMotion.FinalIK.InteractionObject;
-
 namespace GHTweaks.UI
 {
     public partial class DebugForm : Form
@@ -43,6 +41,11 @@ namespace GHTweaks.UI
             timer.Start();
         }
 
+        private void DebugForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private async void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (lstLogs.Count < 1)
@@ -52,6 +55,9 @@ namespace GHTweaks.UI
             int count = lstLogs.Count;
             for(int i = 0; i < count; ++i)
             {
+                if (lstLogs.Count < count)
+                    break;
+
                 var log = lstLogs[i];
                 if ((RichTextBox_Log.TextLength - log.Message.Length) >= RichTextBox_Log.MaxLength)
                     RichTextBox_Log.Text = "";
@@ -70,9 +76,12 @@ namespace GHTweaks.UI
                 await Task.Delay(100); // Prevent RichtextBox crash 
             }
 
-            lock (lstLogsLock)
+            if (lstLogs.Count >= count)
             {
-                lstLogs.RemoveRange(0, count);
+                lock (lstLogsLock)
+                {
+                    lstLogs.RemoveRange(0, count);
+                }
             }
             Label_MessageQueueCount.Text = lstLogs.Count.ToString();
             timer?.Start();
@@ -98,15 +107,12 @@ namespace GHTweaks.UI
             OnDebugFormClosing?.Invoke(this, e);
         }
 
-        private void Button_Restart_Click(object sender, EventArgs e)
+        private void Button_ClearMessageQueue_Click(object sender, EventArgs e)
         {
-            isFirstCloseRequest = false;
-            RichTextBox_Log.Invalidate();
-        }
-
-        private void DebugForm_Load(object sender, EventArgs e)
-        {
-
+            lock (lstLogsLock)
+            {
+                lstLogs.Clear();
+            }
         }
     }
 }
