@@ -46,6 +46,8 @@ namespace GHTweaks.Configuration
 
         public bool SkipIntro { get; set; }
 
+        public bool CheatsEnabled { get; set; }
+
         public List<KeyBinding> KeyBindings { get; set; }
 
 
