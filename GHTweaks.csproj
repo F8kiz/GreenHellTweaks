@@ -52,9 +52,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=2.3.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.3.1.1\lib\net48\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -94,6 +93,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Models\GridSize.cs" />
     <Compile Include="Models\LogMessage.cs" />
+    <Compile Include="PatchCategory.cs" />
     <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
@@ -146,6 +146,7 @@
     <Compile Include="Patches\PlayerConditionModule.NutritionFat.cs" />
     <Compile Include="Patches\PlayerConditionModule.UpdateDirtiness.cs" />
     <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
+    <None Include="packages.config" />
     <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
     <Compile Include="Patches\Torch.UpdateBurning.cs" />
     <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
@@ -165,7 +166,6 @@
     <Compile Include="Utilities\ItemsUnlocker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <Compile Include="Patches\Construction.SetUpperLevel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@ using GHTweaks.Models;
 using GHTweaks.UI;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Linq;
 
 namespace GHTweaks
 {
@@ -18,8 +19,8 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod instance.
         /// </summary>
-        public static Mod Instance 
-        { 
+        public static Mod Instance
+        {
             get => instance ?? (instance = new Mod());
         }
         private static Mod instance;
@@ -51,6 +52,9 @@ namespace GHTweaks
         /// </summary>
         private readonly string strHarmonyLogFileName;
 
+        private readonly Harmony harmony;
+
+
         private DebugForm debugForm;
 
         private CancellationTokenSource debugTaskCancellationTokenSource;
@@ -72,13 +76,20 @@ namespace GHTweaks
             WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
             Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
 
+            harmony = new Harmony("de.fakiz.gh.tweaks");
+
             TryDeleteLogFiles();
             TryLoadConfig();
             InitDebugForm();
+
+            //P2PTransportLayer.OnLobbyEnterEvent += P2PTransportLayer_OnLobbyEnterEvent;
+            //P2PTransportLayer.OnSessionConnectStartEvent += P2PTransportLayer_OnSessionConnectStartEvent;
         }
+
 
         ~Mod()
         {
+            //P2PTransportLayer.OnLobbyEnterEvent -= P2PTransportLayer_OnLobbyEnterEvent;
             debugForm?.Close();
             debugTaskCancellationTokenSource.Cancel();
         }
@@ -91,22 +102,51 @@ namespace GHTweaks
                 if (IsPatchesApplied)
                     return;
                 
-                IsPatchesApplied = true;
                 WriteLog("Apply patches...");
                 Harmony.DEBUG = Config.DebugModeEnabled;
-                Harmony harmony = new Harmony("de.fakiz.gh.tweaks");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+
+                //harmony.PatchAll(Assembly.GetExecutingAssembly());
+                var assembly = Assembly.GetExecutingAssembly();
+
+                if (harmony.GetPatchedMethods().Count() < 1)
+                    harmony.PatchCategory(assembly, PatchCategory.Required);
+                
+                harmony.PatchCategory(assembly, PatchCategory.Default);
+
+                //if (Config.CheatsEnabled)
+                    harmony.PatchCategory(assembly, PatchCategory.Cheats);
 
                 WriteLog("Patched methods:");
                 IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
                 foreach (MethodBase mb in methods)
                     WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
+
+                IsPatchesApplied = true;
             }
             catch (Exception ex)
             {
                 WriteLog(ex.ToString(), LogType.Exception);
             }
         }
+
+        //public void RemovePatches()
+        //{
+        //    try
+        //    {
+        //        if (!IsPatchesApplied)
+        //            return;
+
+        //        WriteLog("Remove patches...");
+        //        harmony.UnpatchAll("de.fakiz.gh.tweaks");
+        //        harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
+
+        //        IsPatchesApplied = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        WriteLog(ex.ToString(), LogType.Exception);
+        //    }
+        //}
 
         public void ReloadConfig()
         {
@@ -303,5 +343,16 @@ namespace GHTweaks
                 }, debugTaskCancellationTokenSource.Token);
             }
         }
+
+
+        //private void P2PTransportLayer_OnLobbyEnterEvent(bool isOwner)
+        //{
+        //    WriteLog("Player has enter lobby.", LogType.Debug);
+        //    RemovePatches();
+        //}
+        //private void P2PTransportLayer_OnSessionConnectStartEvent()
+        //{
+        //    WriteLog("OnSessionConnectStartEvent", LogType.Debug);
+        //}
     }
 }
