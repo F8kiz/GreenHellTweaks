@@ -4,6 +4,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Stamina), MethodType.Setter)]
     internal class PlayerConditionModuleStamina
     {

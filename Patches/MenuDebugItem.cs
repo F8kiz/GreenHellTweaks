@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(MenuDebugItem), "OnShow")]
     internal class MenuDebugItemOnShow
     {
@@ -27,6 +28,7 @@ namespace GHTweaks.Patches
         }
     }
 
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(MenuDebugItem), "OnHide")]
     internal class MenuDebugOnHide
     {
@@ -42,6 +44,7 @@ namespace GHTweaks.Patches
         }
     }
 
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(MenuDebugItem), "Setup")]
     internal class MenuDebugSetup
     {
@@ -69,6 +72,7 @@ namespace GHTweaks.Patches
         }
     }
 
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(MenuDebugItem), "Update")]
     internal class MenuDebugUpdate
     {

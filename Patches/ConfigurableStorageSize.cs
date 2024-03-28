@@ -2,15 +2,13 @@
 using GHTweaks.Models;
 using HarmonyLib;
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.Initialize))]
     internal class PocketGridInitialize
     {
@@ -108,6 +106,7 @@ namespace GHTweaks.Patches
     }
 
 
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(Item), nameof(Item.Initialize))]
     internal class ItemInitialize
     {
@@ -146,6 +145,7 @@ namespace GHTweaks.Patches
     }
 
 
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.CalcRequiredCells))]
     internal class PocketGridCalcRequiredCells
     {

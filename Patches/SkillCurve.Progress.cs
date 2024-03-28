@@ -3,6 +3,7 @@ using System;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(SkillCurve), nameof(SkillCurve.Progress))]
     internal class SkillCurveProgress
     {

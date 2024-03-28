@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(ConstructionGhost), "CalcPosition")]
     internal class ConstructionGhostCalcPosition
     {

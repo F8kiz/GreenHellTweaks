@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Required)]
     [HarmonyPatch(typeof(MainMenu), "Start")]
     internal class MainMenuStart
     {

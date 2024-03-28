@@ -2,7 +2,8 @@
 
 namespace GHTweaks.Patches
 {
-	[HarmonyPatch(typeof(Construction), "SetUpperLevel")]
+    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatch(typeof(Construction), "SetUpperLevel")]
 	internal class ConstructionSetUpperLevel
 	{
 		static void Prefix(ref int level)

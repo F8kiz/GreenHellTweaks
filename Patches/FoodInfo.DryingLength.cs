@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(FoodInfo), "m_DryingLength", MethodType.Setter)]
     internal class FoodInfoDryingLength
     {

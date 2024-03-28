@@ -4,6 +4,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(SwimController), ".ctor", MethodType.Constructor)]
     internal class SwimControllerSpeedAddMax
     {

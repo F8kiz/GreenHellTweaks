@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(HUDTextChat), "ConstantUpdate")]
     internal class HUDTextChatConstantUpdate
     {

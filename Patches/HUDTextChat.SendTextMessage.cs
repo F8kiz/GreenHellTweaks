@@ -4,6 +4,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Cheats)]
     [HarmonyPatch(typeof(HUDTextChat), "SendTextMessage")]
     internal class HUDTextChatSendTextMessage
     {

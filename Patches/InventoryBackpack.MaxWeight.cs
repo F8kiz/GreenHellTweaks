@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(InventoryBackpack), "Awake")]
     internal class InventoryBackpackMaxWeight
     {

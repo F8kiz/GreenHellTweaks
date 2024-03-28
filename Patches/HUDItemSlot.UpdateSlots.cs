@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(HUDItemSlot), "UpdateSlots")]
     internal class HUDItemSlotUpdateSlots
     {

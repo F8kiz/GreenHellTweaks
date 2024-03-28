@@ -3,6 +3,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(FPPController), "UpdateWantedSpeed")]
     internal class FPPControllerUpdateWantedSpeed
     {
