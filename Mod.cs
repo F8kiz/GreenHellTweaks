@@ -113,7 +113,7 @@ namespace GHTweaks
                 
                 harmony.PatchCategory(assembly, PatchCategory.Default);
 
-                //if (Config.CheatsEnabled)
+                if (Config.ConsumeKeyStrokes)
                     harmony.PatchCategory(assembly, PatchCategory.Cheats);
 
                 WriteLog("Patched methods:");
@@ -270,7 +270,7 @@ namespace GHTweaks
 
                 Config = cfg;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 WriteLog(ex.Message, LogType.Exception);
                 return false;

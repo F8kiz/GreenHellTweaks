@@ -46,7 +46,7 @@ namespace GHTweaks.Configuration
 
         public bool SkipIntro { get; set; }
 
-        public bool CheatsEnabled { get; set; }
+        public bool ConsumeKeyStrokes { get; set; }
 
         public List<KeyBinding> KeyBindings { get; set; }
 
@@ -67,6 +67,7 @@ namespace GHTweaks.Configuration
             TorchConfig = new TorchConfig();
             SkillConfig = new SkillConfig();
             DestroyableFallingObjectConfig = new DestroyableFallingObjectConfig();
+            ConsumeKeyStrokes = true;
             KeyBindings = new List<KeyBinding>();
         }
     }
