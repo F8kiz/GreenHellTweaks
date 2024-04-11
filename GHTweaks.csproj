@@ -107,6 +107,7 @@
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
+    <Compile Include="Patches\MenuDebugTeleport.Show.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
     <Compile Include="Patches\QuieterAnimals.cs" />
     <Compile Include="Patches\SteadyAim.cs" />
