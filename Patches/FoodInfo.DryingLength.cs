@@ -11,7 +11,6 @@ namespace GHTweaks.Patches
             if (value < 1)
                 return;
 
-            Mod.Instance.WriteLog($"FoodInfo {__instance.m_ID}.m_DryingLength: {value}");
             if (!__instance.IsMeat())
                 value = 0.25f;
         }

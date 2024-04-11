@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Green Hell\GH_Tweaks\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,8 +64,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -88,6 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AISoundModule.cs" />
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
@@ -103,6 +108,8 @@
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
+    <Compile Include="Patches\QuieterAnimals.cs" />
+    <Compile Include="Patches\SteadyAim.cs" />
     <Compile Include="Patches\PlayerConditionalModule.Energy.cs" />
     <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />

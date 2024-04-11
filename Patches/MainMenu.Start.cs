@@ -9,7 +9,7 @@ namespace GHTweaks.Patches
         static void Postfix(MainMenu __instance)
         {
             __instance.m_GameVersion.text = $"{GreenHellGame.s_GameVersion} (build {GreenHellGame.GetBuildVersion()}) GHTweaks ver. {Mod.Instance.Version}";
-            __instance.m_GameVersion.resizeTextForBestFit = true ;
+            __instance.m_GameVersion.resizeTextForBestFit = true;
         }
     }
 }

@@ -3,7 +3,7 @@ using HarmonyLib;
 
 using System;
 
-namespace GHTweaks.Patches
+namespace GHTweaks.Patches 
 {
     [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Energy), MethodType.Setter)]
@@ -33,7 +33,7 @@ namespace GHTweaks.Patches
                 value = __instance.m_Energy;
             else
                 lastConsumption = MainLevel.Instance.GetCurrentTimeMinutes();
-            
+
             //if (++updateCount % 500 == 0)
             //{
             //    Mod.Instance.WriteLog($"PlayerConditionalModule.m_Energy value: {value}, lastConsumption: {lastConsumption}, currentTimeMinutes: {currentTimeMinutes}, elapsedMinutes: {elapsedMinutes}");
