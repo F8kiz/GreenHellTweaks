@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(FoodInfo), "m_DryingLength", MethodType.Setter)]
     internal class FoodInfoDryingLength
     {
@@ -10,7 +11,6 @@ namespace GHTweaks.Patches
             if (value < 1)
                 return;
 
-            Mod.Instance.WriteLog($"FoodInfo {__instance.m_ID}.m_DryingLength: {value}");
             if (!__instance.IsMeat())
                 value = 0.25f;
         }

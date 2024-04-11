@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(DeadBody), nameof(DeadBody.GetActions))]
     internal class DeadBodyGetAction
     {

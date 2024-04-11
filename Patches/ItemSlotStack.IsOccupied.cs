@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(ItemSlotStack), nameof(ItemSlotStack.IsOccupied))]
     internal class ItemSlotStackIsOccupied
     {

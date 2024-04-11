@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Green Hell\GH_Tweaks\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -52,9 +52,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=2.3.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.3.1.1\lib\net48\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -65,8 +64,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -89,11 +92,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\AISoundModule.cs" />
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Models\GridSize.cs" />
     <Compile Include="Models\LogMessage.cs" />
+    <Compile Include="PatchCategory.cs" />
     <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
@@ -103,6 +108,8 @@
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
+    <Compile Include="Patches\QuieterAnimals.cs" />
+    <Compile Include="Patches\SteadyAim.cs" />
     <Compile Include="Patches\PlayerConditionalModule.Energy.cs" />
     <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
@@ -146,6 +153,7 @@
     <Compile Include="Patches\PlayerConditionModule.NutritionFat.cs" />
     <Compile Include="Patches\PlayerConditionModule.UpdateDirtiness.cs" />
     <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
+    <None Include="packages.config" />
     <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
     <Compile Include="Patches\Torch.UpdateBurning.cs" />
     <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
@@ -165,7 +173,6 @@
     <Compile Include="Utilities\ItemsUnlocker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <Compile Include="Patches\Construction.SetUpperLevel.cs" />
   </ItemGroup>
   <ItemGroup>

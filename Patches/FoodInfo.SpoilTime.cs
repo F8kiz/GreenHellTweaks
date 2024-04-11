@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(FoodInfo), "m_SpoilTime", MethodType.Setter)]
     internal class FoodInfoSpoilTime
     {

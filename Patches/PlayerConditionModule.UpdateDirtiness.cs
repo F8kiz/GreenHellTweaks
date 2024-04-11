@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PlayerConditionModule), "UpdateDirtiness")]
     internal class PlayerConditionModuleUpdateDirtiness
     {

@@ -2,15 +2,13 @@
 using GHTweaks.Models;
 using HarmonyLib;
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.Initialize))]
     internal class PocketGridInitialize
     {
@@ -48,11 +46,9 @@ namespace GHTweaks.Patches
 
             AccessTools.FieldRef<PocketGrid, Vector2> fiGridSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_GridSize");
             Vector2 gridSize = fiGridSize(__instance);
-            Mod.Instance.WriteLog($"PocketGrid.Initialize.Prefix default grid size {pocket}: {gridSize}");
 
             fiGridSize(__instance) = new Vector2(size.ColumnCount, size.RowCount);
             gridSize = fiGridSize(__instance);
-            Mod.Instance.WriteLog($"PocketGrid.Initialize.Prefix new grid size: {gridSize}");
 
             FieldInfo fiGrid = AccessTools.Field(typeof(PocketGrid), "m_Grid");
             GameObject grid = (GameObject)fiGrid.GetValue(__instance);
@@ -69,8 +65,6 @@ namespace GHTweaks.Patches
             Vector2 cellSize = new Vector2(one.x * grid.transform.localScale.x, one.y * grid.transform.localScale.y);
             AccessTools.FieldRef<PocketGrid, Vector2> fiCellSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_CellSize");
             fiCellSize(__instance) = cellSize;
-
-            Mod.Instance.WriteLog("PocketGrid.m_CellSize: " + fiCellSize(__instance));
 
             int num = 0;
             //this.m_Cells = new InventoryCell[(int)this.m_GridSize.x, (int)this.m_GridSize.y];
@@ -108,6 +102,7 @@ namespace GHTweaks.Patches
     }
 
 
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(Item), nameof(Item.Initialize))]
     internal class ItemInitialize
     {
@@ -130,14 +125,11 @@ namespace GHTweaks.Patches
 
             Vector3 newScale = new Vector3(x, y, z);
 
-            //Mod.Instance.WriteLog($"Item.Initialize update {__instance.name}.InventoryLocalScale: OldValue: {scale}, NewValue: {newScale}");
-
             __instance.m_InventoryLocalScale = newScale;
             __instance.m_Info.m_InventoryScale = newScale.x;
 
             if (__instance.m_InInventory)
             {
-                Mod.Instance.WriteLog($"Item.Initialize call UpdateScale() for item: {__instance.name}");
                 __instance.m_UpdateScaleRequest = true;
                 __instance.UpdateScale();
             }
@@ -146,6 +138,7 @@ namespace GHTweaks.Patches
     }
 
 
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.CalcRequiredCells))]
     internal class PocketGridCalcRequiredCells
     {
@@ -155,8 +148,6 @@ namespace GHTweaks.Patches
         {
             AccessTools.FieldRef<PocketGrid, Vector2> fiCellSize = AccessTools.FieldRefAccess<PocketGrid, Vector2>("m_CellSize");
             Vector2 cellSize = fiCellSize(__instance);
-
-            Mod.Instance.WriteLog($"PocketGrid.CalcRequiredCells: {item.name}.InventoryLocalScale: {item.m_InventoryLocalScale}, m_CellSize: {cellSize}");
 
             if (item.m_Info.m_InventoryRotated)
             {

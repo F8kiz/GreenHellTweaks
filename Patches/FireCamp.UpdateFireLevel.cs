@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(Firecamp), "UpdateFireLevel")]
     internal class FireCampUpdateFireLevel
     {

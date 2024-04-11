@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(DestroyableFallingObject), ".ctor", MethodType.Constructor)]
     internal class DestroyableFallingObjectConstructor
     {

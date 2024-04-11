@@ -1,6 +1,4 @@
-﻿using AIs;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -37,11 +35,12 @@ namespace GHTweaks.Utilities
             float rangeSqr = radius * radius;
 
             // Find items within radius
+            var outlineCamera = CameraManager.Get();
             foreach (Trigger trigger in Trigger.s_ActiveTriggers)
             {
-                //if (!trigger)
-                //    continue;
-
+                if (!trigger.CanBeOutlined())
+                    continue;
+                
                 Item item = trigger as Item;
                 if (item)
                 {
@@ -81,20 +80,26 @@ namespace GHTweaks.Utilities
                 {
                     if (!highlightedItems.Contains(trigger))
                         highlightedItems.Add(trigger);
-
+                    
                     if (trigger.m_ForcedLayer != trigger.m_OutlineLayer)
+                    {
                         trigger.m_ForcedLayer = trigger.m_OutlineLayer;
-
-                    TryDisableCollisionWithPlayer(ref item);
+                        if (item != null)
+                        {
+                            TryDisableCollisionWithPlayer(ref item);
+                            outlineCamera?.OutlineCameraToggle(true, item);
+                        }
+                    }
                 }
                 else if (highlightedItems.Contains(trigger))
                 {
                     highlightedItems.Remove(trigger);
-                    trigger.m_ForcedLayer = 0;
+                    trigger.m_ForcedLayer = trigger.m_DefaultLayer;
 
                     if (item)
                     {
                         item.EnableCollisionWithPlayer();
+                        outlineCamera?.OutlineCameraToggle(false, item);
                     }
                 }
             }
@@ -110,10 +115,18 @@ namespace GHTweaks.Utilities
             highlightedItems.CopyTo(items);
             highlightedItems.Clear();
 
+            var outlineCamera = CameraManager.Get();
             for (int i = 0; i < items.Length; i++)
             {
                 if (items[i])
-                    items[i].m_ForcedLayer = 0;
+                {
+                    items[i].m_ForcedLayer = items[i].m_DefaultLayer;
+                    if (items[i] is Item item)
+                    {
+                        item.EnableCollisionWithPlayer();
+                        outlineCamera?.OutlineCameraToggle(false, item);
+                    }
+                }
             }
         }
 
@@ -121,7 +134,6 @@ namespace GHTweaks.Utilities
         {
             try
             {
-                Mod.Instance.WriteLog("Try to disable collision with player", LogType.Debug);
                 if (item == null)
                 {
                     Mod.Instance.WriteLog("Unable to disable player collision item is null", LogType.Debug);
@@ -136,11 +148,14 @@ namespace GHTweaks.Utilities
                 }
 
                 methodInfo.Invoke(item, null);
-                Mod.Instance.WriteLog("Called DisableCollisionsWithPlayer method", LogType.Debug);
             }
             catch(Exception ex)
             {
-                Mod.Instance.WriteLog(ex.ToString(), LogType.Exception);
+                string exMsg = ex.InnerException?.ToString();
+                if (string.IsNullOrEmpty(exMsg))
+                    exMsg = ex.ToString();
+
+                Mod.Instance.WriteLog($"HighlightVicinityItems {exMsg}", LogType.Exception);
             }
         }
     }

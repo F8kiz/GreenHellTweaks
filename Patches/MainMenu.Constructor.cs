@@ -4,6 +4,7 @@ using System.Reflection;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(MainMenu), ".ctor", MethodType.Constructor)]
     internal class MainMenuContructor
     {

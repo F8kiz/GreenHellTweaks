@@ -2,6 +2,7 @@
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(ConstructionGhost), "CanBeAttachedToSlotBelow")]
     internal class ConstructionGhostCanBeAttachedToSlotBelow
     {

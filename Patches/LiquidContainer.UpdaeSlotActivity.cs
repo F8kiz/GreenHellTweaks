@@ -3,6 +3,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(LiquidContainer), "UpdateSlotsActivity")]
     internal class LiquidContainerUpdaeSlotActivity
     {

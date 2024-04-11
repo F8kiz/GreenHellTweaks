@@ -4,6 +4,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PlayerConditionModule), "m_HP", MethodType.Setter)]
     internal class PlayerConditionModuleHP
     {

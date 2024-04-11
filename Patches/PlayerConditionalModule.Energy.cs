@@ -3,13 +3,13 @@ using HarmonyLib;
 
 using System;
 
-namespace GHTweaks.Patches
+namespace GHTweaks.Patches 
 {
-
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Energy), MethodType.Setter)]
     internal class PlayerConditionalModuleEnergy
     {
-        static int updateCount = 0;
+        //static int updateCount = 0;
 
         static float lastConsumption = 0;
 
@@ -33,12 +33,12 @@ namespace GHTweaks.Patches
                 value = __instance.m_Energy;
             else
                 lastConsumption = MainLevel.Instance.GetCurrentTimeMinutes();
-            
-            if (++updateCount % 500 == 0)
-            {
-                Mod.Instance.WriteLog($"PlayerConditionalModule.m_Energy value: {value}, lastConsumption: {lastConsumption}, currentTimeMinutes: {currentTimeMinutes}, elapsedMinutes: {elapsedMinutes}");
-                updateCount = 0;
-            }
+
+            //if (++updateCount % 500 == 0)
+            //{
+            //    Mod.Instance.WriteLog($"PlayerConditionalModule.m_Energy value: {value}, lastConsumption: {lastConsumption}, currentTimeMinutes: {currentTimeMinutes}, elapsedMinutes: {elapsedMinutes}");
+            //    updateCount = 0;
+            //}
         }
     }
 }
