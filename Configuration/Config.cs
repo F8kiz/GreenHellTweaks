@@ -36,6 +36,8 @@ namespace GHTweaks.Configuration
 
         public DestroyableFallingObjectConfig DestroyableFallingObjectConfig { get; set; }
 
+        public AISoundModuleConfig AISoundModuleConfig { get; set; }
+
         [XmlElement(IsNullable = true)]
         public SerializableVector3 PlayerHomePosition { get; set; }
 
@@ -67,6 +69,7 @@ namespace GHTweaks.Configuration
             TorchConfig = new TorchConfig();
             SkillConfig = new SkillConfig();
             DestroyableFallingObjectConfig = new DestroyableFallingObjectConfig();
+            AISoundModuleConfig = new AISoundModuleConfig();
             ConsumeKeyStrokes = true;
             KeyBindings = new List<KeyBinding>();
         }
