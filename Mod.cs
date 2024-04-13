@@ -28,7 +28,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 13, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 13, 1, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -91,7 +91,7 @@ namespace GHTweaks
         {
             //P2PTransportLayer.OnLobbyEnterEvent -= P2PTransportLayer_OnLobbyEnterEvent;
             debugForm?.Close();
-            debugTaskCancellationTokenSource.Cancel();
+            debugTaskCancellationTokenSource?.Cancel();
         }
 
 

@@ -103,7 +103,7 @@
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
-    <Compile Include="Patches\FoodInfo.DryingLength.cs" />
+    <None Include="Patches\FoodInfo.DryingLength.cs.off" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
