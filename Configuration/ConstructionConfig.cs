@@ -5,7 +5,7 @@ namespace GHTweaks.Configuration
     public class ConstructionConfig
     {
         [XmlIgnore]
-        public bool CanBeAttachedToSlotBelow { get; set; } = true;
+        public bool CanBeAttachedToSlotBelow { get; set; } = false;
 
         public bool PlaceEveryWhereEnabled { get; set; } = true;
 

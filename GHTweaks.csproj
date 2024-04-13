@@ -69,6 +69,7 @@
     <Reference Include="System.XML" />
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -93,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AISoundModule.cs" />
+    <Compile Include="Configuration\LiquidContainerConfig.cs" />
+    <Compile Include="Configuration\PlayerConditionModuleConfig.cs" />
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
@@ -104,15 +107,17 @@
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
     <None Include="Patches\FoodInfo.DryingLength.cs.off" />
+    <Compile Include="Patches\LiquidContainer.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\MenuDebugTeleport.Show.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
+    <Compile Include="Patches\PlayerConditionModule.cs" />
     <Compile Include="Patches\QuieterAnimals.cs" />
     <Compile Include="Patches\SteadyAim.cs" />
-    <Compile Include="Patches\PlayerConditionalModule.Energy.cs" />
-    <Compile Include="Patches\PlayerConditionModule.Stamina.cs" />
+    <None Include="Patches\PlayerConditionalModule.Energy.cs.old" />
+    <None Include="Patches\PlayerConditionModule.Stamina.cs.old" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
@@ -144,15 +149,15 @@
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />
     <Compile Include="Patches\ItemsManager.UpdateDebug.cs" />
-    <Compile Include="Patches\LiquidContainerInfo.Capacity.cs" />
+    <None Include="Patches\LiquidContainerInfo.Capacity.cs.old" />
     <Compile Include="Patches\MainMenu.Start.cs" />
-    <Compile Include="Patches\PlayerConditionModule.HP.cs" />
+    <None Include="Patches\PlayerConditionModule.HP.cs.old" />
     <Compile Include="Patches\FPPController.UpdateWantedSpeed.cs" />
-    <Compile Include="Patches\PlayerConditionModule.Hydration.cs" />
-    <Compile Include="Patches\PlayerConditionModule.NutritionProteins.cs" />
-    <Compile Include="Patches\PlayerConditionModule.NutritionCarbo.cs" />
-    <Compile Include="Patches\PlayerConditionModule.NutritionFat.cs" />
-    <Compile Include="Patches\PlayerConditionModule.UpdateDirtiness.cs" />
+    <None Include="Patches\PlayerConditionModule.Hydration.cs.old" />
+    <None Include="Patches\PlayerConditionModule.NutritionProteins.cs.old" />
+    <None Include="Patches\PlayerConditionModule.NutritionCarbo.cs.old" />
+    <None Include="Patches\PlayerConditionModule.NutritionFat.cs.old" />
+    <None Include="Patches\PlayerConditionModule.UpdateDirtiness.cs.old" />
     <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
     <None Include="packages.config" />
     <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
@@ -165,8 +170,7 @@
     <Compile Include="Configuration\FoodInfoConfig.cs" />
     <Compile Include="Configuration\InventoryBackpackConfig.cs" />
     <Compile Include="Configuration\ItemInfoConfig.cs" />
-    <Compile Include="Configuration\LiquidContainerInfoConfig.cs" />
-    <Compile Include="Configuration\PlayerConditionModuleConfig.cs" />
+    <None Include="Configuration\PlayerConditionModuleConfig.cs.old" />
     <Compile Include="Configuration\PlayerMovementConfig.cs" />
     <Compile Include="Models\SerializableVector3.cs" />
     <Compile Include="Configuration\TODTimeConfig.cs" />

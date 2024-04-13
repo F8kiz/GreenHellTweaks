@@ -11,6 +11,7 @@ using GHTweaks.UI;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using GHTweaks.Patches;
 
 namespace GHTweaks
 {
@@ -28,7 +29,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 13, 1, 0);
+        public Version Version { get; private set; } = new Version(3, 0, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -151,9 +152,14 @@ namespace GHTweaks
         public void ReloadConfig()
         {
             if (TryLoadConfig())
+            {
+                PlayerConditionModuleInitialize.UpdateFields(PlayerConditionModule.Get());
                 PrintMessage("Config reloaded", LogType.Info);
+            }
             else
+            {
                 PrintMessage("Failed to reload config!", LogType.Error);
+            }
         }
 
         /// <summary>

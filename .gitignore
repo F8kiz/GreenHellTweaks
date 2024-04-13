@@ -372,3 +372,4 @@ FodyWeavers.xsd
 /Patches/PlayerConditionModule.UpdateDirtiness.cs.old
 /Patches/Torch.CheckIfInBackpack.cs.off
 /Configuration/PlayerConditionModuleConfig.cs.old
+/Patches/PlayerConditionalModule.Energy.cs.old

@@ -86,7 +86,8 @@ namespace GHTweaks.Utilities
                         trigger.m_ForcedLayer = trigger.m_OutlineLayer;
                         if (item != null)
                         {
-                            TryDisableCollisionWithPlayer(ref item);
+                            if (item.m_IsPlant)
+                                TryDisableCollisionWithPlayer(ref item);
                             outlineCamera?.OutlineCameraToggle(true, item);
                         }
                     }
@@ -98,7 +99,15 @@ namespace GHTweaks.Utilities
 
                     if (item)
                     {
-                        item.EnableCollisionWithPlayer();
+                        try
+                        {
+                            if (item.m_IsPlant)
+                                item.EnableCollisionWithPlayer();
+                        }
+                        catch(Exception ex)
+                        {
+                            Mod.Instance.WriteLog($"HighlightVicinityItems {ex.Message}", LogType.Exception);
+                        }
                         outlineCamera?.OutlineCameraToggle(false, item);
                     }
                 }

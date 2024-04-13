@@ -20,7 +20,7 @@ namespace GHTweaks.Configuration
 
         public PlayerMovementConfig PlayerMovementConfig { get; set; }
 
-        public LiquidContainerInfoConfig LiquidContainerInfoConfig { get; set; }
+        public LiquidContainerConfig LiquidContainerConfig { get; set; }
 
         public FoodInfoConfig FoodInfoConfig { get; set; }
 
@@ -61,7 +61,7 @@ namespace GHTweaks.Configuration
             PlayerConfig = new PlayerConfig();
             PlayerConditionModuleConfig = new PlayerConditionModuleConfig();
             PlayerMovementConfig = new PlayerMovementConfig();
-            LiquidContainerInfoConfig = new LiquidContainerInfoConfig();
+            LiquidContainerConfig = new LiquidContainerConfig();
             FoodInfoConfig = new FoodInfoConfig();
             ItemInfoConfig = new ItemInfoConfig();
             TODTimeConfig = new TODTimeConfig();
