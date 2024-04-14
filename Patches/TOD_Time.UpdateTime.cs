@@ -3,10 +3,11 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
+    [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(TOD_Time), "UpdateTime")]
     internal class TOD_TimeUpdateTime
     {
-        static void Postfix(TOD_Time __instance)
+        static void Prefix(TOD_Time __instance)
         {
             TODTimeConfig config = Mod.Instance.Config.TODTimeConfig;
             if (config.DayLengthInMinutes > 0)

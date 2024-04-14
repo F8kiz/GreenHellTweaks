@@ -8,6 +8,11 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
+    /// <summary>
+    /// Storage.GridSize:   10, 15
+    /// Main.GridSize:      10, 15
+    /// Front.GridSize:     10, 10
+    /// </summary>
     [HarmonyPatchCategory(PatchCategory.Default)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.Initialize))]
     internal class PocketGridInitialize
@@ -99,6 +104,13 @@ namespace GHTweaks.Patches
 
             return false;
         }
+
+        //static void Postfix(PocketGrid __instance)
+        //{
+        //    FieldInfo fi = AccessTools.Field(typeof(PocketGrid), "m_Pocked");
+        //    var pocket = (BackpackPocket)fi.GetValue(__instance);
+        //    Mod.Instance.WriteLog($"{pocket}: {__instance.m_GridSize}");
+        //}
     }
 
 

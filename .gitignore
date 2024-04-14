@@ -361,3 +361,15 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Patches/FoodInfo.DryingLength.cs.off
+/Patches/LiquidContainerInfo.Capacity.cs.old
+/Patches/PlayerConditionModule.HP.cs.old
+/Patches/PlayerConditionModule.Hydration.cs.old
+/Patches/PlayerConditionModule.NutritionCarbo.cs.old
+/Patches/PlayerConditionModule.NutritionFat.cs.old
+/Patches/PlayerConditionModule.NutritionProteins.cs.old
+/Patches/PlayerConditionModule.Stamina.cs.old
+/Patches/PlayerConditionModule.UpdateDirtiness.cs.old
+/Patches/Torch.CheckIfInBackpack.cs.off
+/Configuration/PlayerConditionModuleConfig.cs.old
+/Patches/PlayerConditionalModule.Energy.cs.old
