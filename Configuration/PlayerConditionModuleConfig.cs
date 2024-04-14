@@ -16,6 +16,12 @@
 
         public int EnergyConsumptionDelay { get; set; } = -1;
 
+        public float DecreaseDirtinessOnRainValue { get; set; } = -1f;
+
+        public float DecreaseDirtinessOnSwimValue { get; set; } = -1f;
+
+        public float DecreaseDirtinessOnDiveValue { get; set; } = -1f;
+
         /// <summary>
         /// Default value: 100f
         /// </summary>
