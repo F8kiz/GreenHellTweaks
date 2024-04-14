@@ -221,24 +221,24 @@ namespace GHTweaks.Patches
 				{ "m_NutritionFatConsumptionPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionPerSecond }, // Default value: 1f
 				{ "m_NutritionProteinsConsumptionPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionPerSecond }, // Default value: 1f
 				{ "m_NutritionFatConsumptionMulNoCarbs", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionMultiplierNoCarbs }, // Default value: 1f
-				{ "m_NutritionProteinsConsumptionMultiplierNoCarbs", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionMultiplierNoCarbs }, // Default value: 1f
-				{ "m_NutritionCarbohydratesConsumptionRunMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionRunMultiplier }, // Default value: 1f
-				{ "m_NutritionFatConsumptionRunMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionRunMultiplier }, // Default value: 1f
-				{ "m_NutritionProteinsConsumptionRunMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionRunMultiplier }, // Default value: 1f
-				{ "m_NutritionCarbohydratesConsumptionActionMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionActionMultiplier }, // Default value: 1f
-				{ "m_NutritionFatConsumptionActionMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionActionMultiplier }, // Default value: 2f
-				{ "m_NutritionProteinsConsumptionActionMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionActionMultiplier }, // Default value: 3f
-				{ "m_NutritionCarbohydratesConsumptionWeightNormalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightNormalMultiplier }, // Default value: 1f
-				{ "m_NutritionFatConsumptionWeightNormalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightNormalMultiplier }, // Default value: 1f
-				{ "m_NutritionProteinsConsumptionWeightNormalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightNormalMultiplier }, // Default value: 1f
-				{ "m_NutritionCarbohydratesConsumptionWeightOverloadMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
-				{ "m_NutritionFatConsumptionWeightOverloadMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
-				{ "m_NutritionProteinsConsumptionWeightOverloadMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
-				{ "m_NutritionCarbohydratesConsumptionWeightCriticalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
-				{ "m_NutritionFatConsumptionWeightCriticalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
-				{ "m_NutritionProteinsConsumptionWeightCriticalMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
+				{ "m_NutritionProteinsConsumptionMulNoCarbs", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionMultiplierNoCarbs }, // Default value: 1f
+				{ "m_NutritionCarbohydratesConsumptionRunMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionRunMultiplier }, // Default value: 1f
+				{ "m_NutritionFatConsumptionRunMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionRunMultiplier }, // Default value: 1f
+				{ "m_NutritionProteinsConsumptionRunMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionRunMultiplier }, // Default value: 1f
+				{ "m_NutritionCarbohydratesConsumptionActionMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionActionMultiplier }, // Default value: 1f
+				{ "m_NutritionFatConsumptionActionMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionActionMultiplier }, // Default value: 2f
+				{ "m_NutritionProteinsConsumptionActionMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionActionMultiplier }, // Default value: 3f
+				{ "m_NutritionCarbohydratesConsumptionWeightNormalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightNormalMultiplier }, // Default value: 1f
+				{ "m_NutritionFatConsumptionWeightNormalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightNormalMultiplier }, // Default value: 1f
+				{ "m_NutritionProteinsConsumptionWeightNormalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightNormalMultiplier }, // Default value: 1f
+				{ "m_NutritionCarbohydratesConsumptionWeightOverloadMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
+				{ "m_NutritionFatConsumptionWeightOverloadMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
+				{ "m_NutritionProteinsConsumptionWeightOverloadMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightOverloadMultiplier }, // Default value: 1.5f
+				{ "m_NutritionCarbohydratesConsumptionWeightCriticalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarbohydratesConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
+				{ "m_NutritionFatConsumptionWeightCriticalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
+				{ "m_NutritionProteinsConsumptionWeightCriticalMul", Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionWeightCriticalMultiplier }, // Default value: 1.8f
 				{ "m_HydrationConsumptionPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.HydrationConsumptionPerSecond }, // Default value: 0.5f
-				{ "m_HydrationConsumptionRunMultiplier", Mod.Instance.Config.PlayerConditionModuleConfig.HydrationConsumptionRunMultiplier }, // Default value: 0.5f
+				{ "m_HydrationConsumptionRunMul", Mod.Instance.Config.PlayerConditionModuleConfig.HydrationConsumptionRunMultiplier }, // Default value: 0.5f
 				{ "m_HydrationConsumptionDuringFeverPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.HydrationConsumptionDuringFeverPerSecond }, // Default value: 0.5f
 				{ "m_OxygenConsumptionPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.OxygenConsumptionPerSecond }, // Default value: 1f
 				{ "m_EnergyConsumptionPerSecond", Mod.Instance.Config.PlayerConditionModuleConfig.EnergyConsumptionPerSecond }, // Default value: 0.1f
@@ -266,6 +266,23 @@ namespace GHTweaks.Patches
 				{ "m_DirtAddPlow", Mod.Instance.Config.PlayerConditionModuleConfig.DirtAddPlow }, // Default value: 0.01f
 			};
 
+#if DEBUG
+            Mod.Instance.WriteLog("PlayerConditionModule.Initialize Listing default values...");
+            foreach (var kvp in fieldsDictionary)
+            {
+                FieldInfo fi = AccessTools.Field(typeof(PlayerConditionModule), kvp.Key);
+                if (fi == null)
+                {
+                    Mod.Instance.WriteLog($" {kvp.Key}: ?");
+                    continue;
+                }
+                var fieldValue = (float)fi.GetValue(instance);
+                Mod.Instance.WriteLog($" {kvp.Key}: {fieldValue}");
+            }
+            Mod.Instance.WriteLog("PlayerConditionModule.Initialize default values listed...");
+#endif 
+
+            Type moduleType = typeof(PlayerConditionModule);
             foreach (var kvp in fieldsDictionary)
             {
                 if (kvp.Value < 0)
@@ -283,7 +300,7 @@ namespace GHTweaks.Patches
 #if DEBUG
             // Check properties
             Mod.Instance.WriteLog("PlayerConditionModule.Initialize check field values...");
-            Type moduleType = typeof(PlayerConditionModule);
+            //Type moduleType = typeof(PlayerConditionModule);
             foreach (var kvp in fieldsDictionary)
             {
                 if (kvp.Value <= 0)

@@ -29,7 +29,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(3, 0, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 14, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
