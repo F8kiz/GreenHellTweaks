@@ -4,9 +4,10 @@ using HarmonyLib;
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-
 using UnityEngine;
+#if DEBUG
+using System.Reflection;
+#endif
 
 namespace GHTweaks.Patches
 {

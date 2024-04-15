@@ -106,7 +106,6 @@
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
-    <None Include="Patches\FoodInfo.DryingLength.cs.off" />
     <Compile Include="Patches\LiquidContainer.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
@@ -116,8 +115,6 @@
     <Compile Include="Patches\PlayerConditionModule.cs" />
     <Compile Include="Patches\QuieterAnimals.cs" />
     <Compile Include="Patches\SteadyAim.cs" />
-    <None Include="Patches\PlayerConditionalModule.Energy.cs.old" />
-    <None Include="Patches\PlayerConditionModule.Stamina.cs.old" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
@@ -149,18 +146,10 @@
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />
     <Compile Include="Patches\ItemsManager.UpdateDebug.cs" />
-    <None Include="Patches\LiquidContainerInfo.Capacity.cs.old" />
     <Compile Include="Patches\MainMenu.Start.cs" />
-    <None Include="Patches\PlayerConditionModule.HP.cs.old" />
     <Compile Include="Patches\FPPController.UpdateWantedSpeed.cs" />
-    <None Include="Patches\PlayerConditionModule.Hydration.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionProteins.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionCarbo.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionFat.cs.old" />
-    <None Include="Patches\PlayerConditionModule.UpdateDirtiness.cs.old" />
     <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
     <None Include="packages.config" />
-    <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
     <Compile Include="Patches\Torch.UpdateBurning.cs" />
     <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
