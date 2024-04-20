@@ -7,11 +7,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using GHTweaks.Configuration;
 using GHTweaks.Models;
-using GHTweaks.UI;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Linq;
 using GHTweaks.Patches;
+using GHTweaks.Configuration.Core;
 
 namespace GHTweaks
 {
@@ -29,7 +27,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 14, 1, 0);
+        public Version Version { get; private set; } = new Version(2, 15, 0, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -56,11 +54,6 @@ namespace GHTweaks
         private readonly Harmony harmony;
 
 
-        private DebugForm debugForm;
-
-        private CancellationTokenSource debugTaskCancellationTokenSource;
-
-
         /// <summary>
         /// Private constructor.
         /// Provides single ton implementation.
@@ -81,18 +74,9 @@ namespace GHTweaks
 
             TryDeleteLogFiles();
             TryLoadConfig();
-            InitDebugForm();
 
             //P2PTransportLayer.OnLobbyEnterEvent += P2PTransportLayer_OnLobbyEnterEvent;
             //P2PTransportLayer.OnSessionConnectStartEvent += P2PTransportLayer_OnSessionConnectStartEvent;
-        }
-
-
-        ~Mod()
-        {
-            //P2PTransportLayer.OnLobbyEnterEvent -= P2PTransportLayer_OnLobbyEnterEvent;
-            debugForm?.Close();
-            debugTaskCancellationTokenSource?.Cancel();
         }
 
 
@@ -114,8 +98,37 @@ namespace GHTweaks
                 
                 harmony.PatchCategory(assembly, PatchCategory.Default);
 
+                // Patch everything which is categorized 
+                var propertyInfos = Config.GetType().GetProperties();
+                foreach (var info in propertyInfos) 
+                {
+                    var attribute = info.GetCustomAttribute<PatchCategoryAttribute>();
+                    if (attribute == null)
+                        continue;
+
+                    if (!(info.GetValue(Config) is IPatchConfig config))
+                    {
+                        WriteLog($"Config.{info.Name} does not implement IPatchConfig interface", LogType.Error);
+                        continue;
+                    }
+
+                    if (config.HasAtLeastOneEnabledPatch)
+                    {
+                        WriteLog($"PatchCategory.{attribute.PatchCategory}");
+                        harmony.PatchCategory(assembly, attribute.PatchCategory);
+                    }
+                }
+
                 if (Config.ConsumeKeyStrokes)
+                {
+                    WriteLog($"PatchCategory.{PatchCategory.MenuDebug}");
+                    harmony.PatchCategory(assembly, PatchCategory.MenuDebug);
+                }
+                if (Config.CheatsEnabled)
+                {
+                    WriteLog($"PatchCategory.{PatchCategory.Cheats}");
                     harmony.PatchCategory(assembly, PatchCategory.Cheats);
+                }
 
                 WriteLog("Patched methods:");
                 IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
@@ -209,8 +222,7 @@ namespace GHTweaks
                 using (StreamWriter sw = new StreamWriter(strLogFileName, true))
                     sw.WriteLine(msg);
 
-                if (debugForm != null)
-                    debugForm.AddMessage(logType, msg);
+                CJDebug.m_Log += $"[{logType}] {message}\n";
             }
             catch (Exception) { }
         }
@@ -316,40 +328,6 @@ namespace GHTweaks
             }
             return false;
         }
-
-        private void InitDebugForm()
-        {
-            if (Config == null)
-                return;
-
-            if (Config.DebugModeEnabled)
-            {
-                if (debugForm != null)
-                    return;
-
-                debugTaskCancellationTokenSource = new CancellationTokenSource();
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        debugForm = new DebugForm();
-                        debugForm.OnDebugFormClosing += (s, e) =>
-                        {
-                            debugForm = null;
-                            WriteLog($"DebugForm closed, reason: {e.CloseReason}", LogType.Debug);
-                        };
-                        System.Windows.Forms.Application.EnableVisualStyles();
-                        System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-                        System.Windows.Forms.Application.Run(debugForm);
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteLog(ex.Message, LogType.Exception);
-                    }
-                }, debugTaskCancellationTokenSource.Token);
-            }
-        }
-
 
         //private void P2PTransportLayer_OnLobbyEnterEvent(bool isOwner)
         //{

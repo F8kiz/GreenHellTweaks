@@ -1,4 +1,6 @@
-﻿namespace GHTweaks
+﻿using System.Security.Permissions;
+
+namespace GHTweaks
 {
     internal static class PatchCategory
     {
@@ -16,5 +18,37 @@
         /// Cheat patches are applied if the user has activated them in the configuration.
         /// </summary>
         public const string Cheats = "Cheats";
+
+        public const string MenuDebug = "MenuDebug";
+
+        public const string AISoundModule = "AISoundModule";
+
+        public const string Construction = "Construction";
+
+        public const string DestroyFallingObjects = "DestroyFallingObjects";
+
+        public const string FireCamp = "FireCamp";
+
+        public const string FoodInfo = "FoodInfo";
+
+        public const string InventoryBackpack = "InventroyBackpack";
+
+        public const string ItemInfo = "ItemInfo";
+
+        public const string LiquidContainer = "LiquidContainer";
+
+        public const string PlayerConditionModul = "PlayerConditionModul";
+
+        public const string Player = "Player";
+
+        public const string PlayerMovement = "PlayerMovement";
+
+        public const string PocketGrid = "PocketGrid";
+
+        public const string Skill = "Skill";
+
+        public const string TimeOfDay = "TimeOfDay";
+
+        public const string Torch = "Torch";
     }
 }

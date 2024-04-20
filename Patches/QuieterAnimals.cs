@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.AISoundModule)]
     [HarmonyPatch(typeof(AISoundModule), nameof(AISoundModule.Initialize))]
     internal class AISoundModuleInitialize
     {

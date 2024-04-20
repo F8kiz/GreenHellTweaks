@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Player)]
     [HarmonyPatch(typeof(Player), nameof(Player.StartShake))]
     internal class PlayerStartShake
     {
@@ -23,7 +23,7 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Player)]
     [HarmonyPatch(typeof(Player), "UpdateAim")]
     internal class PlayerAimPower
     {

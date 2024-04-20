@@ -2,7 +2,7 @@
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.ItemInfo)]
     [HarmonyPatch(typeof(ItemInfo), nameof(ItemInfo.m_Health), MethodType.Setter)]
     internal class ItemInfoConfigHealth
     {

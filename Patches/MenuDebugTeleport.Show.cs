@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Cheats)]
+    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
     [HarmonyPatch(typeof(MenuDebugTeleport), "OnShow")]
     internal class MenuDebugTeleportShow
     {

@@ -2,7 +2,7 @@
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Construction)]
     [HarmonyPatch(typeof(Construction), nameof(Construction.DestroyMe))]
     internal class ConstructionDestroyMe
     {

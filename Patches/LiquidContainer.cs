@@ -2,7 +2,7 @@
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.LiquidContainer)]
     [HarmonyPatch(typeof(LiquidContainer), nameof(LiquidContainer.SetupInfo))]
     internal class LiquidContainerSetupInfo
     {

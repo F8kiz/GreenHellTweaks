@@ -42,7 +42,7 @@ namespace GHTweaks.Patches
     }
 
     // Hydration consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Hydration), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleHydration : TimeBasedConsumptionBase
     {
@@ -65,7 +65,7 @@ namespace GHTweaks.Patches
     }
 
     // NutritionCarbo consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_NutritionCarbo), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleNutritionCarbo : TimeBasedConsumptionBase
     {
@@ -86,7 +86,7 @@ namespace GHTweaks.Patches
     }
 
     // NutritionFat consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_NutritionFat), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleNutritionFat : TimeBasedConsumptionBase
     {
@@ -107,7 +107,7 @@ namespace GHTweaks.Patches
     }
 
     // NutritionProteins consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_NutritionProteins), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleNutritionProteins : TimeBasedConsumptionBase
     {
@@ -128,7 +128,7 @@ namespace GHTweaks.Patches
     }
 
     // Stamina consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Stamina), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleStamina : TimeBasedConsumptionBase
     {
@@ -149,7 +149,7 @@ namespace GHTweaks.Patches
     }
 
     // Energy consumption
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.m_Energy), MethodType.Setter)]
     internal sealed class PlayerConditionalModuleEnergy : TimeBasedConsumptionBase
     {
@@ -174,7 +174,7 @@ namespace GHTweaks.Patches
     }
 
     // Player HP
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), "m_HP", MethodType.Setter)]
     internal class PlayerConditionModuleHP
     {
@@ -187,7 +187,7 @@ namespace GHTweaks.Patches
     }
 
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), nameof(PlayerConditionModule.Initialize))]
     internal class PlayerConditionModuleInitialize
     {
@@ -322,7 +322,7 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PlayerConditionModul)]
     [HarmonyPatch(typeof(PlayerConditionModule), "UpdateDirtiness")]
     internal class PlayerConditionModuleUpdateDirtiness
     {

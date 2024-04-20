@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Torch)]
     [HarmonyPatch(typeof(Torch), "UpdateBurning")]
     internal class TorchUpdateBurning
     {
