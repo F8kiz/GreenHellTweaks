@@ -75,8 +75,20 @@ namespace GHTweaks
             TryDeleteLogFiles();
             TryLoadConfig();
 
-            //P2PTransportLayer.OnLobbyEnterEvent += P2PTransportLayer_OnLobbyEnterEvent;
-            //P2PTransportLayer.OnSessionConnectStartEvent += P2PTransportLayer_OnSessionConnectStartEvent;
+            P2PTransportLayer.OnLobbyEnterEvent += (value) =>
+            {
+                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+                    RemovePatches();
+                else 
+                    ApplyPatches();
+            };
+            P2PTransportLayer.OnSessionConnectStartEvent += () =>
+            {
+                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+                    RemovePatches();
+                else
+                    ApplyPatches();
+            };
         }
 
 
@@ -143,24 +155,24 @@ namespace GHTweaks
             }
         }
 
-        //public void RemovePatches()
-        //{
-        //    try
-        //    {
-        //        if (!IsPatchesApplied)
-        //            return;
+        public void RemovePatches()
+        {
+            try
+            {
+                if (!IsPatchesApplied)
+                    return;
+                
+                WriteLog("Remove patches...");
+                harmony.UnpatchAll("de.fakiz.gh.tweaks");
+                harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
 
-        //        WriteLog("Remove patches...");
-        //        harmony.UnpatchAll("de.fakiz.gh.tweaks");
-        //        harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
-
-        //        IsPatchesApplied = false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        WriteLog(ex.ToString(), LogType.Exception);
-        //    }
-        //}
+                IsPatchesApplied = false;
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.ToString(), LogType.Exception);
+            }
+        }
 
         public void ReloadConfig()
         {
@@ -215,14 +227,14 @@ namespace GHTweaks
         {
             try
             {
+                string msg = string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message);
+                CJDebug.m_Log += $"[{logType}] {message}\n";
+
                 if (logType == LogType.Debug && !Config.DebugModeEnabled)
                     return;
-
-                string msg = string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message);
+                
                 using (StreamWriter sw = new StreamWriter(strLogFileName, true))
                     sw.WriteLine(msg);
-
-                CJDebug.m_Log += $"[{logType}] {message}\n";
             }
             catch (Exception) { }
         }
@@ -329,14 +341,5 @@ namespace GHTweaks
             return false;
         }
 
-        //private void P2PTransportLayer_OnLobbyEnterEvent(bool isOwner)
-        //{
-        //    WriteLog("Player has enter lobby.", LogType.Debug);
-        //    RemovePatches();
-        //}
-        //private void P2PTransportLayer_OnSessionConnectStartEvent()
-        //{
-        //    WriteLog("OnSessionConnectStartEvent", LogType.Debug);
-        //}
     }
 }
