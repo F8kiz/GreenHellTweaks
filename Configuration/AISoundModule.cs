@@ -16,7 +16,7 @@ namespace GHTweaks.Configuration
         [PropertyInfo(-1f)]
         public float PeccaryMaxDistance
         {
-            get => mouseMaxDistance;
+            get => peccaryMaxDistance;
             set => SetBackingField(ref peccaryMaxDistance, value);
         }
         private float peccaryMaxDistance = -1;
@@ -24,7 +24,7 @@ namespace GHTweaks.Configuration
         [PropertyInfo(-1f)]
         public float CapybaraMaxDistance
         {
-            get => mouseMaxDistance;
+            get => capybaraMaxDistance;
             set => SetBackingField(ref capybaraMaxDistance, value);
         }
         private float capybaraMaxDistance = -1;
@@ -32,10 +32,18 @@ namespace GHTweaks.Configuration
         [PropertyInfo(-1f)]
         public float TapirMaxDistance
         {
-            get => mouseMaxDistance;
+            get => tapirMaxDistance;
             set => SetBackingField(ref tapirMaxDistance, value);
         }
         private float tapirMaxDistance = -1;
+
+        [PropertyInfo(-1f)]
+        public float GiantAntEaterMaxDistance
+        {
+            get => giantAntEaterMaxDistance;
+            set => SetBackingField(ref giantAntEaterMaxDistance, value);
+        }
+        private float giantAntEaterMaxDistance = -1;
 
         /// <summary>
         /// Returns true if at least one property has not the default value.
