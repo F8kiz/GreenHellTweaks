@@ -2,7 +2,7 @@
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Player)]
     [HarmonyPatch(typeof(Player), ".ctor", MethodType.Constructor)]
     internal class PlayerConstructor
     {

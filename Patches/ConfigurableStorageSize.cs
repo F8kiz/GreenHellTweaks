@@ -13,7 +13,7 @@ namespace GHTweaks.Patches
     /// Main.GridSize:      10, 15
     /// Front.GridSize:     10, 10
     /// </summary>
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PocketGrid)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.Initialize))]
     internal class PocketGridInitialize
     {
@@ -114,7 +114,7 @@ namespace GHTweaks.Patches
     }
 
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PocketGrid)]
     [HarmonyPatch(typeof(Item), nameof(Item.Initialize))]
     internal class ItemInitialize
     {
@@ -150,7 +150,7 @@ namespace GHTweaks.Patches
     }
 
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.PocketGrid)]
     [HarmonyPatch(typeof(PocketGrid), nameof(PocketGrid.CalcRequiredCells))]
     internal class PocketGridCalcRequiredCells
     {

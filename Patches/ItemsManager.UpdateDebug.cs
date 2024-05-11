@@ -4,7 +4,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Cheats)]
+    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
     [HarmonyPatch(typeof(ItemsManager), "UpdateDebug")]
     internal class ItemsManagerUpdateDebug
     {

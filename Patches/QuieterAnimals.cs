@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.AISoundModule)]
     [HarmonyPatch(typeof(AISoundModule), nameof(AISoundModule.Initialize))]
     internal class AISoundModuleInitialize
     {
@@ -27,10 +27,11 @@ namespace GHTweaks.Patches
                 maxDistance = Mod.Instance.Config.AISoundModuleConfig.CapybaraMaxDistance;
             else if (ai.m_ID == AI.AIID.Tapir || ai.m_ID == AI.AIID.Tapir_baby)
                 maxDistance = Mod.Instance.Config.AISoundModuleConfig.TapirMaxDistance;
+            else if (ai.m_ID == AI.AIID.GiantAnteater)
+                maxDistance = Mod.Instance.Config.AISoundModuleConfig.GiantAntEaterMaxDistance;
 
             SetMaxDistance(__instance, maxDistance, ai.m_ID);
         }
-
 
         static void SetMaxDistance(AISoundModule instance, float maxDistance, AI.AIID aiID)
         {
@@ -52,6 +53,5 @@ namespace GHTweaks.Patches
             Mod.Instance.WriteLog($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.maxDistance to: {audioSource.maxDistance}", LogType.Debug);
 #endif
         }
-
     }
 }

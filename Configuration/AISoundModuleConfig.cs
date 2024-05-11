@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using GHTweaks.Configuration.Core;
+using System.Reflection;
 
 namespace GHTweaks.Configuration
 {
-    public class AISoundModuleConfig
+    public class AISoundModuleConfig : PatchConfigBase, IPatchConfig
     {
+        [PropertyInfo(-1f)]
         public float MouseMaxDistance 
         {
             get => mouseMaxDistance;
@@ -11,26 +13,42 @@ namespace GHTweaks.Configuration
         }
         private float mouseMaxDistance = -1;
 
+        [PropertyInfo(-1f)]
         public float PeccaryMaxDistance
         {
-            get => mouseMaxDistance;
+            get => peccaryMaxDistance;
             set => SetBackingField(ref peccaryMaxDistance, value);
         }
         private float peccaryMaxDistance = -1;
 
+        [PropertyInfo(-1f)]
         public float CapybaraMaxDistance
         {
-            get => mouseMaxDistance;
+            get => capybaraMaxDistance;
             set => SetBackingField(ref capybaraMaxDistance, value);
         }
         private float capybaraMaxDistance = -1;
 
+        [PropertyInfo(-1f)]
         public float TapirMaxDistance
         {
-            get => mouseMaxDistance;
+            get => tapirMaxDistance;
             set => SetBackingField(ref tapirMaxDistance, value);
         }
         private float tapirMaxDistance = -1;
+
+        [PropertyInfo(-1f)]
+        public float GiantAntEaterMaxDistance
+        {
+            get => giantAntEaterMaxDistance;
+            set => SetBackingField(ref giantAntEaterMaxDistance, value);
+        }
+        private float giantAntEaterMaxDistance = -1;
+
+        /// <summary>
+        /// Returns true if at least one property has not the default value.
+        /// </summary>
+        public bool HasAtLeastOneEnabledPatch => CheckIfAtLeastOnePropertyHasNotTheDefaultValue(this);   
 
 
         private void SetBackingField(ref float field, float value)

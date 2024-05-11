@@ -1,8 +1,10 @@
 ﻿using HarmonyLib;
 
+using System.Reflection;
+
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Player)]
     [HarmonyPatch(typeof(Player), nameof(Player.StartShake))]
     internal class PlayerStartShake
     {
@@ -21,17 +23,28 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.Player)]
     [HarmonyPatch(typeof(Player), "UpdateAim")]
     internal class PlayerAimPower
     {
-        static bool Prefix()
+        static bool Prefix(Player __instance)
         {
             if (Mod.Instance.Config.PlayerConfig.SteadyAim)
             {
-                HUDCrosshair.Get().SetAimPower(1f);
-                PlayerConditionModule.Get().m_Stamina = 100f;
-                return false;
+                FieldInfo fiAim = AccessTools.Field(typeof(Player), "m_Aim");
+                if (fiAim == null)
+                {
+                    Mod.Instance.WriteLog($"PlayerAimPower: Failed to access m_Aim field!", LogType.Error);
+                    return false;
+                }
+
+                bool aim = (bool)fiAim.GetValue(__instance);
+                if (aim)
+                {
+                    HUDCrosshair.Get().SetAimPower(1f);
+                    PlayerConditionModule.Get().m_Stamina = 100f;
+                    return false;
+                }
             }
             return true;
         }

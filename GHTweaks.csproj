@@ -93,7 +93,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AISoundModule.cs" />
+    <Compile Include="Configuration\AISoundModuleConfig.cs" />
+    <Compile Include="Configuration\BirdHouseConfig.cs" />
+    <Compile Include="Configuration\Core\IPatchConfig.cs" />
+    <Compile Include="Configuration\Core\PatchCategoryAttribute.cs" />
+    <Compile Include="Configuration\Core\PatchConfigBase.cs" />
+    <Compile Include="Configuration\Core\PropertyInfoAttribute.cs" />
     <Compile Include="Configuration\LiquidContainerConfig.cs" />
     <Compile Include="Configuration\PlayerConditionModuleConfig.cs" />
     <Compile Include="Entrypoint.cs" />
@@ -102,22 +107,22 @@
     <Compile Include="Models\GridSize.cs" />
     <Compile Include="Models\LogMessage.cs" />
     <Compile Include="PatchCategory.cs" />
-    <Compile Include="Patches\ConstructionGhostWaterSurface.CalcPosition.cs" />
+    <Compile Include="Patches\BirdHouse.cs" />
+    <Compile Include="Patches\Construction.DestroyMe.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
-    <None Include="Patches\FoodInfo.DryingLength.cs.off" />
     <Compile Include="Patches\LiquidContainer.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\MenuDebugTeleport.Show.cs" />
+    <Compile Include="Patches\PlaceEverywhere.cs" />
     <Compile Include="Patches\Player.Constructor.cs" />
     <Compile Include="Patches\PlayerConditionModule.cs" />
+    <Compile Include="Patches\PlayerMovementSpeed.cs" />
     <Compile Include="Patches\QuieterAnimals.cs" />
     <Compile Include="Patches\SteadyAim.cs" />
-    <None Include="Patches\PlayerConditionalModule.Energy.cs.old" />
-    <None Include="Patches\PlayerConditionModule.Stamina.cs.old" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
     <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
     <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
@@ -126,22 +131,12 @@
     <Compile Include="Configuration\PlayerConfig.cs" />
     <Compile Include="Configuration\PocketGridConfig.cs" />
     <Compile Include="Configuration\SkillConfig.cs" />
-    <Compile Include="UI\DebugForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\DebugForm.Designer.cs">
-      <DependentUpon>DebugForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utilities\ConstructionGhostHelper.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />
     <Compile Include="Utilities\ItemSpawner.cs" />
     <Compile Include="Mod.InputHandler.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="Patches\Construction.DestroyMe.cs" />
-    <Compile Include="Patches\ConstructionGhost.CalcPosition.cs" />
-    <Compile Include="Patches\ConstructionGhost.CanBeAttachedToSlotBelow.cs" />
-    <Compile Include="Patches\ConstructionGhost.UpdateProhibitionType.cs" />
     <Compile Include="Patches\FireCamp.UpdateFireLevel.cs" />
     <Compile Include="Patches\FoodInfo.SpoilTime.cs" />
     <Compile Include="Patches\HUDItemSlot.UpdateSlots.cs" />
@@ -149,18 +144,8 @@
     <Compile Include="Patches\ItemInfoConfig.Health.cs" />
     <Compile Include="Patches\ItemSlotStack.IsOccupied.cs" />
     <Compile Include="Patches\ItemsManager.UpdateDebug.cs" />
-    <None Include="Patches\LiquidContainerInfo.Capacity.cs.old" />
     <Compile Include="Patches\MainMenu.Start.cs" />
-    <None Include="Patches\PlayerConditionModule.HP.cs.old" />
-    <Compile Include="Patches\FPPController.UpdateWantedSpeed.cs" />
-    <None Include="Patches\PlayerConditionModule.Hydration.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionProteins.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionCarbo.cs.old" />
-    <None Include="Patches\PlayerConditionModule.NutritionFat.cs.old" />
-    <None Include="Patches\PlayerConditionModule.UpdateDirtiness.cs.old" />
-    <Compile Include="Patches\SwimController.SpeedAddMax.cs" />
     <None Include="packages.config" />
-    <None Include="Patches\Torch.CheckIfInBackpack.cs.off" />
     <Compile Include="Patches\Torch.UpdateBurning.cs" />
     <Compile Include="Patches\TOD_Time.UpdateTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -170,20 +155,11 @@
     <Compile Include="Configuration\FoodInfoConfig.cs" />
     <Compile Include="Configuration\InventoryBackpackConfig.cs" />
     <Compile Include="Configuration\ItemInfoConfig.cs" />
-    <None Include="Configuration\PlayerConditionModuleConfig.cs.old" />
     <Compile Include="Configuration\PlayerMovementConfig.cs" />
     <Compile Include="Models\SerializableVector3.cs" />
     <Compile Include="Configuration\TODTimeConfig.cs" />
     <Compile Include="Configuration\TorchConfig.cs" />
     <Compile Include="Utilities\ItemsUnlocker.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Patches\Construction.SetUpperLevel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DebugForm.resx">
-      <DependentUpon>DebugForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

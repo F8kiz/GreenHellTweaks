@@ -3,7 +3,7 @@ using HarmonyLib;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.Default)]
+    [HarmonyPatchCategory(PatchCategory.TimeOfDay)]
     [HarmonyPatch(typeof(TOD_Time), "UpdateTime")]
     internal class TOD_TimeUpdateTime
     {
