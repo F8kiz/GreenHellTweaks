@@ -117,7 +117,7 @@ namespace GHTweaks
                     var attribute = info.GetCustomAttribute<PatchCategoryAttribute>();
                     if (attribute == null)
                         continue;
-
+                    
                     if (!(info.GetValue(Config) is IPatchConfig config))
                     {
                         WriteLog($"Config.{info.Name} does not implement IPatchConfig interface", LogType.Error);

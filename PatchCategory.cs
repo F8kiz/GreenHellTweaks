@@ -23,6 +23,8 @@ namespace GHTweaks
 
         public const string AISoundModule = "AISoundModule";
 
+        public const string BirdHouse = "BirdHouse";
+
         public const string Construction = "Construction";
 
         public const string DestroyFallingObjects = "DestroyFallingObjects";

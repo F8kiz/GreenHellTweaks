@@ -93,7 +93,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AISoundModule.cs" />
+    <Compile Include="Configuration\AISoundModuleConfig.cs" />
+    <Compile Include="Configuration\BirdHouseConfig.cs" />
     <Compile Include="Configuration\Core\IPatchConfig.cs" />
     <Compile Include="Configuration\Core\PatchCategoryAttribute.cs" />
     <Compile Include="Configuration\Core\PatchConfigBase.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Models\GridSize.cs" />
     <Compile Include="Models\LogMessage.cs" />
     <Compile Include="PatchCategory.cs" />
+    <Compile Include="Patches\BirdHouse.cs" />
     <Compile Include="Patches\Construction.DestroyMe.cs" />
     <Compile Include="Patches\DeadBody.GetAction.cs" />
     <Compile Include="Patches\DestroyableFallingObject.Constructor.cs" />

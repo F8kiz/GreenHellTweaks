@@ -54,6 +54,9 @@ namespace GHTweaks.Configuration
         [PatchCategory(PatchCategory.AISoundModule)]
         public AISoundModuleConfig AISoundModuleConfig { get; set; }
 
+        [PatchCategory(PatchCategory.BirdHouse)]
+        public BirdHouseConfig BirdHouseConfig { get; set; }
+
         [XmlElement(IsNullable = true)]
         public SerializableVector3 PlayerHomePosition { get; set; }
 
@@ -88,6 +91,7 @@ namespace GHTweaks.Configuration
             SkillConfig = new SkillConfig();
             DestroyableFallingObjectConfig = new DestroyableFallingObjectConfig();
             AISoundModuleConfig = new AISoundModuleConfig();
+            BirdHouseConfig = new BirdHouseConfig();
             ConsumeKeyStrokes = true;
             KeyBindings = new List<KeyBinding>();
         }
