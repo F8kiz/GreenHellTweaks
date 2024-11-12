@@ -9,9 +9,10 @@ namespace GHTweaks
     {
         public void OnUpdate()
         {
-            if (Input.GetKeyUp(KeyCode.Mouse2))
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyUp(KeyCode.Mouse2))
             {
                 Config.ConstructionConfig.CanBeAttachedToSlotBelow = !instance.Config.ConstructionConfig.CanBeAttachedToSlotBelow;
+                PrintMessage($"Change CanBeAttachedToSlotBelow: {Config.ConstructionConfig.CanBeAttachedToSlotBelow}");
                 return;
             }
 

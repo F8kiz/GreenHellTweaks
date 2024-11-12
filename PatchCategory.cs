@@ -19,7 +19,7 @@ namespace GHTweaks
         /// </summary>
         public const string Cheats = "Cheats";
 
-        public const string MenuDebug = "MenuDebug";
+        public const string GreenHellGameUpdate = "GreenHellGameUpdate";
 
         public const string AISoundModule = "AISoundModule";
 

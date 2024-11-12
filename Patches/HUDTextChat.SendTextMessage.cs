@@ -53,6 +53,14 @@ namespace GHTweaks.Patches
                     Cheats.m_InstantBuild = !Cheats.m_InstantBuild;
                     Mod.Instance.PrintMessage($"InstantBuild {Cheats.m_InstantBuild.ToKnownState()}", LogType.Info);
                     return true;
+                case "Toggle PlaceEverywhere":
+                    Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled = !Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled;
+                    Mod.Instance.PrintMessage($"PlaceEverywhere {Mod.Instance.Config.ConstructionConfig.PlaceEveryWhereEnabled.ToKnownState()}", LogType.Info);
+                    return true;
+                case "Toggle DestroyConstructionWithoutItems":
+                    Mod.Instance.Config.ConstructionConfig.DestroyConstructionWithoutItems = !Mod.Instance.Config.ConstructionConfig.DestroyConstructionWithoutItems;
+                    Mod.Instance.PrintMessage($"DestroyConstructionWithoutItems {Mod.Instance.Config.ConstructionConfig.DestroyConstructionWithoutItems.ToKnownState()}", LogType.Info);
+                    return true;
                 case "reload config":
                     Mod.Instance.ReloadConfig();
                     return true;

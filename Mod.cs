@@ -4,7 +4,6 @@ using System.Reflection;
 using HarmonyLib;
 using System.Xml.Serialization;
 using UnityEngine;
-using System.Collections.Generic;
 using GHTweaks.Configuration;
 using GHTweaks.Models;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 15, 0, 0);
+        public Version Version { get; private set; } = new Version(2, 15, 2, 0);
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -133,8 +132,8 @@ namespace GHTweaks
 
                 if (Config.ConsumeKeyStrokes)
                 {
-                    WriteLog($"PatchCategory.{PatchCategory.MenuDebug}");
-                    harmony.PatchCategory(assembly, PatchCategory.MenuDebug);
+                    WriteLog($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
+                    harmony.PatchCategory(assembly, PatchCategory.GreenHellGameUpdate);
                 }
                 if (Config.CheatsEnabled)
                 {
@@ -142,10 +141,10 @@ namespace GHTweaks
                     harmony.PatchCategory(assembly, PatchCategory.Cheats);
                 }
 
-                WriteLog("Patched methods:");
-                IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
-                foreach (MethodBase mb in methods)
-                    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
+                //WriteLog("Patched methods:");
+                //IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
+                //foreach (MethodBase mb in methods)
+                //    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
 
                 IsPatchesApplied = true;
             }
@@ -319,7 +318,7 @@ namespace GHTweaks
         }
 
         /// <summary>
-        /// Delete the GHTweaks.log and Harmony.log from the last session.
+        /// Delete the GHTweaks.log, Harmony.log and doorstop_*.log from the last session.
         /// </summary>
         /// <returns>True if no exception occurred, otherwise false.</returns>
         private bool TryDeleteLogFiles()
@@ -331,6 +330,22 @@ namespace GHTweaks
 
                 if (File.Exists(strHarmonyLogFileName))
                     File.Delete(strHarmonyLogFileName);
+
+                var startTime = DateTime.Now.Subtract(new TimeSpan(0,1,0));
+                var currentDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                var parentDirectory = currentDirectory.Parent;
+                var doorstopLogFiles = parentDirectory.GetFiles("doorstop_*.log", SearchOption.TopDirectoryOnly);
+                foreach(var logFile in doorstopLogFiles)
+                {
+                    if (logFile.LastWriteTime < startTime)
+                    {
+                        try
+                        {
+                            logFile.Delete();
+                        }
+                        catch (Exception) { }
+                    }
+                }
 
                 return true;
             }

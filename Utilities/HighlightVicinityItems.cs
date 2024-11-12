@@ -1,5 +1,8 @@
-﻿using System;
+﻿using GHTweaks.Models;
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using UnityEngine;
@@ -21,10 +24,8 @@ namespace GHTweaks.Utilities
         private static bool isEnabled;
 
         private static readonly float radius = 20f;
-        private static readonly HashSet<Trigger> highlightedItems = new HashSet<Trigger>();
+        private static readonly List<VicinityItem> highlightedItems = new List<VicinityItem>();
         
-
-        public static bool ContainsTrigger(Trigger trigger) => highlightedItems.Contains(trigger);
 
         public static void OnUpdate()
         {
@@ -44,8 +45,7 @@ namespace GHTweaks.Utilities
                 Item item = trigger as Item;
                 if (item)
                 {
-                    // Don't highlight trees
-                    if (item.m_IsTree)
+                    if (item.m_IsTree || item.m_InStorage)
                         continue;
 
                     // Don't highlight useless plants
@@ -78,8 +78,8 @@ namespace GHTweaks.Utilities
 
                 if (isInRange)
                 {
-                    if (!highlightedItems.Contains(trigger))
-                        highlightedItems.Add(trigger);
+                    if (!ContainsTrigger(trigger))
+                        highlightedItems.Add(new VicinityItem(trigger));
                     
                     if (trigger.m_ForcedLayer != trigger.m_OutlineLayer)
                     {
@@ -92,11 +92,9 @@ namespace GHTweaks.Utilities
                         }
                     }
                 }
-                else if (highlightedItems.Contains(trigger))
+                else if (ContainsTrigger(trigger))
                 {
-                    highlightedItems.Remove(trigger);
-                    trigger.m_ForcedLayer = trigger.m_DefaultLayer;
-
+                    RemoveTrigger(trigger);
                     if (item)
                     {
                         try
@@ -114,23 +112,41 @@ namespace GHTweaks.Utilities
             }
 
             // Remove destroyed items from HashSet
-            highlightedItems.RemoveWhere((trigger) => !trigger);
+            highlightedItems.Where(x => !x.Trigger).ToList().ForEach(x => highlightedItems.Remove(x));
+        }
+
+
+        private static bool ContainsTrigger(Trigger trigger) => highlightedItems.FirstOrDefault(x => x.Trigger == trigger) != null;
+
+        private static void RemoveTrigger(Trigger trigger)
+        {
+            var vi = highlightedItems.FirstOrDefault(x => x.Trigger == trigger);
+            RemoveVicinityItem(vi);
+        }
+
+        private static void RemoveVicinityItem(VicinityItem trigger)
+        {
+            if (trigger == null)
+                return;
+
+            trigger.Trigger.m_ForcedLayer = trigger.ForcedLayer;
+            highlightedItems.Remove(trigger);
         }
 
 
         private static void ClearHighlights()
         {
-            Trigger[] items = new Trigger[highlightedItems.Count];
+            VicinityItem[] items = new VicinityItem[highlightedItems.Count];
             highlightedItems.CopyTo(items);
             highlightedItems.Clear();
 
             var outlineCamera = CameraManager.Get();
             for (int i = 0; i < items.Length; i++)
             {
-                if (items[i])
+                if (items[i].Trigger)
                 {
-                    items[i].m_ForcedLayer = items[i].m_DefaultLayer;
-                    if (items[i] is Item item)
+                    items[i].Trigger.m_ForcedLayer = items[i].ForcedLayer;
+                    if (items[i].Trigger is Item item)
                     {
                         item.EnableCollisionWithPlayer();
                         outlineCamera?.OutlineCameraToggle(false, item);

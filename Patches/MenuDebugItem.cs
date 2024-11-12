@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 
 namespace GHTweaks.Patches
 {
-    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
+    [HarmonyPatchCategory(PatchCategory.GreenHellGameUpdate)]
     [HarmonyPatch(typeof(MenuDebugItem), "OnShow")]
     internal class MenuDebugItemOnShow
     {
@@ -28,7 +28,7 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
+    [HarmonyPatchCategory(PatchCategory.GreenHellGameUpdate)]
     [HarmonyPatch(typeof(MenuDebugItem), "OnHide")]
     internal class MenuDebugOnHide
     {
@@ -44,7 +44,7 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
+    [HarmonyPatchCategory(PatchCategory.GreenHellGameUpdate)]
     [HarmonyPatch(typeof(MenuDebugItem), "Setup")]
     internal class MenuDebugSetup
     {
@@ -72,7 +72,7 @@ namespace GHTweaks.Patches
         }
     }
 
-    [HarmonyPatchCategory(PatchCategory.MenuDebug)]
+    [HarmonyPatchCategory(PatchCategory.GreenHellGameUpdate)]
     [HarmonyPatch(typeof(MenuDebugItem), "Update")]
     internal class MenuDebugUpdate
     {
