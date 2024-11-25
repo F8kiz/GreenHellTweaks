@@ -1,6 +1,4 @@
-﻿using System.Security.Permissions;
-
-namespace GHTweaks
+﻿namespace GHTweaks
 {
     internal static class PatchCategory
     {
