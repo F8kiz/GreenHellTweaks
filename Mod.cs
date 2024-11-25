@@ -72,7 +72,14 @@ namespace GHTweaks
             harmony = new Harmony("de.fakiz.gh.tweaks");
 
             TryDeleteLogFiles();
-            TryLoadConfig();
+            if (!TryLoadConfig() && Config == null)
+            {
+                WriteLog($"Initialize new Config...", LogType.Info);
+                Config = new Config();
+
+                if (!File.Exists(strModConfigFileName) && TrySaveConfig())
+                    WriteLog("Created new file '{strModConfigFileName}.");
+            }
 
             P2PTransportLayer.OnLobbyEnterEvent += (value) =>
             {
@@ -307,8 +314,7 @@ namespace GHTweaks
 
             if (cfg == null)
             {
-                Config = new Config();
-                WriteLog("Failed to load config.", LogType.Error);
+                WriteLog($"Failed to load '{strModConfigFileName}' file!", LogType.Error);
                 return false;
             }
 
@@ -326,10 +332,16 @@ namespace GHTweaks
             try
             {
                 if (File.Exists(strLogFileName))
+                {
+                    WriteLog($"Delete '{Path.GetFileName(strLogFileName)}' file.", LogType.Info);
                     File.Delete(strLogFileName);
+                }
 
                 if (File.Exists(strHarmonyLogFileName))
+                {
+                    WriteLog($"Delete '{Path.GetFileName(strHarmonyLogFileName)}' file.", LogType.Info);
                     File.Delete(strHarmonyLogFileName);
+                }
 
                 var startTime = DateTime.Now.Subtract(new TimeSpan(0,1,0));
                 var currentDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -341,6 +353,7 @@ namespace GHTweaks
                     {
                         try
                         {
+                            WriteLog($"Delete '{logFile.Name}' file.", LogType.Info);
                             logFile.Delete();
                         }
                         catch (Exception) { }
