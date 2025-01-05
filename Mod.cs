@@ -26,7 +26,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 15, 2, 0);
+        public Version Version { get; private set; }
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -59,7 +59,11 @@ namespace GHTweaks
         /// </summary>
         private Mod()
         {
-            string rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assemblyLocation);
+            Version = new Version(versionInfo.FileVersion);
+
+            string rootDir = Path.GetDirectoryName(assemblyLocation);
             strModConfigFileName = Path.Combine(rootDir, "GHTweaksConfig.xml");
             strLogFileName = Path.Combine(rootDir, "GHTweaks.log");
             strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
@@ -78,7 +82,7 @@ namespace GHTweaks
                 Config = new Config();
 
                 if (!File.Exists(strModConfigFileName) && TrySaveConfig())
-                    WriteLog("Created new file '{strModConfigFileName}.");
+                    WriteLog($"Created new file '{strModConfigFileName}.");
             }
 
             P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
@@ -292,7 +296,7 @@ namespace GHTweaks
             {
                 if (!File.Exists(strModConfigFileName))
                 {
-                    WriteLog($"Found no config file, FilePath: {strLogFileName}", LogType.Error);
+                    WriteLog($"Found no config file, FilePath: {strModConfigFileName}", LogType.Error);
                     return false;
                 }
 
