@@ -81,20 +81,8 @@ namespace GHTweaks
                     WriteLog("Created new file '{strModConfigFileName}.");
             }
 
-            P2PTransportLayer.OnLobbyEnterEvent += (value) =>
-            {
-                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                    RemovePatches();
-                else 
-                    ApplyPatches();
-            };
-            P2PTransportLayer.OnSessionConnectStartEvent += () =>
-            {
-                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                    RemovePatches();
-                else
-                    ApplyPatches();
-            };
+            P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
+            P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
         }
 
 
@@ -246,6 +234,14 @@ namespace GHTweaks
         }
 
 
+
+        private void P2PTransportLayerEventHandler()
+        {
+            if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+                RemovePatches();
+            else
+                ApplyPatches();
+        }
 
         /// <summary>
         /// Saves the current player location inside the configuration file.
