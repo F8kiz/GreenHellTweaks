@@ -5,7 +5,7 @@ using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-#if DEBUG
+#if !DEBUG
 using System.Reflection;
 #endif
 
@@ -267,7 +267,7 @@ namespace GHTweaks.Patches
 				{ "m_DirtAddPlow", Mod.Instance.Config.PlayerConditionModuleConfig.DirtAddPlow }, // Default value: 0.01f
 			};
 
-#if DEBUG
+#if !DEBUG
             Mod.Instance.WriteLog("PlayerConditionModule.Initialize Listing default values...");
             foreach (var kvp in fieldsDictionary)
             {
@@ -298,7 +298,7 @@ namespace GHTweaks.Patches
                 field(instance) = kvp.Value;
             }
 
-#if DEBUG
+#if !DEBUG
             // Check properties
             Mod.Instance.WriteLog("PlayerConditionModule.Initialize check field values...");
             //Type moduleType = typeof(PlayerConditionModule);
