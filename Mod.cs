@@ -107,8 +107,11 @@ namespace GHTweaks
                     harmony.PatchCategory(assembly, PatchCategory.Required);
                 
                 harmony.PatchCategory(assembly, PatchCategory.Default);
+#if DEBUG
+                harmony.PatchCategory(assembly, PatchCategory.AIManager);
+#endif
 
-                // Patch everything which is categorized 
+                // Patch everything that is categorized 
                 var propertyInfos = Config.GetType().GetProperties();
                 foreach (var info in propertyInfos) 
                 {
@@ -129,6 +132,11 @@ namespace GHTweaks
                     }
                 }
 
+                if (Config.HasAtLeastOneChangedAIParamConfig())
+                {
+                    WriteLog($"PatchCategory.{PatchCategory.AIManager}");
+                    harmony.PatchCategory(assembly, PatchCategory.AIManager);
+                }
                 if (Config.ConsumeKeyStrokes)
                 {
                     WriteLog($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
@@ -277,7 +285,7 @@ namespace GHTweaks
 
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 WriteLog($"Failed to save config file! Exception: {ex.Message}", LogType.Exception);
             }

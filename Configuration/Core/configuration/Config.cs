@@ -1,6 +1,4 @@
-﻿using AIs;
-
-using GHTweaks.Configuration.Core;
+﻿using GHTweaks.Configuration.Core;
 using GHTweaks.Models;
 
 using System.Collections.Generic;
@@ -53,10 +51,6 @@ namespace GHTweaks.Configuration
         [PatchCategory(PatchCategory.DestroyFallingObjects)]
         public DestroyableFallingObjectConfig DestroyableFallingObjectConfig { get; set; }
 
-        //[PatchCategory(PatchCategory.AIManager)]
-        [XmlArray(nameof(AIParameterConfigs)), XmlArrayItem(typeof(AIParam))]
-        public List<AIParam> AIParameterConfigs { get; set; }
-
         [PatchCategory(PatchCategory.AISoundModule)]
         public AISoundModuleConfig AISoundModuleConfig { get; set; }
 
@@ -96,27 +90,10 @@ namespace GHTweaks.Configuration
             TorchConfig = new TorchConfig();
             SkillConfig = new SkillConfig();
             DestroyableFallingObjectConfig = new DestroyableFallingObjectConfig();
-            AIParameterConfigs = new List<AIParam>();
             AISoundModuleConfig = new AISoundModuleConfig();
             BirdHouseConfig = new BirdHouseConfig();
             ConsumeKeyStrokes = true;
             KeyBindings = new List<KeyBinding>();
-
-            AIParameterConfigs.AddRange(AIParam.DefaultAIParamValues);
-        }
-
-        public bool HasAtLeastOneChangedAIParamConfig()
-        {
-            if ((AIParameterConfigs?.Count ?? 0) < 1)
-                return false;
-
-            foreach(AIParam aiParam in AIParameterConfigs)
-            {
-                if (aiParam.HasAtLeastOneEnabledPatch)
-                    return true;
-            }
-
-            return false;
         }
     }
 }

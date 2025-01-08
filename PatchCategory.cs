@@ -19,6 +19,8 @@
 
         public const string GreenHellGameUpdate = "GreenHellGameUpdate";
 
+        public const string AIManager = "AIManager";
+
         public const string AISoundModule = "AISoundModule";
 
         public const string BirdHouse = "BirdHouse";

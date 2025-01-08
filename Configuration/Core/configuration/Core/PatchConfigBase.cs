@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace GHTweaks.Configuration.Core
 {
@@ -23,25 +21,6 @@ namespace GHTweaks.Configuration.Core
                     return true;
             }
             return false;
-        }
-
-        protected void SetBackingField<T>(ref T field, T value)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return;
-
-            field = value;
-        }
-
-        protected void SetBackingField(ref float field, float value, float minValue, float maxValue)
-        {
-            if (field == value)
-                return;
-
-            if (value < minValue || value > maxValue)
-                return;
-
-            field = value;
         }
     }
 }
