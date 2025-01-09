@@ -1,79 +1,134 @@
 ﻿using AIs;
 
+using GHTweaks;
+using GHTweaks.Configuration.Core;
+
 using HarmonyLib;
 
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace GHTweaks.Patches
 {
-	[HarmonyPatchCategory(PatchCategory.AIManager)]
-	[HarmonyPatch(typeof(AIManager), "InitializeAIParams")]
-	internal class AIManagerInitializeParams
+    [HarmonyPatchCategory(PatchCategory.AIManager)]
+    [HarmonyPatch(typeof(AIManager), "InitializeAIParams")]
+    internal class AIManagerInitializeParams
     {
-		static void Postfix(AIManager __instance) 
-		{
-			var csv = new List<string>
+        static void Postfix(AIManager __instance)
+        {
+            foreach (var kvp in __instance.m_AIParamsMap)
             {
-                GetCsvHeader()
-            };
+                //csv.Add(ConvertAIParamsToCSVLine(kvp.Key, kvp.Value));
+                var id = (AI.AIID)kvp.Key;
+                var cfg = Mod.Instance.Config.AIParameterConfigs.FirstOrDefault(x => x.ID == id);
+                if (cfg == null)
+                {
+                    Mod.Instance.WriteLog($"Found no config for {id}");
+                    continue;
+                }
 
-			foreach(var kvp in __instance.m_AIParamsMap)
-				csv.Add(ConvertAIParamsToCSVLine(kvp.Key, kvp.Value));
+                if (cfg.Health > 0)
+                {
+                    kvp.Value.m_Health = cfg.Health;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_Health)}, value: {kvp.Value.m_Health}");
+                }
 
-			System.IO.File.WriteAllText(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AIParams.csv"), string.Join(Environment.NewLine, csv));
-		}
+                if (cfg.HealthRegeneration > 0)
+                {
+                    kvp.Value.m_HealthRegeneration = cfg.HealthRegeneration;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HealthRegeneration)}, value: {kvp.Value.m_HealthRegeneration}");
+                }
 
-		static string GetCsvHeader()
-		{
-			var observedProperties = new string[]
-			{
-				"AI_ID",
-				"Health",
-				"HealthRegeneration",
-				"AttackRange",
-				"Damage",
-				"JumpAttackRange",
-				"JumpBackRange",
-				"PoisonLevel",
-				"MinBitingDuration",
-				"MaxBitingDuration",
-				"EnemySenseRange",
-				"SightAngle",
-				"SightRange",
-				"HearingSneakRange",
-				"HearingWalkRange",
-				"HearingRunRange",
-				"HearingSwimRange",
-				"HearingActionRange"
-			};
-			return $"\"{string.Join("\";\"", observedProperties)}\"";
-		}
+                if (cfg.AttackRange > 0)
+                {
+                    kvp.Value.m_AttackRange = cfg.AttackRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_AttackRange)}, value: {kvp.Value.m_AttackRange}");
+                }
 
-		static string ConvertAIParamsToCSVLine(int key, AIParams aiParams)
-		{
-			var observedProperties = new string[]
-			{
-				((AI.AIID)key).ToString(),
-				aiParams.m_Health.ToString(),
-				aiParams.m_HealthRegeneration.ToString(),
-				aiParams.m_AttackRange.ToString(),
-				aiParams.m_Damage.ToString(),
-				aiParams.m_JumpAttackRange.ToString(),
-				aiParams.m_JumpBackRange.ToString(),
-				aiParams.m_PoisonLevel.ToString(),
-				aiParams.m_MinBitingDuration.ToString(),
-				aiParams.m_MaxBitingDuration.ToString(),
-				aiParams.m_EnemySenseRange.ToString(),
-				aiParams.m_SightAngle.ToString(),
-				aiParams.m_SightRange.ToString(),
-				aiParams.m_HearingSneakRange.ToString(),
-				aiParams.m_HearingWalkRange.ToString(),
-				aiParams.m_HearingRunRange.ToString(),
-				aiParams.m_HearingSwimRange.ToString(),
-				aiParams.m_HearingActionRange.ToString()
-			};
-			return $"\"{string.Join("\";\"", observedProperties)}\"";
-		}
-	}
+                if (cfg.Damage > 0)
+                {
+                    kvp.Value.m_Damage = cfg.Damage;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_Damage)}, value: {kvp.Value.m_Damage}");
+                }
+
+                if (cfg.JumpAttackRange > 0)
+                {
+                    kvp.Value.m_JumpAttackRange = cfg.JumpAttackRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_JumpAttackRange)}, value: {kvp.Value.m_JumpAttackRange}");
+                }
+
+                if (cfg.JumpBackRange > 0)
+                {
+                    kvp.Value.m_JumpBackRange = cfg.JumpBackRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_JumpBackRange)}, value: {kvp.Value.m_JumpBackRange}");
+                }
+
+                if (cfg.PoisonLevel > 0)
+                {
+                    kvp.Value.m_PoisonLevel = (int)cfg.PoisonLevel;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_PoisonLevel)}, value: {kvp.Value.m_PoisonLevel}");
+                }
+
+                if (cfg.MinBitingDuration > 0)
+                {
+                    kvp.Value.m_MinBitingDuration = cfg.MinBitingDuration;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_MinBitingDuration)}, value: {kvp.Value.m_MinBitingDuration}");
+                }
+
+                if (cfg.MaxBitingDuration > 0)
+                {
+                    kvp.Value.m_MaxBitingDuration = cfg.MaxBitingDuration;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_MaxBitingDuration)}, value: {kvp.Value.m_MaxBitingDuration}");
+                }
+
+                if (cfg.EnemySenseRange > 0)
+                {
+                    kvp.Value.m_EnemySenseRange = cfg.EnemySenseRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_EnemySenseRange)}, value: {kvp.Value.m_EnemySenseRange}");
+                }
+
+                if (cfg.SightAngle > 0)
+                {
+                    kvp.Value.m_SightAngle = cfg.SightAngle;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_SightAngle)}, value: {kvp.Value.m_SightAngle}");
+                }
+
+                if (cfg.SightRange > 0)
+                {
+                    kvp.Value.m_SightRange = cfg.SightRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_SightRange)}, value: {kvp.Value.m_SightRange}");
+                }
+
+                if (cfg.HearingSneakRange > 0)
+                {
+                    kvp.Value.m_HearingSneakRange = cfg.HearingSneakRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HearingSneakRange)}, value: {kvp.Value.m_HearingSneakRange}");
+                }
+
+                if (cfg.HearingWalkRange > 0)
+                {
+                    kvp.Value.m_HearingWalkRange = cfg.HearingWalkRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HearingWalkRange)}, value: {kvp.Value.m_HearingWalkRange}");
+                }
+
+                if (cfg.HearingRunRange > 0)
+                {
+                    kvp.Value.m_HearingRunRange = cfg.HearingRunRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HearingRunRange)}, value: {kvp.Value.m_HearingRunRange}");
+                }
+
+                if (cfg.HearingSwimRange > 0)
+                {
+                    kvp.Value.m_HearingSwimRange = cfg.HearingSwimRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HearingSwimRange)}, value: {kvp.Value.m_HearingSwimRange}");
+                }
+
+                if (cfg.HearingActionRange > 0)
+                {
+                    kvp.Value.m_HearingActionRange = cfg.HearingActionRange;
+                    Mod.Instance.WriteLog($"Set {id}.{nameof(kvp.Value.m_HearingActionRange)}, value: {kvp.Value.m_HearingActionRange}");
+                }
+            }
+        }
+    }
 }

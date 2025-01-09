@@ -8,14 +8,25 @@ namespace GHTweaks.Configuration.Core
 
         public Type PropertyType { get; set; }
 
+        public string PropertyName { get; set; }
+
+
 
         public PropertyInfoAttribute() { }
 
-        public PropertyInfoAttribute(object isDisabledIfValueIs) : this(isDisabledIfValueIs.GetType(), isDisabledIfValueIs) { }
+        public PropertyInfoAttribute(string propertyName) 
+            : this(default, propertyName, default) { }
 
-        public PropertyInfoAttribute(Type propertyType, object isDisabledIfValueIs) 
+        public PropertyInfoAttribute(object isDisabledIfValueIs) 
+            : this(isDisabledIfValueIs.GetType(), "", isDisabledIfValueIs) { }
+
+        public PropertyInfoAttribute(string propertyName, object isDisabledIfValueIs) 
+            : this(isDisabledIfValueIs.GetType(), propertyName, isDisabledIfValueIs) { }
+
+        public PropertyInfoAttribute(Type propertyType, string propertyName, object isDisabledIfValueIs) 
         {
             PropertyType = propertyType;
+            PropertyName = propertyName;
             IsDisabledIfValue = isDisabledIfValueIs;
         }
     }

@@ -10,54 +10,71 @@ namespace GHTweaks.Configuration.Core
     {
         public AI.AIID ID { get; set; } = AI.AIID.None;
 
+        [PropertyInfo("m_Health")]
         [DefaultValue(0)]
         public float Health { get; set; } = 0;
 
+        [PropertyInfo("m_HealthRegeneration")]
         [DefaultValue(0)]
         public float HealthRegeneration { get; set; } = 0;
 
+        [PropertyInfo("m_AttackRange")]
         [DefaultValue(0)]
         public float AttackRange { get; set; } = 0;
 
+        [PropertyInfo("m_Damage")]
         [DefaultValue(0)]
         public float Damage { get; set; } = 0;
 
+        [PropertyInfo("m_JumpAttackRange")]
         [DefaultValue(0)]
         public float JumpAttackRange { get; set; } = 0;
 
+        [PropertyInfo("m_JumpBackRange")]
         [DefaultValue(0)]
         public float JumpBackRange { get; set; } = 0;
 
+        [PropertyInfo("m_PoisonLevel")]
         [DefaultValue(0)]
         public float PoisonLevel { get; set; } = 0;
 
+        [PropertyInfo("m_MinBitingDuration")]
         [DefaultValue(0)]
         public float MinBitingDuration { get; set; } = 0;
 
+        [PropertyInfo("m_MaxBitingDuration")]
         [DefaultValue(0)]
         public float MaxBitingDuration { get; set; } = 0;
 
+        [PropertyInfo("m_EnemySenseRange")]
         [DefaultValue(0)]
         public float EnemySenseRange { get; set; } = 0;
 
+        [PropertyInfo("m_SightAngle")]
         [DefaultValue(0)]
         public float SightAngle { get; set; } = 0;
 
+        [PropertyInfo("m_SightRange")]
         [DefaultValue(0)]
         public float SightRange { get; set; } = 0;
 
+        [PropertyInfo("m_HearingSneakRange")]
         [DefaultValue(0)]
         public float HearingSneakRange { get; set; } = 0;
 
+        [PropertyInfo("m_HearingWalkRange")]
         [DefaultValue(0)]
         public float HearingWalkRange { get; set; } = 0;
 
+        [PropertyInfo("m_HearingRunRange")]
         [DefaultValue(0)]
         public float HearingRunRange { get; set; } = 0;
 
+        [PropertyInfo("m_HearingSwimRange")]
         [DefaultValue(0)]
         public float HearingSwimRange { get; set; } = 0;
 
+        [PropertyInfo("m_HearingActionRange")]
         [DefaultValue(0)]
         public float HearingActionRange { get; set; } = 0;
 
@@ -69,6 +86,10 @@ namespace GHTweaks.Configuration.Core
                 var aiParam = DefaultAIParamValues.FirstOrDefault(x => x.ID == ID);
                 if (aiParam == null)
                     return false;
+
+#if DEBUG
+                return true;
+#endif
 
                 foreach (var info in GetType().GetProperties())
                 {
