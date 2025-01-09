@@ -9,7 +9,7 @@ namespace GHTweaks.Configuration
         public float MouseMaxDistance 
         {
             get => mouseMaxDistance;
-            set => SetBackingField(ref mouseMaxDistance, value, 0, 100);
+            set => SetBackingField(ref mouseMaxDistance, value);
         }
         private float mouseMaxDistance = -1;
 
@@ -17,7 +17,7 @@ namespace GHTweaks.Configuration
         public float PeccaryMaxDistance
         {
             get => peccaryMaxDistance;
-            set => SetBackingField(ref peccaryMaxDistance, value, 0, 100);
+            set => SetBackingField(ref peccaryMaxDistance, value);
         }
         private float peccaryMaxDistance = -1;
 
@@ -25,7 +25,7 @@ namespace GHTweaks.Configuration
         public float CapybaraMaxDistance
         {
             get => capybaraMaxDistance;
-            set => SetBackingField(ref capybaraMaxDistance, value, 0, 100);
+            set => SetBackingField(ref capybaraMaxDistance, value);
         }
         private float capybaraMaxDistance = -1;
 
@@ -33,7 +33,7 @@ namespace GHTweaks.Configuration
         public float TapirMaxDistance
         {
             get => tapirMaxDistance;
-            set => SetBackingField(ref tapirMaxDistance, value, 0, 100);
+            set => SetBackingField(ref tapirMaxDistance, value);
         }
         private float tapirMaxDistance = -1;
 
@@ -41,7 +41,7 @@ namespace GHTweaks.Configuration
         public float GiantAntEaterMaxDistance
         {
             get => giantAntEaterMaxDistance;
-            set => SetBackingField(ref giantAntEaterMaxDistance, value, 0 , 100);
+            set => SetBackingField(ref giantAntEaterMaxDistance, value);
         }
         private float giantAntEaterMaxDistance = -1;
 
@@ -49,5 +49,12 @@ namespace GHTweaks.Configuration
         /// Returns true if at least one property has not the default value.
         /// </summary>
         public bool HasAtLeastOneEnabledPatch => CheckIfAtLeastOnePropertyHasNotTheDefaultValue(this);   
+
+
+        private void SetBackingField(ref float field, float value)
+        {
+            if (value >= 0 && value <= 100)
+                field = value;
+        }
     }
 }

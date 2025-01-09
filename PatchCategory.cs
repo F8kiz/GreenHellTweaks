@@ -1,6 +1,4 @@
-﻿using System.Security.Permissions;
-
-namespace GHTweaks
+﻿namespace GHTweaks
 {
     internal static class PatchCategory
     {
@@ -19,7 +17,9 @@ namespace GHTweaks
         /// </summary>
         public const string Cheats = "Cheats";
 
-        public const string MenuDebug = "MenuDebug";
+        public const string GreenHellGameUpdate = "GreenHellGameUpdate";
+
+        public const string AIManager = "AIManager";
 
         public const string AISoundModule = "AISoundModule";
 

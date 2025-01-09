@@ -37,19 +37,16 @@ namespace GHTweaks.Configuration
         /// <summary>
         /// Default value 100f
         /// </summary>
-        [PropertyInfo(-1f)]
         public float ClayBidonCapacity { get; set; } = -1;
 
         /// <summary>
         /// Default value 30f
         /// </summary>
-        [PropertyInfo(-1f)]
         public float ClayBowlBigCapacity { get; set; } = -1;
 
         /// <summary>
         /// Default value 10f
         /// </summary>
-        [PropertyInfo(-1f)]
         public float ClayBowlSmallCapacity { get; set; } = -1;
 
 

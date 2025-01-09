@@ -4,7 +4,6 @@ using System.Reflection;
 using HarmonyLib;
 using System.Xml.Serialization;
 using UnityEngine;
-using System.Collections.Generic;
 using GHTweaks.Configuration;
 using GHTweaks.Models;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace GHTweaks
         /// <summary>
         /// Get the GHTweaks mod version.
         /// </summary>
-        public Version Version { get; private set; } = new Version(2, 15, 0, 0);
+        public Version Version { get; private set; }
 
         /// <summary>
         /// Get the GHTweaks mod config.
@@ -60,7 +59,11 @@ namespace GHTweaks
         /// </summary>
         private Mod()
         {
-            string rootDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assemblyLocation);
+            Version = new Version(versionInfo.FileVersion);
+
+            string rootDir = Path.GetDirectoryName(assemblyLocation);
             strModConfigFileName = Path.Combine(rootDir, "GHTweaksConfig.xml");
             strLogFileName = Path.Combine(rootDir, "GHTweaks.log");
             strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
@@ -73,22 +76,17 @@ namespace GHTweaks
             harmony = new Harmony("de.fakiz.gh.tweaks");
 
             TryDeleteLogFiles();
-            TryLoadConfig();
+            if (!TryLoadConfig() && Config == null)
+            {
+                WriteLog($"Initialize new Config...", LogType.Info);
+                Config = new Config();
 
-            P2PTransportLayer.OnLobbyEnterEvent += (value) =>
-            {
-                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                    RemovePatches();
-                else 
-                    ApplyPatches();
-            };
-            P2PTransportLayer.OnSessionConnectStartEvent += () =>
-            {
-                if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                    RemovePatches();
-                else
-                    ApplyPatches();
-            };
+                if (!File.Exists(strModConfigFileName) && TrySaveConfig())
+                    WriteLog($"Created new file '{strModConfigFileName}.");
+            }
+
+            P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
+            P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
         }
 
 
@@ -109,8 +107,11 @@ namespace GHTweaks
                     harmony.PatchCategory(assembly, PatchCategory.Required);
                 
                 harmony.PatchCategory(assembly, PatchCategory.Default);
+#if DEBUG
+                harmony.PatchCategory(assembly, PatchCategory.AIManager);
+#endif
 
-                // Patch everything which is categorized 
+                // Patch everything that is categorized 
                 var propertyInfos = Config.GetType().GetProperties();
                 foreach (var info in propertyInfos) 
                 {
@@ -131,10 +132,15 @@ namespace GHTweaks
                     }
                 }
 
+                if (Config.HasAtLeastOneChangedAIParamConfig())
+                {
+                    WriteLog($"PatchCategory.{PatchCategory.AIManager}");
+                    harmony.PatchCategory(assembly, PatchCategory.AIManager);
+                }
                 if (Config.ConsumeKeyStrokes)
                 {
-                    WriteLog($"PatchCategory.{PatchCategory.MenuDebug}");
-                    harmony.PatchCategory(assembly, PatchCategory.MenuDebug);
+                    WriteLog($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
+                    harmony.PatchCategory(assembly, PatchCategory.GreenHellGameUpdate);
                 }
                 if (Config.CheatsEnabled)
                 {
@@ -142,10 +148,10 @@ namespace GHTweaks
                     harmony.PatchCategory(assembly, PatchCategory.Cheats);
                 }
 
-                WriteLog("Patched methods:");
-                IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
-                foreach (MethodBase mb in methods)
-                    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
+                //WriteLog("Patched methods:");
+                //IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
+                //foreach (MethodBase mb in methods)
+                //    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
 
                 IsPatchesApplied = true;
             }
@@ -241,6 +247,14 @@ namespace GHTweaks
 
 
 
+        private void P2PTransportLayerEventHandler()
+        {
+            if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+                RemovePatches();
+            else
+                ApplyPatches();
+        }
+
         /// <summary>
         /// Saves the current player location inside the configuration file.
         /// </summary>
@@ -271,7 +285,7 @@ namespace GHTweaks
 
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 WriteLog($"Failed to save config file! Exception: {ex.Message}", LogType.Exception);
             }
@@ -290,7 +304,7 @@ namespace GHTweaks
             {
                 if (!File.Exists(strModConfigFileName))
                 {
-                    WriteLog($"Found no config file, FilePath: {strLogFileName}", LogType.Error);
+                    WriteLog($"Found no config file, FilePath: {strModConfigFileName}", LogType.Error);
                     return false;
                 }
 
@@ -308,8 +322,7 @@ namespace GHTweaks
 
             if (cfg == null)
             {
-                Config = new Config();
-                WriteLog("Failed to load config.", LogType.Error);
+                WriteLog($"Failed to load '{strModConfigFileName}' file!", LogType.Error);
                 return false;
             }
 
@@ -319,7 +332,7 @@ namespace GHTweaks
         }
 
         /// <summary>
-        /// Delete the GHTweaks.log and Harmony.log from the last session.
+        /// Delete the GHTweaks.log, Harmony.log and doorstop_*.log from the last session.
         /// </summary>
         /// <returns>True if no exception occurred, otherwise false.</returns>
         private bool TryDeleteLogFiles()
@@ -327,10 +340,33 @@ namespace GHTweaks
             try
             {
                 if (File.Exists(strLogFileName))
+                {
+                    WriteLog($"Delete '{Path.GetFileName(strLogFileName)}' file.", LogType.Info);
                     File.Delete(strLogFileName);
+                }
 
                 if (File.Exists(strHarmonyLogFileName))
+                {
+                    WriteLog($"Delete '{Path.GetFileName(strHarmonyLogFileName)}' file.", LogType.Info);
                     File.Delete(strHarmonyLogFileName);
+                }
+
+                var startTime = DateTime.Now.Subtract(new TimeSpan(0,1,0));
+                var currentDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                var parentDirectory = currentDirectory.Parent;
+                var doorstopLogFiles = parentDirectory.GetFiles("doorstop_*.log", SearchOption.TopDirectoryOnly);
+                foreach(var logFile in doorstopLogFiles)
+                {
+                    if (logFile.LastWriteTime < startTime)
+                    {
+                        try
+                        {
+                            WriteLog($"Delete '{logFile.Name}' file.", LogType.Info);
+                            logFile.Delete();
+                        }
+                        catch (Exception) { }
+                    }
+                }
 
                 return true;
             }
