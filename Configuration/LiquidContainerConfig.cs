@@ -1,4 +1,6 @@
-﻿using GHTweaks.Configuration.Core;
+﻿// Ignore Spelling: Bidon
+
+using GHTweaks.Configuration.Core;
 
 namespace GHTweaks.Configuration
 {
