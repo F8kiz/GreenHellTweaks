@@ -52,6 +52,12 @@ namespace GHTweaks.Configuration
         [PropertyInfo(-1f)]
         public float ClayBowlSmallCapacity { get; set; } = -1;
 
+        /// <summary>
+        /// Default value 25f
+        /// </summary>
+        [PropertyInfo(-1f)]
+        public float TurtleShellCapacity { get; set; } = -1;
+
 
         public bool HasAtLeastOneEnabledPatch => CheckIfAtLeastOnePropertyHasNotTheDefaultValue(this);
     }
