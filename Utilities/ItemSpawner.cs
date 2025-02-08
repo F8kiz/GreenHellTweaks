@@ -15,6 +15,8 @@ namespace GHTweaks.Utilities
 
             for(int i = 0; i < amount; ++i)
                 ItemsManager.Get().CreateItem(itemId, true, vector - forward * 0.2f, Player.Get().transform.rotation);
+
+            LogWriter.Write($"Spawned {itemId} {amount} times");
         }
 
         public static bool TrySpawnItem(string itemName, int amount=1)

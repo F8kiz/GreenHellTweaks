@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 namespace GHTweaks.Configuration.Core
@@ -19,7 +18,7 @@ namespace GHTweaks.Configuration.Core
                 if (info.PropertyType != attribute.PropertyType)
                     continue; // TODO: report
 
-                if (value != attribute.IsDisabledIfValue)
+                if (value.Equals(attribute.IsDisabledIfValue))
                     return true;
             }
             return false;

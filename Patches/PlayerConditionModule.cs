@@ -58,7 +58,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.HydrationConsumptionDelay, __instance.m_Hydration, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleHydration.Setter: CurrentValue: {__instance.m_Hydration}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleHydration.Setter: CurrentValue: {__instance.m_Hydration}, NewValue: {value}");
 #endif
             }
         }
@@ -79,7 +79,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.NutritionCarboConsumptionDelay, __instance.m_NutritionCarbo, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleNutritionCarbo.Setter: CurrentValue: {__instance.m_NutritionCarbo}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleNutritionCarbo.Setter: CurrentValue: {__instance.m_NutritionCarbo}, NewValue: {value}");
 #endif
             }
         }
@@ -100,7 +100,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.NutritionFatConsumptionDelay, __instance.m_NutritionFat, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleNutritionFat.Setter: CurrentValue: {__instance.m_NutritionFat}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleNutritionFat.Setter: CurrentValue: {__instance.m_NutritionFat}, NewValue: {value}");
 #endif
             }
         }
@@ -121,7 +121,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.NutritionProteinsConsumptionDelay, __instance.m_NutritionProteins, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleNutritionProteins.Setter: CurrentValue: {__instance.m_NutritionProteins}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleNutritionProteins.Setter: CurrentValue: {__instance.m_NutritionProteins}, NewValue: {value}");
 #endif
             }
         }
@@ -142,7 +142,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.StaminaConsumptionDelay, __instance.m_Stamina, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleStamina.Setter: CurrentValue: {__instance.m_Stamina}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleStamina.Setter: CurrentValue: {__instance.m_Stamina}, NewValue: {value}");
 #endif
             }
         }
@@ -167,7 +167,7 @@ namespace GHTweaks.Patches
             if (baseInstance.Update(Mod.Instance.Config.PlayerConditionModuleConfig.EnergyConsumptionDelay, __instance.m_Energy, ref value))
             {
 #if DEBUG
-                Mod.Instance.WriteLog($"PlayerConditionalModuleEnergy.Setter: CurrentValue: {__instance.m_Energy}, NewValue: {value}");
+                LogWriter.Write($"PlayerConditionalModuleEnergy.Setter: CurrentValue: {__instance.m_Energy}, NewValue: {value}");
 #endif
             }
         }
@@ -197,7 +197,7 @@ namespace GHTweaks.Patches
         {
             if (instance == null)
             {
-                Mod.Instance.WriteLog("PlayerConditionModule.Initialize Unable to update fields, got no PlayerConditionModule instance!", LogType.Error);
+                LogWriter.Write("PlayerConditionModule.Initialize Unable to update fields, got no PlayerConditionModule instance!", LogType.Error);
                 return;
             }
 
@@ -268,19 +268,19 @@ namespace GHTweaks.Patches
 			};
 
 #if !DEBUG
-            Mod.Instance.WriteLog("PlayerConditionModule.Initialize Listing default values...");
+            LogWriter.Write("PlayerConditionModule.Initialize Listing default values...");
             foreach (var kvp in fieldsDictionary)
             {
                 FieldInfo fi = AccessTools.Field(typeof(PlayerConditionModule), kvp.Key);
                 if (fi == null)
                 {
-                    Mod.Instance.WriteLog($" {kvp.Key}: ?");
+                    LogWriter.Write($" {kvp.Key}: ?");
                     continue;
                 }
                 var fieldValue = (float)fi.GetValue(instance);
-                Mod.Instance.WriteLog($" {kvp.Key}: {fieldValue}");
+                LogWriter.Write($" {kvp.Key}: {fieldValue}");
             }
-            Mod.Instance.WriteLog("PlayerConditionModule.Initialize default values listed...");
+            LogWriter.Write("PlayerConditionModule.Initialize default values listed...");
 #endif 
 
             Type moduleType = typeof(PlayerConditionModule);
@@ -292,7 +292,7 @@ namespace GHTweaks.Patches
                 AccessTools.FieldRef<PlayerConditionModule, float> field = AccessTools.FieldRefAccess<PlayerConditionModule, float>(kvp.Key);
                 if (field == null)
                 {
-                    Mod.Instance.WriteLog($"PlayerConditionModule.Initialize Failed to get field reference for {kvp.Key}.", LogType.Error);
+                    LogWriter.Write($"PlayerConditionModule.Initialize Failed to get field reference for {kvp.Key}.", LogType.Error);
                     continue;
                 }
                 field(instance) = kvp.Value;
@@ -300,7 +300,7 @@ namespace GHTweaks.Patches
 
 #if !DEBUG
             // Check properties
-            Mod.Instance.WriteLog("PlayerConditionModule.Initialize check field values...");
+            LogWriter.Write("PlayerConditionModule.Initialize check field values...");
             //Type moduleType = typeof(PlayerConditionModule);
             foreach (var kvp in fieldsDictionary)
             {
@@ -310,14 +310,14 @@ namespace GHTweaks.Patches
                 FieldInfo fi = AccessTools.Field(moduleType, kvp.Key);
                 if (fi == null)
                 {
-                    Mod.Instance.WriteLog($" Failed to get FieldInfo for {kvp.Key}");
+                    LogWriter.Write($" Failed to get FieldInfo for {kvp.Key}");
                     continue;
                 }
                 var fieldValue = (float)fi.GetValue(instance);
                 var logType = fieldValue == kvp.Value ? LogType.Debug : LogType.Error;
-                Mod.Instance.WriteLog($" {kvp.Key}, current: {fieldValue}, expected: {kvp.Value}", logType);
+                LogWriter.Write($" {kvp.Key}, current: {fieldValue}, expected: {kvp.Value}", logType);
             }
-            Mod.Instance.WriteLog("PlayerConditionModule.Initialize values checked.");
+            LogWriter.Write("PlayerConditionModule.Initialize values checked.");
 #endif
         }
     }

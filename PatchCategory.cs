@@ -12,11 +12,6 @@
         /// </summary>
         public const string Default = "Default";
 
-        /// <summary>
-        /// Cheat patches are applied if the user has activated them in the configuration.
-        /// </summary>
-        public const string Cheats = "Cheats";
-
         public const string GreenHellGameUpdate = "GreenHellGameUpdate";
 
         public const string AIManager = "AIManager";

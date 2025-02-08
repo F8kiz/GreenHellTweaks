@@ -33,13 +33,13 @@ namespace GHTweaks.Patches
             if (capacityMap.TryGetValue(id, out Tuple<float, bool> capacity))
                 SetCapacity(ref __instance, capacity.Item1, capacity.Item2);
             else
-                Mod.Instance.WriteLog($"LiquidContainer.SetupInfo: Not supported LiquidContainer: {id}, capacity: {__instance.m_LCInfo.m_Capacity}", LogType.Info);   
+                LogWriter.Write($"LiquidContainer.SetupInfo: Not supported LiquidContainer: {id}, capacity: {__instance.m_LCInfo.m_Capacity}", LogType.Info);   
         }
 
         static void SetCapacity(ref LiquidContainer instance, float value, bool setAmountToo)
         {
 #if DEBUG
-            Mod.Instance.WriteLog($"LiquidContainer.SetupInfo (init values):    {instance.m_LCInfo.m_ID}, capacity: {instance.m_LCInfo.m_Capacity}, amount: {instance.m_LCInfo.m_Amount}");
+            LogWriter.Write($"LiquidContainer.SetupInfo (init values):    {instance.m_LCInfo.m_ID}, capacity: {instance.m_LCInfo.m_Capacity}, amount: {instance.m_LCInfo.m_Amount}");
 #endif
             if (value > 0)
             {
@@ -47,7 +47,7 @@ namespace GHTweaks.Patches
                 if (setAmountToo)
                     instance.m_LCInfo.m_Amount = value;
 #if DEBUG
-                Mod.Instance.WriteLog($"LiquidContainer.SetupInfo (updated values): {instance.m_LCInfo.m_ID}, capacity: {instance.m_LCInfo.m_Capacity}, amount: {instance.m_LCInfo.m_Amount}");
+                LogWriter.Write($"LiquidContainer.SetupInfo (updated values): {instance.m_LCInfo.m_ID}, capacity: {instance.m_LCInfo.m_Capacity}, amount: {instance.m_LCInfo.m_Amount}");
 #endif
             }
         }

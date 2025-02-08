@@ -1,0 +1,368 @@
+﻿using GHTweaks.Configuration.Core;
+using GHTweaks.UI.Console.Command.Core;
+
+using System;
+using System.Collections;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+namespace GHTweaks.UI.Console.Command
+{
+    //[Command("get, set, save, reload, print", "Config", "")]
+    [Command("get|set|save|reload|print=Config*", "")]
+    internal class ConfigCommandHandler : ICommand
+    {
+        public string[] UsageExamples { get; private set; } = new string[] {
+                $"Type in {"get Config.DebugModeEnabled".ToCodeRTF()} and the console prints the current value of <b>Config.DebugModeEnabled</b>.",
+                $"Type in {"set Config.DebugModeEnabled True".ToCodeRTF()} to enable debug mode.",
+                $"Type in {"get Config.LiquidContainerConfig.BidonCapacity".ToCodeRTF()} and the console prints the current value of <b>Config.LiquidContainerConfig.BidonCapacity</b>.",
+                $"Type in {"set Config.LiquidContainerConfig.BidonCapacity 100".ToCodeRTF()} to set the capacity for bidons to 100.",
+                $"Type in {"save Config".ToCodeRTF()} to save the current runtime config.",
+                $"Type in {"print Config".ToCodeRTF()} to print all GHTweaks Config properties without AIParams.",
+                $"Type in {"print Config ex _".ToCodeRTF()} to print all GHTweaks Config properties.",
+                $"Type in {"print Config full_names _".ToCodeRTF()} to print all GHTweaks Config properties with their full names.",
+                $"Type in {"print Config full_names ex".ToCodeRTF()} to combine the two previous options."
+            };
+
+
+        public CommandResult Execute(CommandInfo cmd)
+        {
+            var result = new CommandResult(cmd);
+            if (!cmd.FirstArgumentNameStartsWith("Config"))
+                return result;
+            
+            if (cmd.CommandEqualsAny("get", "set"))
+                return GetOrSetConfigPropertyCommand.Execute(cmd);
+
+            if (cmd.CommandEquals("Save", "config"))
+            {
+                if (Mod.Instance.TrySaveConfig())
+                {
+                    result.OutputAdd("Config was saved.");
+                    result.CmdExecResult = CmdExecResult.Executed;
+                }
+            }
+
+            if (cmd.CommandEquals("reload", "config"))
+            {
+                Mod.Instance.ReloadConfig();
+                result.OutputAdd("Config reloaded.");
+                result.CmdExecResult = CmdExecResult.Executed;
+            }
+
+            if (cmd.CommandEquals("print", "config"))
+            {
+                LogWriter.Write($"Arguments: {string.Join(", ", cmd.GetArgumentNames())}");
+
+                PrintConfigCommand.Execute(cmd.HasArgument("ex"), cmd.HasArgument("full_names"), ref result);
+                result.CmdExecResult = CmdExecResult.Executed;
+            }
+
+            return result;
+        }
+
+
+
+        internal static class ConfigHelper
+        {
+            public static void PrintPatchConfig(string propertyName, string propertyPath, IPatchConfig instance, bool debugModeEnabled, ref CommandResult result)
+            {
+                result.OutputAdd($"<b>{propertyName}:</b>");
+                foreach (var pi0 in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    try
+                    {
+                        if (pi0.Name == nameof(IPatchConfig.HasAtLeastOneEnabledPatch) && !debugModeEnabled)
+                            continue;
+
+                        propertyPath = !string.IsNullOrWhiteSpace(propertyPath) ? $"{propertyPath}." : "";
+                        result.OutputAdd($"{Style.LineIndent}{propertyPath}{pi0.Name}: {pi0.GetValue(instance).ToString().ToColoredRTF(Style.TextColor.Code)}");
+                    }
+                    catch (Exception ex)
+                    {
+                        result.OutputAdd($"{Style.LineIndent}{propertyName}.{pi0.Name}.GetValue: {ex.Message}", Style.TextColor.Error);
+                        LogWriter.Write(ex);
+                    }
+                }
+            }
+        }
+
+
+        internal static class GetOrSetConfigPropertyCommand
+        {
+            public static CommandResult Execute(CommandInfo cmd)
+            {
+                var result = new CommandResult(cmd, CmdExecResult.Executed);
+                if (!TryGetConfigValue(cmd, ref result, out object instance, out PropertyInfo property))
+                    return result;
+
+                if (instance == null)
+                {
+                    LogWriter.Write($"Got no object instance to get value of property: {property?.Name}");
+                    result.CmdExecResult |= CmdExecResult.Error;
+                    return result;
+                }
+
+                if (property == null)
+                {
+                    LogWriter.Write($"Got no PropertyInfo instance.");
+                    result.CmdExecResult |= CmdExecResult.Error;
+                    return result;
+                }
+
+                try
+                {
+                    var propName = property.Name;
+                    var typeName = cmd.ArgumentMap.First().Key;
+
+                    if (cmd.CommandEquals("get"))
+                    {
+                        LogWriter.Write($"Try get value from: {instance.GetType().Name}.{propName}");
+
+                        var value = property.GetValue(instance);
+                        result.OutputAdd($"{typeName}: {value.ToString().ToColoredRTF(Style.TextColor.Code)}");
+
+                        if (value.GetType().GetInterface(nameof(IPatchConfig)) != null)
+                            ConfigHelper.PrintPatchConfig(propName, "", (IPatchConfig)value, false, ref result);
+                    }
+                    else
+                    {
+                        var kvp = cmd.ArgumentMap.First();
+                        LogWriter.Write($"Try to set {kvp.Key}: {kvp.Value}");
+
+                        propName = kvp.Key.Split('.').Last();
+                        if (!string.Equals(propName, property.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogWriter.Write($"Unable to set property, expected Property: {propName}, got Property: {property.Name}");
+                            result.CmdExecResult |= CmdExecResult.Error;
+                            return result;
+                        }
+
+                        if (!TrySetConfigValue(ref instance, property, kvp.Value))
+                        {
+                            LogWriter.Write($"Setting property failed!");
+                            result.CmdExecResult |= CmdExecResult.Error;
+                            return result;
+                        }
+
+                        result.OutputAdd($"{typeName}: {property.GetValue(instance)}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.OutputAdd(ex.Message, Style.TextColor.Error);
+                    result.CmdExecResult |= CmdExecResult.Exception;
+                    LogWriter.Write(ex);
+                }
+
+                return result;
+            }
+
+
+            private static bool TryGetConfigValue(CommandInfo cmd, ref CommandResult result, out object instance, out PropertyInfo value)
+            {
+                instance = null;
+                value = null;
+
+                var firstArgs = cmd.GetFirstArgumentName();
+                if (string.IsNullOrEmpty(firstArgs))
+                {
+                    LogWriter.Write($"Command has no arguments: {cmd}");
+                    result.OutputAdd($"A command parameter is expected but not provided. The right syntax is: {"get/set Config.(SomeProperty)".ToCodeRTF()}.");
+                    return false;
+                }
+
+                var classChain = Regex.Replace(firstArgs, @"^Config\.", "", RegexOptions.IgnoreCase);
+                var objects = classChain.Split('.');
+                if (objects.Length < 1)
+                {
+                    LogWriter.Write($"Found no property names.");
+                    result.OutputAdd($"At least one property name is expected. The right syntax is: {"get/set Config.(SomeProperty)".ToCodeRTF()}.");
+                    return false;
+                }
+
+                try
+                {
+                    var search = objects.Last();
+                    var config = Mod.Instance.Config;
+                    instance = Mod.Instance.Config;
+                    object lastInstance = null;
+                    var properties = instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                    PropertyInfo property = null;
+
+                    LogWriter.Write($"Start to search Config value: {string.Join(".", objects)}, in {properties?.Length ?? -1} properties...");
+
+                    for (int i = 0; i < objects.Length; ++i)
+                    {
+                        LogWriter.Write($"Search for '{property?.Name ?? "Config"}.{objects[i]} : {property?.PropertyType.Name ?? "?"}, Index: {i}'...");
+                        if ((property = properties.FirstOrDefault(x => x.Name == objects[i] && x.MemberType == MemberTypes.Property)) == null)
+                        {
+                            var msg = $"Found no such property '{lastInstance?.GetType().Name ?? "Config"}.{objects[i]}'...";
+                            LogWriter.Write(msg);
+                            result.OutputAdd(msg);
+
+                            LogWriter.Write("Search command suggestion...");
+
+                            var suggestions = properties.Where(x =>
+                                Regex.IsMatch(x.Name, $"^({objects[i]}.*|.*{objects[i]}|.*{objects[i]}.*)$", RegexOptions.IgnoreCase)
+                            ).Select(p => new CommandInfo($"{cmd.Command} {property?.Name ?? "Config"}.{p.Name}")).ToList();
+
+                            if (suggestions.Count > 0)
+                            {
+                                result.OutputAdd($"Do you mean one them:\n{string.Join("\n", suggestions)}");
+                                result.Value = suggestions;
+                                result.ConsoleAction = ConsoleAction.SetCommandSuggestion;
+                            }
+                            result.CmdExecResult = CmdExecResult.Executed | CmdExecResult.Error;
+                            break;
+                        }
+
+                        lastInstance = instance;
+                        instance = property.GetValue(instance, null);
+
+                        if (property.PropertyType is IPatchConfig cfg)
+                        {
+                            LogWriter.Write("Current property is IPatchConfig, update properties...");
+                            properties = cfg.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                            continue;
+                        }
+
+                        if (property.Name == search)
+                        {
+                            value = property;
+                            instance = lastInstance;
+
+                            LogWriter.Write($"Property found, return {instance.GetType().Name}.{property.Name} (MemberTypeType: {property.MemberType}, ReflectedType: {property.ReflectedType}, PropertyType: {property.PropertyType})'...");
+
+                            var prop = instance.GetType().GetProperty(search);
+                            LogWriter.Write($"Current value: {prop?.GetValue(instance)?.ToString() ?? "<null>"}");
+                            return true;
+                        }
+
+                        LogWriter.Write($"Set new properties from '{property.Name ?? "?"} (MemberTypeType: {property.MemberType}, ReflectedType: {property.ReflectedType}, PropertyType: {property.PropertyType})'...");
+                        properties = property.PropertyType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                        LogWriter.Write($"New properties count: {properties?.Length ?? 0}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.OutputAdd(ex.Message);
+                    result.CmdExecResult |= CmdExecResult.Exception;
+                    LogWriter.Write(ex);
+                }
+                return false;
+            }
+
+            private static bool TrySetConfigValue(ref object instance, PropertyInfo property, object value)
+            {
+                try
+                {
+                    LogWriter.Write($"Try set property value: {instance?.GetType()?.Name ?? "null"}.{property?.Name ?? "null"} = {value ?? null}");
+
+                    if (value.GetType() != property.PropertyType)
+                    {
+                        LogWriter.Write($"Change property value type. Current value type: {value.GetType().Name}, required value type: {property.PropertyType.Name}");
+
+                        value = Convert.ChangeType(value, property.PropertyType);
+
+                        LogWriter.Write($"Changed value type: {value.GetType().Name} ({value})");
+                    }
+
+                    property.SetValue(instance, value);
+                    LogWriter.Write($"{property.Name}: {property.GetValue(instance)}");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    LogWriter.Write(ex);
+                }
+                return false;
+            }
+        }
+
+
+        internal static class PrintConfigCommand
+        {
+            public static void Execute(bool printListItems, bool printFullNames, ref CommandResult result)
+            {
+                var config = Mod.Instance.Config;
+                var configs = config.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var debugModeEnabled = Mod.Instance.Config.DebugModeEnabled;
+                var path = "";
+
+                foreach (var pi in configs)
+                {
+                    if (pi.Name == nameof(config.PlayerLastPosition))
+                        continue;
+
+                    object instance = pi.GetValue(config);
+                    if (instance == null)
+                        continue;
+
+                    if (printFullNames)
+                        path = $"Config.{pi.Name}.";
+
+                    if (instance is IList list)
+                    {
+                        if (printListItems)
+                        {
+                            PrintList(pi.Name, list, ref result);
+                            result.OutputAdd($"");
+                        }
+                    }
+                    else if (pi.PropertyType.GetInterface(nameof(IPatchConfig)) != null)
+                    {
+                        ConfigHelper.PrintPatchConfig(pi.Name, path, (IPatchConfig)instance, debugModeEnabled, ref result);
+                        result.OutputAdd($"");
+                    }
+                    else
+                    {
+                        if (printFullNames)
+                            path = "Config.";
+
+                        result.OutputAdd($"{path}{pi.Name}: {pi.GetValue(config).ToString().ToColoredRTF(Style.TextColor.Code)}");
+                    }
+                }
+            }
+
+
+            private static void PrintList(string propertyName, IList list, ref CommandResult result)
+            {
+                if (list == null)
+                {
+                    result.OutputAdd($"<b>{propertyName}:</b> null");
+                    return;
+                }
+
+                if (list.Count < 1)
+                {
+                    result.OutputAdd($"<b>{propertyName}:</b> No items");
+                    return;
+                }
+
+                var firstType = list[0].GetType();
+                var sLineIndent = Style.LineIndent;
+                var dLineIndent = sLineIndent + sLineIndent;
+
+                result.OutputAdd($"<b>{propertyName}:</b> {list.Count} : {firstType.Name}");
+                for(int i = 0; i < list.Count; ++i)
+                {
+                    result.OutputAdd($"{sLineIndent}<b>Item: {i}</b>");
+                    foreach(var prop in firstType.GetProperties())
+                    {
+                        try
+                        {
+                            result.OutputAdd($"{dLineIndent}{prop.Name}: {prop.GetValue(list[i])}");
+                        }
+                        catch (Exception ex) 
+                        {
+                            result.OutputAdd($"{dLineIndent}{propertyName}.{prop.Name}.GetValue: {ex.Message}", Style.TextColor.Error);
+                            LogWriter.Write(ex);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

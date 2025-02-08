@@ -89,42 +89,34 @@ namespace GHTweaks
             if (Input.GetKeyUp(KeyCode.F8))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugScenario();
-                    return;
-                }
+                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F9))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugSounds();
-                    return;
-                }
-
-                MenuInGameManager.Get().ShowScreen(typeof(SaveGameMenu));
+                else
+                    MenuInGameManager.Get().ShowScreen(typeof(SaveGameMenu));
                 return;
             }
 
             if (Input.GetKeyUp(KeyCode.F10))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugSpawners();
-                    return;
-                }
-                GameDebug.ShowMenuDebugItem();
+                else
+                    GameDebug.ShowMenuDebugItem();
+                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F11))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugTeleport();
-                    return;
-                }
-                HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
+                else
+                    HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
                 return;
             }
 
@@ -135,7 +127,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugWounds();
                     return;
                 }
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.PageUp))

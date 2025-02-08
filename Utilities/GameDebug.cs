@@ -48,14 +48,14 @@ namespace GHTweaks.Utilities
                 MenuInGameManager mgr = MenuInGameManager.Get();
                 if (mgr == null)
                 {
-                    Mod.Instance.WriteLog("Failed to get MenuInGameManager instance.", LogType.Error);
+                    LogWriter.Write("Failed to get MenuInGameManager instance.", LogType.Error);
                     return;
                 }
                 mgr.ShowScreen(screen);
             }
             catch (Exception ex) 
             {
-                Mod.Instance.WriteLog(ex.Message, LogType.Exception);
+                LogWriter.Write(ex.Message, LogType.Exception);
             }
         }
     }

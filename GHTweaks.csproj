@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -67,8 +69,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
-    <Reference Include="UnityEngine">
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
@@ -76,6 +80,10 @@
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
@@ -88,6 +96,10 @@
     </Reference>
     <Reference Include="UnityEngine.SharedInternalsModule">
       <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
@@ -109,6 +121,7 @@
     <Compile Include="Entrypoint.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="LogWriter.cs" />
     <Compile Include="Models\GridSize.cs" />
     <Compile Include="Models\LogMessage.cs" />
     <Compile Include="Models\VicinityItem.cs" />
@@ -131,8 +144,6 @@
     <Compile Include="Patches\QuieterAnimals.cs" />
     <Compile Include="Patches\SteadyAim.cs" />
     <Compile Include="Patches\SkillCurve.Progress.cs" />
-    <Compile Include="Patches\HUDTextChat.ConstantUpdate.cs" />
-    <Compile Include="Patches\HUDTextChat.SendTextMessage.cs" />
     <Compile Include="Configuration\DestroyableFallingObjectConfig.cs" />
     <Compile Include="Models\KeyBinding.cs" />
     <Compile Include="Configuration\PlayerConfig.cs" />
@@ -140,13 +151,30 @@
     <Compile Include="Configuration\SkillConfig.cs" />
     <None Include="packages.config" />
     <Compile Include="Patches\AIManager.InitializeParams.cs" />
-    <None Include="UI\GHTweaksSettingsButton.cs.old" />
+    <Compile Include="StaticFileNames.cs" />
+    <Compile Include="UI\Console\Command\ConfigCommandHandler.cs" />
+    <Compile Include="UI\Console\Command\ConsoleCommandHandler.cs" />
+    <Compile Include="UI\Console\CommandSuggestion.cs" />
+    <Compile Include="UI\Console\Command\Core\CommandDescription.cs" />
+    <Compile Include="UI\Console\Command\Core\CommandResult.cs" />
+    <Compile Include="UI\Console\Command\Core\CommandAttribute.cs" />
+    <Compile Include="UI\Console\Command\Core\ICommand.cs" />
+    <Compile Include="UI\Console\Command\GamePauseCommand.cs" />
+    <Compile Include="UI\Console\Command\HelpCommand.cs" />
+    <Compile Include="UI\Console\Command\SpawnCommandHandler.cs" />
+    <Compile Include="UI\Console\Command\ToggleCheatCommandHandler.cs" />
+    <Compile Include="UI\Console\Command\UnlockCommandHandler.cs" />
+    <Compile Include="UI\Console\CommandCache.cs" />
+    <Compile Include="UI\Console\Style.cs" />
+    <Compile Include="UI\Console\ConsoleWindow.UI.cs" />
     <Compile Include="Patches\Torch.StartBuirning.cs" />
-    <Compile Include="UI\GHTweaksSettingsButton.cs" />
-    <Compile Include="UI\GHTweeksSettingsMenu.cs" />
-    <Compile Include="UI\Helper\SpriteNames.cs" />
-    <Compile Include="UI\Helper\UIHelper.cs" />
-    <Compile Include="UI\PanelSettings.cs" />
+    <Compile Include="UI\CompoundControls.cs" />
+    <Compile Include="UI\Console\CommandInfo.cs" />
+    <Compile Include="UI\Console\ConsoleLine.cs" />
+    <Compile Include="UI\Console\ConsoleLineBuffer.cs" />
+    <Compile Include="UI\Console\ScrollInfo.cs" />
+    <Compile Include="UI\Console\ConsoleWindow.cs" />
+    <Compile Include="UI\UIHelper.cs" />
     <Compile Include="Utilities\ConstructionGhostHelper.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
     <Compile Include="Utilities\HighlightVicinityItems.cs" />

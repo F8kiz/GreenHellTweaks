@@ -75,8 +75,6 @@ namespace GHTweaks.Configuration
 
         public bool ConsumeKeyStrokes { get; set; }
 
-        public bool CheatsEnabled { get; set; }
-
         public List<KeyBinding> KeyBindings { get; set; }
 
 
