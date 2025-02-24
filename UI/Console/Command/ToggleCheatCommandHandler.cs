@@ -16,8 +16,8 @@ namespace GHTweaks.UI.Console.Command
     internal class ToggleCheatCommandHandler : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
-            $"Type in {"toggle GodMode".ToCodeRTF()} to enable or disable <b>GodMode</b> cheat.",
-            $"Type in {"toggle ImmortalItems".ToCodeRTF()} to enable or disable <b>ImmortalItems</b> cheat.",
+            $"Type in {"toggle GodMode".ToBoldCodeRTF()} to enable or disable <b>GodMode</b> cheat.",
+            $"Type in {"toggle ImmortalItems".ToBoldCodeRTF()} to enable or disable <b>ImmortalItems</b> cheat.",
         };
 
         public CommandResult Execute(CommandInfo cmd)

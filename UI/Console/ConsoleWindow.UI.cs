@@ -81,11 +81,11 @@ namespace GHTweaks.UI.Console
                     ProcessInput(strUserInput.Trim());
 					strUserInput = string.Empty;
 				}
-				else if (keyCode == KeyCode.UpArrow && commandSuggestion.IsVisible)
+				else if (keyCode == KeyCode.UpArrow)
 				{
                     commandSuggestion.SelectPreviousSuggestion();
                 }
-				else if (keyCode == KeyCode.DownArrow && commandSuggestion.IsVisible)
+				else if (keyCode == KeyCode.DownArrow)
 				{
                     commandSuggestion.SelectNextSuggestion();
                 }
@@ -136,7 +136,7 @@ namespace GHTweaks.UI.Console
 			GUILayout.FlexibleSpace();
 
 			GUI.SetNextControlName(TEXT_INPUT_NAME);
-			strUserInput = GUILayout.TextField(strUserInput, GUILayout.MinWidth(Style.RectValues.TextInput.width));
+			strUserInput = GUILayout.TextField(strUserInput, GUILayout.MinWidth(Style.RectValues.TextInput.width)); 
 
 			if (updateCursorPosition)
 			{

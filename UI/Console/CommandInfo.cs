@@ -26,8 +26,9 @@ namespace GHTweaks.UI.Console
             }
 
             var parts = userInput.Split(' ').ToList();
+#if verbose
             LogWriter.Write($"Command chunks: [ {string.Join(" ][ ", parts)} ]");
-
+#endif
             Command = parts[0].Trim();
             RawInput = userInput;
 
@@ -41,8 +42,9 @@ namespace GHTweaks.UI.Console
             {
                 ArgumentMap.Add(parts[0].Trim(), "");
                 HasArguments = true;
-
+#if verbose
                 LogWriter.Write($"Get command with value, skip param check. {Command} = {parts[0]}");
+#endif
                 return;
             }
 
@@ -63,7 +65,9 @@ namespace GHTweaks.UI.Console
                         value = null;
 
                     ArgumentMap.Add(key, value);
+#if verbose
                     LogWriter.Write($"Add new param: {key}={value}");
+#endif
                 }
             }
             else
@@ -78,7 +82,9 @@ namespace GHTweaks.UI.Console
                     }
 
                     ArgumentMap.Add(key, null);
+#if verbose
                     LogWriter.Write($"Add new param: {key}=null");
+#endif
                 }
             }
 

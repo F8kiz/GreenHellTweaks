@@ -10,8 +10,8 @@ namespace GHTweaks.UI.Console.Command
     internal class GamePauseCommand : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
-            $"Type in {"pause true".ToCodeRTF()} if you want to pause the Game.",
-            $"Type in {"pause false".ToCodeRTF()} if you want to run the Game."
+            $"Type in {"pause true".ToBoldCodeRTF()} if you want to pause the Game.",
+            $"Type in {"pause false".ToBoldCodeRTF()} if you want to run the Game."
         };
 
         public CommandResult Execute(CommandInfo cmd)

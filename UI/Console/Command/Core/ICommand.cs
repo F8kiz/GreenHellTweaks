@@ -1,6 +1,6 @@
 ﻿namespace GHTweaks.UI.Console.Command.Core
 {
-    internal interface ICommand
+    public interface ICommand
     {
         string[] UsageExamples { get; }
 

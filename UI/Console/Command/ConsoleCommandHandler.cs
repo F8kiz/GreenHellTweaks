@@ -8,11 +8,11 @@ namespace GHTweaks.UI.Console.Command
     internal class ConsoleCommandHandler : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
-            $"Type in {"clear".ToCodeRTF()} clears the console line buffer.",
-            $"Type in {"close".ToCodeRTF()} Close the console.",
-            $"Type in {"get BufferSize".ToCodeRTF()} to print the current console line buffer size.",
-            $"Type in {"set BufferSize 100".ToCodeRTF()} to set the console line buffer size to 100.",
-            $"Type in {"reset Style".ToCodeRTF()} to reset the console style. Sometimes the console may get a transparent background. If this is the case for you, you can use this command."
+            $"Type in {"clear".ToBoldCodeRTF()} clears the console line buffer.",
+            $"Type in {"close".ToBoldCodeRTF()} Close the console.",
+            $"Type in {"get BufferSize".ToBoldCodeRTF()} to print the current console line buffer size.",
+            $"Type in {"set BufferSize 100".ToBoldCodeRTF()} to set the console line buffer size to 100.",
+            $"Type in {"reset Style".ToBoldCodeRTF()} to reset the console style. Sometimes the console may get a transparent background. If this is the case for you, you can use this command."
         };
 
         public CommandResult Execute(CommandInfo cmd)

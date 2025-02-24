@@ -9,6 +9,9 @@ namespace GHTweaks
 {
     internal static class LogWriter
     {
+        private static readonly object writeLock = new object();
+
+
         /// <summary>
         /// The Setter cause an exception for a unknown reason.
         /// <para>
@@ -51,8 +54,11 @@ namespace GHTweaks
                 if (!string.IsNullOrEmpty(callerMemberName))
                     strBuffer.Add(callerMemberName);
 
-                using StreamWriter sw = new StreamWriter(StaticFileNames.LogFileName, true);
-                sw.WriteLine($"[{DateTime.Now:HH:mm:ss}][{string.Join(".", strBuffer)}][{logType}] {message}");
+                lock (writeLock)
+                {
+                    using StreamWriter sw = new StreamWriter(StaticFileNames.LogFileName, true);
+                    sw.WriteLine($"[{DateTime.Now:HH:mm:ss}][{string.Join(".", strBuffer)}][{logType}] {message}");
+                }
             }
             catch (Exception ex)
             {

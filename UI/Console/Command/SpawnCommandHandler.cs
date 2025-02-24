@@ -10,8 +10,8 @@ namespace GHTweaks.UI.Console.Command
     internal class SpawnCommandHandler : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
-            $"Type in {"spawn raw_meat".ToCodeRTF()} to spawn some raw meat.",
-            $"Type in {"spawn cooked_meat".ToCodeRTF()} to spawn some cooked meat.",
+            $"Type in {"spawn raw_meat".ToBoldCodeRTF()} to spawn some raw meat.",
+            $"Type in {"spawn cooked_meat".ToBoldCodeRTF()} to spawn some cooked meat.",
         };
 
         public CommandResult Execute(CommandInfo cmd)

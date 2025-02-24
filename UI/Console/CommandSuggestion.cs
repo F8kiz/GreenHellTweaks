@@ -1,11 +1,8 @@
-﻿using GHTweaks.Configuration.Core;
-using GHTweaks.Configuration;
-using GHTweaks.UI.Console.Command.Core;
+﻿using GHTweaks.UI.Console.Command.Core;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 using UnityEngine;
 using System.Text.RegularExpressions;
@@ -13,81 +10,98 @@ using System.Text.RegularExpressions;
 
 namespace GHTweaks.UI.Console
 {
-    internal class CommandSuggestion
+    public class CommandSuggestion
     {
-        internal struct TypeSuggestion
+        internal struct SelectedCommandSuggestion
         {
-            public string FullTypeName;
-            public string AcceptedArgumentType;
+            public string UserInput;
+            public string[] Suggestions;
+
+            public void Reset()
+            {
+                UserInput = null;
+                Suggestions = null;
+            }
         }
+
 
 
         public bool IsVisible { get; private set; }
 
+        public int SuggestionIndex { get; private set; } = -1;
 
-        public string[] Suggestions => suggestions ?? new string[0];
+        public static int CommandCacheSize { 
+            get => commandCacheSize;
+            set
+            {
+                if (value > 0)
+                    commandCacheSize = value;
+            }
+        }
 
-        private string[] suggestions = null;
-
+        private static int commandCacheSize = 100;
 
         private readonly ScrollInfo scrollInfo = new ScrollInfo();
 
-        public int SuggestionIndex { get; private set; } = -1;
-
-        private string lastUserInput = "";
-
-        private static readonly Dictionary<string, string[]> commandSuggestionsCache = new Dictionary<string, string[]>();
-
-        private static TypeSuggestion[] typeSuggestions = null;
-
         private Vector2 contentSize = Vector2.zero;
+
+        private SelectedCommandSuggestion selectedCommandSuggestions;
+
+        private readonly Dictionary<string, string[]> commandCache = new Dictionary<string, string[]>();
+
+        private readonly string[] ConsoleCommandNames;
+
+
+        public CommandSuggestion()
+        {
+            ConsoleCommandNames = CommandCache.GetAllConsoleCommandNames();
+        }
 
 
         public string GetSelectedSuggestion()
         {
-            if (suggestions == null || SuggestionIndex < 0 || SuggestionIndex > suggestions.Length - 1)
+            if (selectedCommandSuggestions.Suggestions == null || SuggestionIndex < 0 || SuggestionIndex > selectedCommandSuggestions.Suggestions.Length - 1)
                 return null;
-
-            // Suggestions can have a trailing type information like: " : 0 - 9"
+            
+            // Suggestions can have a trailing type information like: " :: Int32 (0 - 9)"
             // We need to remove them from the suggestion.
-            var value = suggestions[SuggestionIndex].Split(':')[0].Trim();
-            if ((lastUserInput ?? "").Contains(";"))
-            {
-                var buf = lastUserInput.Split(';').Select(x => x.Trim()).ToArray();
-                buf[buf.Length - 1] = value;
-                return string.Join("; ", buf);
-            }
+            var value = Regex.Split(selectedCommandSuggestions.Suggestions[SuggestionIndex], "::")[0];
+            value = Regex.Replace(value, "<color=[^>]+>|</color>", "");
 
-            return value;
+            // There are two different types of suggestions: Command suggestions and Type suggestions.
+            // If we have a command suggestion (e.g. get BufferSize) we don't need to take care of a possible command and can early return the value.
+            if (Regex.IsMatch(value, @"^[\w_]+(\s+\w|$)"))
+                return value;
+
+            // We have to take are about the last command
+            return Regex.Replace(selectedCommandSuggestions.UserInput, @"\s+.*?$", $" {value}");
         }
 
         public void SelectPreviousSuggestion()
         {
-            if (suggestions == null)
+            if (selectedCommandSuggestions.Suggestions == null)
                 return;
 
             if (--SuggestionIndex < 0)
             {
-                SuggestionIndex = suggestions.Length - 1;
+                SuggestionIndex = Math.Max(0, selectedCommandSuggestions.Suggestions.Length - 1);
                 scrollInfo.PositionY = contentSize.y;
             }
 
-            if (SuggestionIndex < suggestions.Length - 11)
+            if (SuggestionIndex < commandCache.Count - 11)
                 scrollInfo.LineUp();
         }
 
         public void SelectNextSuggestion()
         {
-            if (suggestions == null)
+            if (selectedCommandSuggestions.Suggestions == null)
                 return;
 
-            if (++SuggestionIndex > suggestions.Length - 1)
+            if (++SuggestionIndex > selectedCommandSuggestions.Suggestions.Length - 1)
             {
                 scrollInfo.ScrollToTop();
                 SuggestionIndex = 0;
             }
-
-            LogWriter.Write($"SuggestionIndex: {SuggestionIndex}, suggestions.Length: {suggestions.Length}");
 
             if (SuggestionIndex > 11)
                 scrollInfo.LineDown();
@@ -96,14 +110,16 @@ namespace GHTweaks.UI.Console
         public void DrawCommandSuggestion(string strUserInput)
         {
             IsVisible = false;
-            if (suggestions == null || strUserInput != lastUserInput)
+
+            string[] suggestions = selectedCommandSuggestions.Suggestions;
+            if (suggestions == null || selectedCommandSuggestions.UserInput != strUserInput)
             {
-                SuggestionIndex = -1;
                 suggestions = GetCommandSuggestions(strUserInput);
                 if (suggestions.Length < 1)
+                {
+                    UpdateSelectedCommandSuggestions(null, null);
                     return;
-                
-                lastUserInput = strUserInput;
+                }
             }
 
             GUILayout.BeginArea(Style.RectValues.CommandSuggestion);
@@ -114,7 +130,8 @@ namespace GHTweaks.UI.Console
             using (var scrollScope = new GUILayout.ScrollViewScope(scrollInfo.ScrollPosition, Style.CommandSuggestion))
             {
                 scrollInfo.ScrollPosition = scrollScope.scrollPosition;
-                var lines = string.Join("\n", suggestions.Select((x, i) => i == SuggestionIndex ? x.ToColoredRTF(Style.TextColor.HighLight) : x.ToColoredRTF(Style.TextColor.Default)));
+                var lines = string.Join("\n", suggestions.Select((x, i) => i == SuggestionIndex ? x.ToColoredRTF(Style.TextColor.HighLight, true) : x.ToColoredRTF(Style.TextColor.Default)));
+
                 GUILayout.TextArea(lines, Style.CommandSuggestionTextArea);
                 contentSize = GUI.skin.textArea.CalcSize(new GUIContent(lines));
             }
@@ -122,155 +139,170 @@ namespace GHTweaks.UI.Console
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
+
             IsVisible = true;
         }
 
-
-
-
-        public static string[] GetCommandSuggestions(string userInput)
+        public string[] GetCommandSuggestions(string userInput)
         {
-            if (!string.IsNullOrEmpty(userInput))
+            try
             {
+                if (string.IsNullOrEmpty(userInput))
+                {
+                    var result = ConsoleCommandNames.Select(x => x.Split(' ')[0]).ToArray();
+                    if (selectedCommandSuggestions.UserInput != userInput)
+                        UpdateSelectedCommandSuggestions(userInput, result);
+
+                    return result;
+                }
+
                 // It's valid syntax to combine multiple commands with a semicolon.
                 // We only want provide a suggestion for the last command.
                 userInput = userInput.Split(';').Last().Trim();
-            }
 
-            if (string.IsNullOrEmpty(userInput))
-                return CommandCache.GetAllConsoleCommandNames();
-
-            if (commandSuggestionsCache.TryGetValue(userInput, out string[] cache) && cache.Length > 0)
-                return cache;
-
-            var chunks = userInput.Split(' ');
-            var buffer = new List<string>();
-
-            if (chunks.Length > 1 && chunks[1].StartsWith("Config.", StringComparison.OrdinalIgnoreCase))
-            {
-                foreach(var ts in GetTypeSuggestions())
+                if (commandCache.TryGetValue(userInput, out string[] suggestions) && suggestions.Length > 0)
                 {
-                    var match = Regex.Match(ts.FullTypeName, $@"^({chunks[1]}.*?)(\.|$)", RegexOptions.IgnoreCase);
-                    if (!match.Success)
-                        continue;
-
-                    if (ts.FullTypeName.Equals(match.Groups[1].Value, StringComparison.OrdinalIgnoreCase))
-                        buffer.Add($"{chunks[0]} {match.Groups[1].Value} : {ts.AcceptedArgumentType.ToColoredRTF(Style.TextColor.Code)}");
-                    else
-                        buffer.Add($"{chunks[0]} {match.Groups[1].Value}");
+                    UpdateSelectedCommandSuggestions(userInput, suggestions);
+                    return suggestions;
                 }
-                return buffer.Distinct().ToArray();
-            }
 
-            foreach (var attribute in CommandCache.GetAllConsoleCommandAttributes())
-            {
-                var cmd = attribute.CommandMap.FirstOrDefault(x => x.Key.StartsWith(chunks[0], StringComparison.OrdinalIgnoreCase) || chunks[0].StartsWith(x.Key, StringComparison.OrdinalIgnoreCase));
-                if (string.IsNullOrEmpty(cmd.Key))
-                    continue;
-
-                try
+                var chunks = userInput.Split(' ');
+                if (chunks.Length > 1)
                 {
-                    if (cmd.Value != null)
+                    if (chunks[1].StartsWith("game", StringComparison.OrdinalIgnoreCase))
                     {
-                        IEnumerable<string> suggestions=null;
-                        if (chunks.Length > 1)
+                        suggestions = TypeSuggestionBuilder.GetTypeSuggestionsForPath(chunks[1], "Game").Select(x =>
                         {
-                            suggestions = cmd.Value
-                                .Where(x => x.StartsWith(chunks[1], StringComparison.OrdinalIgnoreCase))
-                                .Select(e => $"{cmd.Key} {e.Trim('*')}");
+                            var value = x.GetFullName();
+                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType))
+                                value += $" :: {x.AcceptedArgumentType}";
 
-                        }
-                        else
-                        {
-                            suggestions = cmd.Value.Select(e => $"{cmd.Key} {e.Trim('*')}");
-                        }
-
-                        if (suggestions?.Count() > 0)
-                            buffer.AddRange(suggestions);
+                            return value.ToSyntaxHighlightedRTF();
+                        }).ToArray();
+                        return AddToCache(userInput, suggestions);
                     }
-                    else 
+
+                    if (Regex.IsMatch(chunks[0], @"^\s*[gs]et") && chunks[1].StartsWith("config", StringComparison.OrdinalIgnoreCase))
                     {
-                        buffer.Add(cmd.Key);
+                        suggestions = TypeSuggestionBuilder.GetTypeSuggestionsForPath(chunks[1], "Config").Select(x =>
+                        {
+                            var value = x.GetFullName();
+                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType))
+                                value += $" :: {x.AcceptedArgumentType}";
+
+                            return value.ToSyntaxHighlightedRTF();
+                        }).ToArray();
+                        return AddToCache(userInput, suggestions);
                     }
                 }
-                catch(Exception ex)
-                {
-                    LogWriter.Write(ex);
-                }
+
+                var buffer = GetConsoleCommandSuggestions(userInput);
+                return AddToCache(userInput, buffer.ToArray());
             }
-
-            if (commandSuggestionsCache.Count > 19)
-                commandSuggestionsCache.Remove(commandSuggestionsCache.First().Key);
-
-            var result = buffer.Distinct().ToArray();
-            if (commandSuggestionsCache.ContainsKey(userInput))
-                commandSuggestionsCache[userInput] = result;
-            else
-                commandSuggestionsCache.Add(userInput, result);
-
-            LogWriter.Write($"Create commandSuggestionsCache --> {userInput} ==> {string.Join(", ", result)}");
-
-            return result;
+            catch (Exception ex) 
+            {
+                LogWriter.Write(ex);
+            }
+            return new string[0];
         }
 
-        private static TypeSuggestion[] GetTypeSuggestions()
+        private string[] AddToCache(string userInput, string[] suggestions)
         {
-            if (typeSuggestions != null)
-                return typeSuggestions;
+            if (commandCache.Count >= commandCacheSize)
+                commandCache.Remove(commandCache.First().Key);
 
-            static List<TypeSuggestion> GetSuggestions(Type source, string path)
+#if !DEBUG
+            if (commandCache.ContainsKey(userInput))
+                commandCache[userInput] = suggestions;
+            else
+                commandCache.Add(userInput, suggestions);
+#else
+            if (!commandCache.ContainsKey(userInput))
+                commandCache.Add(userInput, new string[0]);
+#endif
+            UpdateSelectedCommandSuggestions(userInput, suggestions);
+            return suggestions;
+        }
+
+        //private static List<string> GetGameTypeSuggestions(string typePath)
+        //{
+        //    var m = Regex.Match(typePath, "^game\\.(?<path>[\\w._]+)(\\.[\\w_]*)?$", RegexOptions.IgnoreCase);
+        //    if (m.Success)
+        //    {
+        //        var path = m.Groups["path"].Value;
+        //        var typeNames = path.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        //        var search = typeNames.Last();
+
+        //        typeNames.Remove(typeNames.Last());
+        //        var startPath = "Game." + string.Join(".", typeNames);
+
+        //        IEnumerable<Type> types = null;
+        //        if (typeNames.Count > 0)
+        //        {
+        //            var sourceType = AssemblyHelper.GetSingleTonGameType(typeNames[0]);
+        //            return TypeSuggestionBuilder.GetGameTypeSuggestionsFor(sourceType, search).Select(x => $"{startPath}.{x.GetFullName()}".ToSyntaxHighlightedRTF()).ToList();
+        //        }
+
+        //        if (types.Any())
+        //        {
+        //            var buffer = new List<string>();
+        //            foreach(var type in types)
+        //                buffer.AddRange(TypeSuggestionBuilder.GetGameTypeSuggestionsFor(type, typeNames.Last()).Select(x => x.GetFullName().ToSyntaxHighlightedRTF()));
+                    
+        //            return buffer;
+        //        }
+        //    }
+        //    return new List<string>();
+        //}
+
+        private static List<string> GetConsoleCommandSuggestions(string userInput)
+        {
+            var chunks = userInput.Split(' ');
+            var buffer = new List<string>();
+            foreach (var attribute in CommandCache.GetAllConsoleCommandAttributes())
             {
-                var buffer = new List<TypeSuggestion>();
-                var properties = source.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                foreach (var property in properties)
-                {
-                    if (property.Name == nameof(IPatchConfig.HasAtLeastOneEnabledPatch))
-                        continue;
+                var cmdList = attribute.CommandMap.Where(x => x.Key.StartsWith(chunks[0], StringComparison.OrdinalIgnoreCase)).ToArray();
+                if (!cmdList.Any())
+                    continue;
 
-                    if (property.PropertyType.GetInterface(nameof(IPatchConfig)) != null)
+                foreach (var cmd in cmdList)
+                {
+                    try
                     {
-                        var suggestions = GetSuggestions(property.PropertyType, $"{path}.{property.Name}");
-                        if (suggestions == null)
+                        if (cmd.Value == null)
                         {
-                            LogWriter.Write($"Failed to get Properties from {path}.{property.Name}");
+                            buffer.Add(cmd.Key);
                             continue;
                         }
 
-                        buffer.AddRange(suggestions);
-                        continue;
-                    }
-
-                    var memberProperties = property.PropertyType.GetProperties();
-                    if (memberProperties.Length < 1)
-                    {
-                        string suffix;
-                        if (property.PropertyType.Name == typeof(bool).Name)
-                            suffix = "True or False";
-                        else if (property.PropertyType.Name == typeof(float).Name)
-                            suffix = "0.0 - 9.9";
-                        else if (property.PropertyType.Name == typeof(int).Name)
-                            suffix = "0 - 9";
+                        if (chunks.Length > 1)
+                        {
+                            buffer.AddRange(cmd.Value
+                                .Where(x => x.StartsWith(chunks[1], StringComparison.OrdinalIgnoreCase))
+                                .Select(e => $"{cmd.Key} {e.Trim('*')}")
+                                .Distinct()
+                            );
+                        }
                         else
-                            suffix = property.PropertyType.Name;
-
-                        buffer.Add(new TypeSuggestion() { 
-                            FullTypeName = $"{path}.{property.Name}", 
-                            AcceptedArgumentType = suffix 
-                        });
-                        continue;
+                        {
+                            buffer.AddRange(cmd.Value.Select(e => $"{cmd.Key} {e.Trim('*')}").Distinct());
+                        }
                     }
-
-                    //foreach (var mp in memberProperties)
-                    //    buffer.AddRange(GetSuggestions(mp.PropertyType, $"{path}.{property.Name}.{mp.Name}"));
+                    catch (Exception ex)
+                    {
+                        LogWriter.Write(ex);
+                    }
                 }
-                return buffer;
             }
+            return buffer;
+        }
 
-            typeSuggestions = GetSuggestions(typeof(Config), nameof(Config)).ToArray();
 
-            LogWriter.Write($"Type suggestions created, {typeSuggestions.Length} suggestions was created.");
-
-            return typeSuggestions;
+        private void UpdateSelectedCommandSuggestions(string userInput, string[] suggestions)
+        {
+            selectedCommandSuggestions.UserInput = userInput;
+            selectedCommandSuggestions.Suggestions = suggestions;
+            SuggestionIndex = -1;
         }
     }
 }

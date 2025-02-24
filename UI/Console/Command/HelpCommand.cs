@@ -24,12 +24,12 @@ namespace GHTweaks.UI.Console.Command
                 " -‣ the parameter is <b>Config.DebugModeEnabled</b>, because the <b>DebugModeEnabled</b> property is a member of the <b>Config Type</b>.",
                 " -‣ the parameter value is <b>True</b> if you want to <b>enable</b> DebugMode and <b>False</b> if you want to <b>disable</b> DebugMode",
                 "    (DebugModeEnabled is of type Boolean and therefore you can only assign True or False to it)",
-                $"The complete command is {"set Config.DebugModeEnabled True".ToCodeRTF()} if you want to enable DebugMode and {"set Config.DebugModeEnabled False".ToCodeRTF()} otherwise.",
+                $"The complete command is {"set Config.DebugModeEnabled True".ToBoldCodeRTF()} if you want to enable DebugMode and {"set Config.DebugModeEnabled False".ToBoldCodeRTF()} otherwise.",
                 "Now you can check the property by using the <b>get</b> command to get the Current value from <b>Config.DebugModeEnabled</b>.",
-                $"Type in the console text field: {"get Config.DebugModeEnabled".ToCodeRTF()} and the console should print: <b>Config.DebugModeEnabled: (true or false)</b>",
+                $"Type in the console text field: {"get Config.DebugModeEnabled".ToBoldCodeRTF()} and the console should print: <b>Config.DebugModeEnabled: (true or false)</b>",
                 "\nYou can chain multiple commands by using an a semicolon (<b>;</b>). Lets say you want to print all config values but before you want to clear the console.",
                 "Then you could use two single commands <b>clear</b> and <b>print config</b> or you could combine both commands separated by a semicolon like this:",
-                $" -‣ {"clear".ToCodeRTF()}<b>;</b> {"print config".ToCodeRTF()}\n\n"
+                $" -‣ {"clear".ToBoldCodeRTF()}<b>;</b> {"print config".ToBoldCodeRTF()}\n\n"
             };
 
             var result = new CommandResult(cmd,CmdExecResult.Executed);

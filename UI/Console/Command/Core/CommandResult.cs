@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GHTweaks.UI.Console.Command.Core
 {
-    internal class CommandResult
+    public class CommandResult
     {
         public CommandInfo Command { get; private set; }
 
@@ -27,15 +28,18 @@ namespace GHTweaks.UI.Console.Command.Core
         }
 
 
+        [DebuggerStepThrough]
         public void OutputAdd(ConsoleLine msg)
         {
             Output ??= new List<ConsoleLine>();
             Output.Add(msg);
         }
 
+        [DebuggerStepThrough]
         public void OutputAdd(string msg, string color = null) => OutputAdd(new ConsoleLine(msg, color));
 
-        public void OutputAddRange(List<string> messages, string color = null)
+        [DebuggerStepThrough]
+        public void OutputAddRange(string[] messages, string color = null)
         {
             if (messages == null)
                 return;
@@ -45,6 +49,9 @@ namespace GHTweaks.UI.Console.Command.Core
             var lines = messages.Select(x => new ConsoleLine(x, color)).ToList();
             Output.AddRange(lines);
         }
+
+        [DebuggerStepThrough]
+        public void OutputAddRange(List<string> messages, string color = null) => OutputAddRange(messages.ToArray(), color);
 
 
         public override string ToString()

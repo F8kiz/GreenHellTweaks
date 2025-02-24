@@ -17,9 +17,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Tweaks\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -152,14 +152,18 @@
     <None Include="packages.config" />
     <Compile Include="Patches\AIManager.InitializeParams.cs" />
     <Compile Include="StaticFileNames.cs" />
+    <None Include="UI\Console\Command\ConfigCommandHandler.cs.old" />
     <Compile Include="UI\Console\Command\ConfigCommandHandler.cs" />
     <Compile Include="UI\Console\Command\ConsoleCommandHandler.cs" />
     <Compile Include="UI\Console\CommandSuggestion.cs" />
+    <Compile Include="UI\Console\Command\Core\AssemblyHelper.cs" />
     <Compile Include="UI\Console\Command\Core\CommandDescription.cs" />
     <Compile Include="UI\Console\Command\Core\CommandResult.cs" />
     <Compile Include="UI\Console\Command\Core\CommandAttribute.cs" />
     <Compile Include="UI\Console\Command\Core\ICommand.cs" />
+    <Compile Include="UI\Console\Command\Core\TypeSuggestionBuilder.cs" />
     <Compile Include="UI\Console\Command\GamePauseCommand.cs" />
+    <Compile Include="UI\Console\Command\GetSetGameTypePropertyCommand.cs" />
     <Compile Include="UI\Console\Command\HelpCommand.cs" />
     <Compile Include="UI\Console\Command\SpawnCommandHandler.cs" />
     <Compile Include="UI\Console\Command\ToggleCheatCommandHandler.cs" />

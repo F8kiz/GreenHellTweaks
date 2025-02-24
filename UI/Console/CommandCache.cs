@@ -32,9 +32,6 @@ namespace GHTweaks.UI.Console.Command.Core
         {
             var buffer = new List<string>();
             GetAllConsoleCommandAttributes().Do(x => buffer.AddRange(x.Commands));
-
-            LogWriter.Write($"Return {buffer.Count} commands");
-
             return buffer.Distinct().ToArray();
         }
 
@@ -105,18 +102,16 @@ namespace GHTweaks.UI.Console.Command.Core
                     var cmdAttribute = type.GetCustomAttribute<CommandAttribute>();
                     if (cmdAttribute == null)
                         continue;
-
+#if verbose
                     LogWriter.Write($"Check command. Type: '{type.Name}', AcceptedArguments: '{string.Join(", ", cmdAttribute.AcceptedArguments)}'");
-
+#endif
                     if (!cmdAttribute.CanExecuteCommand(cmdInfo))
                         continue;
-
+#if verbose
                     LogWriter.Write($"Found matching command. Type: '{type.Name}', AcceptedArguments: '{string.Join(", ", cmdAttribute.AcceptedArguments)}'");
-
+#endif
                     ICommand instance = (ICommand)type.CreateInstance();
-                    
                     commandCache.Add(type, instance);
-
                     commandsBuffer.Add(commandCache.Last().Value);
                 }
 
@@ -135,14 +130,17 @@ namespace GHTweaks.UI.Console.Command.Core
 
         private static bool TryGetCommandFromCache(CommandInfo cmdInfo, out ICommand[] cmd)
         {
+#if verbose
             LogWriter.Write("Try get command from cache...");
-
+#endif
             cmd = null;
             try
             {
                 if ((commandCache?.Count ?? 0) < 1)
                 {
+#if verbose
                     LogWriter.Write("Got no cached commands so far.");
+#endif
                     return false;
                 }
 
@@ -167,8 +165,9 @@ namespace GHTweaks.UI.Console.Command.Core
             {
                 ConsoleWindow.WriteLine(ex);
             }
-
+#if verbose
             LogWriter.Write("Found no matching command.");
+#endif
             return false;
         }
     }

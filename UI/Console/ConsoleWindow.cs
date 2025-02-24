@@ -44,8 +44,11 @@ namespace GHTweaks.UI.Console
 
         private int lastExecutedCommandIndex = -1;
 
-        private string strUserInput = "get config.b";
-
+#if DEBUG
+        private string strUserInput = "get Game.ArenaActivityManager.gameobject.scene";
+#else
+        private string strUserInput = "help";
+#endif
 
 
 

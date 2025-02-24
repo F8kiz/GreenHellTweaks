@@ -18,8 +18,8 @@ namespace GHTweaks.UI.Console.Command
     internal class UnlockCommandHandler : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
-            $"Type in {"unlock whole_notepad".ToCodeRTF()}",
-            $"Type in {"unlock all_items_in_notepad".ToCodeRTF()}",
+            $"Type in {"unlock whole_notepad".ToBoldCodeRTF()}",
+            $"Type in {"unlock all_items_in_notepad".ToBoldCodeRTF()}",
         };
 
         public CommandResult Execute(CommandInfo cmd)

@@ -9,6 +9,7 @@ namespace GHTweaks
         public static readonly string ModConfigFileName;
         public static readonly string LogFileName;
         public static readonly string HarmonyLogFileName;
+        public static readonly string TypeSuggestionsFileName;
 
 
         static StaticFileNames()
@@ -19,6 +20,7 @@ namespace GHTweaks
             ModConfigFileName = Path.Combine(rootDir, "GHTweaksConfig.xml");
             LogFileName = Path.Combine(rootDir, "GHTweaks.log");
             HarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
+            TypeSuggestionsFileName = Path.Combine(rootDir, "TypeSuggestions.txt");
 
             var buffer = new string[] {
                 "StaticFileNames:",

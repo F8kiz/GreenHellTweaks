@@ -7,12 +7,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using static P2PStats.ReplicationStat;
-
 namespace GHTweaks.UI.Console.Command
 {
+    //[Command("get, set, save, reload, print", "Config", "")]
     [Command("get|set|save|reload|print=Config*", "")]
-    public class ConfigCommandHandler : ICommand
+    internal class ConfigCommandHandler : ICommand
     {
         public string[] UsageExamples { get; private set; } = new string[] {
                 $"Type in {"get Config.DebugModeEnabled".ToBoldCodeRTF()} and the console prints the current value of <b>Config.DebugModeEnabled</b>.",
@@ -54,6 +53,8 @@ namespace GHTweaks.UI.Console.Command
 
             if (cmd.CommandEquals("print", "config"))
             {
+                LogWriter.Write($"Arguments: {string.Join(", ", cmd.GetArgumentNames())}");
+
                 PrintConfigCommand.Execute(cmd.HasArgument("ex"), cmd.HasArgument("full_names"), ref result);
                 result.CmdExecResult = CmdExecResult.Executed;
             }
@@ -98,17 +99,36 @@ namespace GHTweaks.UI.Console.Command
 
                 if (instance == null)
                 {
-                    result.OutputAdd($"Got no object instance to get value of property: {property?.Name}", Style.TextColor.Warning);
+                    LogWriter.Write($"Got no object instance to get value of property: {property?.Name}");
                     result.CmdExecResult |= CmdExecResult.Error;
                     return result;
                 }
 
                 if (property == null)
                 {
-                    result.OutputAdd("Got no PropertyInfo instance.", Style.TextColor.Warning);
+                    LogWriter.Write($"Got no PropertyInfo instance.");
                     result.CmdExecResult |= CmdExecResult.Error;
                     return result;
                 }
+
+                /*
+                if (objects.Last().HasSomeKindOfIndex())
+                {
+                    instance = prop.GetValue(instance, null);
+                    var match = Regex.Match(objects.Last(), @"\[(?<index>\w+)]$");
+                    if (int.TryParse(match.Groups["index"].Value, out int index))
+                    {
+                        if (instance is Array array)
+                        {
+
+                        }
+                        else if (instance is IList lst)
+                        {
+
+                        }
+                    }
+                 }
+                 */
 
                 try
                 {
@@ -116,9 +136,37 @@ namespace GHTweaks.UI.Console.Command
                     var typeName = cmd.ArgumentMap.First().Key;
 
                     if (cmd.CommandEquals("get"))
-                        ExecuteGetCommand(typeName, propName, instance, property, ref result);
+                    {
+                        LogWriter.Write($"Try get value from: {instance.GetType().Name}.{propName}");
+
+                        var value = property.GetValue(instance);
+                        result.OutputAdd($"{typeName}: {value.ToCodeRTF()}");
+
+                        if (value.GetType().GetInterface(nameof(IPatchConfig)) != null)
+                            ConfigHelper.PrintPatchConfig(propName, "", (IPatchConfig)value, false, ref result);
+                    }
                     else
-                        ExecuteSetCommand(cmd, typeName, propName, instance, property, ref result);
+                    {
+                        var kvp = cmd.ArgumentMap.First();
+                        LogWriter.Write($"Try to set {kvp.Key}: {kvp.Value}");
+
+                        propName = kvp.Key.Split('.').Last();
+                        if (!string.Equals(propName, property.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogWriter.Write($"Unable to set property, expected Property: {propName}, got Property: {property.Name}");
+                            result.CmdExecResult |= CmdExecResult.Error;
+                            return result;
+                        }
+
+                        if (!TrySetConfigValue(ref instance, property, kvp.Value))
+                        {
+                            LogWriter.Write($"Setting property failed!");
+                            result.CmdExecResult |= CmdExecResult.Error;
+                            return result;
+                        }
+
+                        result.OutputAdd($"{typeName}: {property.GetValue(instance)}");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -131,56 +179,6 @@ namespace GHTweaks.UI.Console.Command
             }
 
 
-            private static void ExecuteGetCommand(string typeName, string propName, object instance, PropertyInfo property, ref CommandResult result)
-            {
-                LogWriter.Write($"Try get value from: {instance.GetType().Name}.{propName}");
-
-                object value = null;
-                if (typeName.HasSomeKindOfIndex())
-                {
-                    instance = property.GetValue(instance, null);
-                    var match = Regex.Match(typeName, @"\[(?<index>\w+)]$");
-                    if (int.TryParse(match.Groups["index"].Value, out int index))
-                    {
-                        if (instance is Array array)
-                            value = array.GetValue(index);
-                        else if (instance is IList lst)
-                            value = lst[index];
-                    }
-                }
-                else
-                {
-                    value = property.GetValue(instance);
-                }
-                result.OutputAdd($"{typeName}: {value.ToCodeRTF()}");
-
-                var type = value.GetType();
-                if (type.GetInterface(nameof(IPatchConfig)) != null)
-                    ConfigHelper.PrintPatchConfig(propName, "", (IPatchConfig)value, false, ref result);
-                else if (type.IsClass)
-                    result.OutputAddRange(AssemblyHelper.DumpMemberTypes(value));
-            }
-
-            private static void ExecuteSetCommand(CommandInfo cmd, string typeName, string propName, object instance, PropertyInfo property, ref CommandResult result)
-            {
-                var kvp = cmd.ArgumentMap.First();
-                propName = kvp.Key.Split('.').Last();
-                if (!string.Equals(propName, property.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.OutputAdd($"Unable to set property, expected Property: {propName}, got Property: {property.Name}");
-                    result.CmdExecResult |= CmdExecResult.Error;
-                }
-
-                if (!TrySetConfigValue(ref instance, property, kvp.Value))
-                {
-                    result.OutputAdd("Setting property failed!", Style.TextColor.Error);
-                    result.CmdExecResult |= CmdExecResult.Error;
-                }
-
-                result.OutputAdd($"{typeName}: {property.GetValue(instance)}");
-            }
-
-
             private static bool TryGetConfigValue(CommandInfo cmd, ref CommandResult result, out object instance, out PropertyInfo value)
             {
                 instance = null;
@@ -189,6 +187,7 @@ namespace GHTweaks.UI.Console.Command
                 var firstArgs = cmd.GetFirstArgumentName();
                 if (string.IsNullOrEmpty(firstArgs))
                 {
+                    LogWriter.Write($"Command has no arguments: {cmd}");
                     result.OutputAdd($"A command parameter is expected but not provided. The right syntax is: {"get/set Config.(SomeProperty)".ToBoldCodeRTF()}.");
                     return false;
                 }
@@ -197,42 +196,35 @@ namespace GHTweaks.UI.Console.Command
                 var objects = classChain.Split('.');
                 if (objects.Length < 1)
                 {
+                    LogWriter.Write($"Found no property names.");
                     result.OutputAdd($"At least one property name is expected. The right syntax is: {"get/set Config.(SomeProperty)".ToBoldCodeRTF()}.");
                     return false;
                 }
 
-                if (classChain.HasSomeKindOfIndex())
-                {
-                    var indexer = classChain.GetIndexer();
-                    if (indexer.Length > 1)
-                    {
-                        result.OutputAdd($"Sorry buddy but nested List or Array is not supported.");
-                        result.OutputAdd($" [ {"!".ToBoldCodeRTF().ToColoredRTF(Style.TextColor.Warning)} ] Please avoid more than one indexer like: Foo[0].Bar[1]");
-                        result.CmdExecResult = CmdExecResult.Executed | CmdExecResult.Warning;
-                        return false;
-                    }
-                    if (AssemblyHelper.TryGetCollectionItem(classChain, out instance, out value))
-                    {
-                        var v = value.GetValue(instance);
-                        return true;
-                    }
-                }
-
                 try
                 {
-                    var search = objects.Last();
+                    var search = objects.Last().RemoveAllKindsOfIndex();
                     var config = Mod.Instance.Config;
                     instance = Mod.Instance.Config;
                     object lastInstance = null;
                     var properties = instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                     PropertyInfo property = null;
 
+                    LogWriter.Write($"Start to search Config value: {string.Join(".", objects)}, in {properties?.Length ?? -1} properties...");
+
                     for (int i = 0; i < objects.Length; ++i)
                     {
-                        var typeName = objects[i];
+                        LogWriter.Write($"Search for '{property?.Name ?? "Config"}.{objects[i]} : {property?.PropertyType.Name ?? "?"}, Index: {i}'...");
+
+                        var typeName = objects[i].RemoveAllKindsOfIndex();
                         if ((property = properties.FirstOrDefault(x => x.Name == typeName && x.MemberType == MemberTypes.Property)) == null)
                         {
-                            result.OutputAdd($"Found no such property '{lastInstance?.GetType().Name ?? "Config"}.{typeName}'...");
+                            var msg = $"Found no such property '{lastInstance?.GetType().Name ?? "Config"}.{typeName}'...";
+                            LogWriter.Write(msg);
+                            result.OutputAdd(msg);
+
+                            LogWriter.Write("Search command suggestion...");
+
                             var suggestions = properties.Where(x =>
                                 Regex.IsMatch(x.Name, $"^({typeName}.*|.*{typeName}|.*{typeName}.*)$", RegexOptions.IgnoreCase)
                             ).Select(p => new CommandInfo($"{cmd.Command} {property?.Name ?? "Config"}.{p.Name}")).ToList();
@@ -249,8 +241,10 @@ namespace GHTweaks.UI.Console.Command
 
                         lastInstance = instance;
                         instance = property.GetValue(instance, null);
+
                         if (property.PropertyType is IPatchConfig cfg)
                         {
+                            LogWriter.Write("Current property is IPatchConfig, update properties...");
                             properties = cfg.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
                             continue;
                         }
@@ -259,9 +253,17 @@ namespace GHTweaks.UI.Console.Command
                         {
                             value = property;
                             instance = lastInstance;
+
+                            LogWriter.Write($"Property found, return {instance.GetType().Name}.{property.Name} (MemberTypeType: {property.MemberType}, ReflectedType: {property.ReflectedType}, PropertyType: {property.PropertyType})'...");
+
+                            var prop = instance.GetType().GetProperty(search);
+                            LogWriter.Write($"Current value: {prop?.GetValue(instance)?.ToString() ?? "<null>"}");
                             return true;
                         }
+
+                        LogWriter.Write($"Set new properties from '{property.Name ?? "?"} (MemberTypeType: {property.MemberType}, ReflectedType: {property.ReflectedType}, PropertyType: {property.PropertyType})'...");
                         properties = property.PropertyType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                        LogWriter.Write($"New properties count: {properties?.Length ?? 0}.");
                     }
                 }
                 catch (Exception ex)
@@ -275,20 +277,21 @@ namespace GHTweaks.UI.Console.Command
 
             private static bool TrySetConfigValue(ref object instance, PropertyInfo property, object value)
             {
-                // 
-                // TODO: Add support for collections
-                //
-
                 try
                 {
+                    LogWriter.Write($"Try set property value: {instance?.GetType()?.Name ?? "null"}.{property?.Name ?? "null"} = {value ?? null}");
+
                     if (value.GetType() != property.PropertyType)
                     {
+                        LogWriter.Write($"Change property value type. Current value type: {value.GetType().Name}, required value type: {property.PropertyType.Name}");
+
                         value = Convert.ChangeType(value, property.PropertyType);
-                        if (value == null || value.GetType() != property.PropertyType)
-                            return false;
+
+                        LogWriter.Write($"Changed value type: {value.GetType().Name} ({value})");
                     }
 
                     property.SetValue(instance, value);
+                    LogWriter.Write($"{property.Name}: {property.GetValue(instance)}");
                     return true;
                 }
                 catch (Exception ex)
