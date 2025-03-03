@@ -211,9 +211,9 @@ namespace GHTweaks.UI.Console.Command
                         result.CmdExecResult = CmdExecResult.Executed | CmdExecResult.Warning;
                         return false;
                     }
-                    if (AssemblyHelper.TryGetCollectionItem(classChain, out instance, out value))
+                    if (AssemblyHelper.TryGetCollectionItem(classChain, out instance, out MemberInfo mi))
                     {
-                        var v = value.GetValue(instance);
+                        value = mi as PropertyInfo;
                         return true;
                     }
                 }

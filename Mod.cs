@@ -20,7 +20,7 @@ namespace GHTweaks
         /// </summary>
         public static Mod Instance
         {
-            get => instance ?? (instance = new Mod());
+            get => instance ??= new Mod();
         }
         private static Mod instance;
 
@@ -63,8 +63,8 @@ namespace GHTweaks
                 LogWriter.SetWriteDebugLogs(Config.DebugModeEnabled);
 
                 LogWriter.Write($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {StaticFileNames.HarmonyLogFileName}), and initialize...");
-
                 Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", StaticFileNames.HarmonyLogFileName);
+
                 harmony = new Harmony("de.fakiz.gh.tweaks");
 
                 LogWriter.Write($"Harmony initialized: {harmony != null}");
@@ -273,7 +273,6 @@ namespace GHTweaks
                 LogWriter.Write(ex);
             }
         }
-
 
 
         private void RemovePatches(bool includeRequiredPatches)

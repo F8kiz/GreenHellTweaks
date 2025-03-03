@@ -61,8 +61,9 @@ namespace GHTweaks.UI.Console.Command.Core
                 return buffer;
             }
 
+            var searchForGameTypes = alias.ToLower() == "game";
             var memberNames = path.Split('.');
-            var matchingTypes = alias.ToLower() == "game"
+            var matchingTypes = searchForGameTypes
                 ? AssemblyHelper.GetMatchingSingleTonGameTypes(path.EndsWith(".") ? $"^{memberNames[0]}$" : $"^{memberNames[0]}").ToArray()
                 : typeof(Config).GetProperties(AssemblyHelper.BINDING_FLAGS_CONFIG)
                     .Where(x => x.Name.StartsWith(memberNames[0], strComparsion))
@@ -94,14 +95,23 @@ namespace GHTweaks.UI.Console.Command.Core
                 {
                     // If the path ends with a dot we need to print all the members of the parent type.
                     buffer.AddRange(parentType.GetProperties(AssemblyHelper.BINDING_FLAGS_GAME).Select(x => ConvertToTypeSuggestion(x, cPath)));
+                    if (searchForGameTypes)
+                        buffer.AddRange(parentType.GetFields(AssemblyHelper.BINDING_FLAGS_GAME).Select(x => ConvertToTypeSuggestion(x, parentType, cPath)));
                 }
                 else
                 {
-                    // Collect all member that starts with typeNames.Last();
+                    // Collect all member that starts with memberNames.Last();
                     var search = memberNames.Last();
                     buffer.AddRange(parentType.GetProperties(AssemblyHelper.BINDING_FLAGS_GAME)
                         .Where(prop => prop.Name.StartsWith(search, strComparsion))
                         .Select(x => ConvertToTypeSuggestion(x, cPath)));
+
+                    if (searchForGameTypes)
+                    {
+                        buffer.AddRange(parentType.GetFields(AssemblyHelper.BINDING_FLAGS_GAME)
+                            .Where(prop => prop.Name.StartsWith(search, strComparsion))
+                            .Select(x => ConvertToTypeSuggestion(x, parentType, cPath)));
+                    }
                 }
             }
             return buffer;

@@ -212,34 +212,14 @@ namespace GHTweaks.UI.Console.Command.Core
 
             foreach(var type in instance.GetType().GetProperties(BINDING_FLAGS_GAME))
             {
-                var readOnly = type.CanRead ? "" : $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]";
-                var modifier = (type.GetSetMethod()?.IsStatic ?? false) ? "public static" : "public";
-                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
-                var value = type.GetValue(instance, null);
-
-                string str;
-                if (value == null)
-                    str = $"{Style.LineIndent}{readOnly} {modifier} {type.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
-                else
-                    str = $"{Style.LineIndent}{readOnly} {modifier} {type.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
-
-                buffer.Add(str);
+                var str = UIHelper.GetMemberInfoString(type, instance);
+                buffer.Add($"{Style.LineIndent}{str}");
             }
 
             foreach (var type in instance.GetType().GetFields(BINDING_FLAGS_GAME))
             {
-                var readOnly = type.IsInitOnly ? $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]" : "";
-                var modifier = type.IsStatic ? "private static" : "private";
-                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
-                var value = type.GetValue(instance);
-
-                string str;
-                if (value == null)
-                    str = $"{Style.LineIndent}{readOnly} {modifier} {type.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
-                else
-                    str = $"{Style.LineIndent}{readOnly} {modifier} {type.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
-
-                buffer.Add(str);
+                var str = UIHelper.GetMemberInfoString(type, instance);
+                buffer.Add($"{Style.LineIndent}{str}");
             }
 
             return buffer.ToArray();
@@ -258,22 +238,14 @@ namespace GHTweaks.UI.Console.Command.Core
 
             foreach (var _type in type.GetProperties(BINDING_FLAGS_GAME))
             {
-                var readOnly = _type.CanRead ? "" : " readonly".ToColoredRTF(Style.TextColor.Error);
-                var modifier = (_type.GetSetMethod()?.IsStatic ?? false) ? "public static" : "public";
-                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
-                var acceptedTypeInfo = GetFriendlyTypeInformation(_type.PropertyType).ToColoredRTF(Style.GetTypeColor(_type.PropertyType));
-
-                buffer.Add($"{Style.LineIndent}{modifier}{readOnly} {_type.Name.ToShortTypeName()} :: {acceptedTypeInfo}");
+                var str = UIHelper.GetMemberInfoString(_type);
+                buffer.Add($"{Style.LineIndent}{str}");
             }
 
             foreach (var _type in type.GetFields(BINDING_FLAGS_GAME))
             {
-                var readOnly = _type.IsInitOnly ? " readonly".ToColoredRTF(Style.TextColor.Error) : "";
-                var modifier = _type.IsStatic ? "private static" : "private";
-                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
-                var acceptedTypeInfo = GetFriendlyTypeInformation(_type.FieldType).ToColoredRTF(Style.GetTypeColor(_type.FieldType));
-
-                buffer.Add($"{Style.LineIndent}{modifier}{readOnly} {_type.Name} :: {acceptedTypeInfo}");
+                var str = UIHelper.GetMemberInfoString(_type);
+                buffer.Add($"{Style.LineIndent}{str}");
             }
 
             return buffer.ToArray();
@@ -300,7 +272,7 @@ namespace GHTweaks.UI.Console.Command.Core
         }
 
 
-        public static bool TryGetCollectionItem(string propertyPath, out object instance, out PropertyInfo propertyInfo)
+        public static bool TryGetCollectionItem(string propertyPath, out object instance, out MemberInfo propertyInfo)
         {
             instance = null;
             propertyInfo = null;
@@ -336,11 +308,11 @@ namespace GHTweaks.UI.Console.Command.Core
             var typeNames = stripedParentType.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var member in typeNames)
             {
-                var pi = instance.GetType().GetProperties(bindingFlags).FirstOrDefault(x => x.Name.Equals(member, StringComparison.OrdinalIgnoreCase));
-                if (pi == null)
+                propertyInfo = (MemberInfo)instance.GetType().GetProperty(member, bindingFlags) ?? instance.GetType().GetField(member, bindingFlags);
+                if (propertyInfo == null)
                     return false;
 
-                instance = pi.GetValue(instance);
+                instance = propertyInfo.GetValue(instance);
             }
 
             var index = indexer[0];
@@ -361,15 +333,15 @@ namespace GHTweaks.UI.Console.Command.Core
             for (int i = 0; i < typeNames.Length - 1; ++i)
             {
                 var member = typeNames[i];
-                var pi = instance.GetType().GetProperty(member, BINDING_FLAGS_GAME);
-                if (pi == null)
+                propertyInfo = (MemberInfo)instance.GetType().GetProperty(member, bindingFlags) ?? instance.GetType().GetField(member, bindingFlags);
+                if (propertyInfo == null)
                     return false;
 
-                if ((instance = pi.GetValue(instance)) == null)
+                if ((instance = propertyInfo.GetValue(instance)) == null)
                     return false;
             }
 
-            propertyInfo = instance.GetType().GetProperty(typeNames.Last(), BINDING_FLAGS_GAME);
+            propertyInfo = (MemberInfo)instance.GetType().GetProperty(typeNames.Last(), bindingFlags) ?? instance.GetType().GetField(typeNames.Last(), bindingFlags);
             if (propertyInfo == null)
                 return false;
 

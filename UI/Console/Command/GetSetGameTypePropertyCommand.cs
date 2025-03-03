@@ -28,13 +28,33 @@ namespace GHTweaks.UI.Console.Command
 
         private CommandResult HandleGetCommand(CommandInfo cmd)
         {
-            var result = new CommandResult(cmd);
+            var result = new CommandResult(cmd, CmdExecResult.Executed);
             var clsChain = cmd.GetFirstArgumentName().TrimStart("Game.");
+
+            if (clsChain.HasSomeKindOfIndex())
+            {
+                var indexer = clsChain.GetIndexer();
+                if (indexer.Length > 1)
+                {
+                    result.OutputAdd($"Sorry buddy but nested List or Array is not supported.");
+                    result.OutputAdd($" [ {"!".ToBoldCodeRTF().ToColoredRTF(Style.TextColor.Warning)} ] Please avoid more than one indexer like: Foo[0].Bar[1]");
+                    result.CmdExecResult |= CmdExecResult.Warning;
+                    return result;
+                }
+
+                if (AssemblyHelper.TryGetCollectionItem(clsChain, out object instance, out MemberInfo mi))
+                {
+                    var str = UIHelper.GetMemberInfoString(mi, instance);
+                    result.OutputAdd(str);
+                    return result;
+                }
+            }
+
+            // Try to get an instance member.
             if (AssemblyHelper.TryGetMemberInfoFromPath(cmd.GetFirstArgumentName(), out object ownerInstance, out MemberInfo memberInfo))
             {
                 try
                 {
-                    result.CmdExecResult = CmdExecResult.Executed;
                     if (memberInfo != null)
                     {
                         var value = memberInfo.GetValue(ownerInstance);
@@ -55,7 +75,7 @@ namespace GHTweaks.UI.Console.Command
                             if (types.Length > 0)
                                 result.OutputAddRange(types);
                             else
-                                result.OutputAdd("Found no class member!");
+                                result.OutputAdd($"Found no class member in Type: {value.GetType()}");
                         }
 
                     }
@@ -65,7 +85,7 @@ namespace GHTweaks.UI.Console.Command
                         if (types.Length > 0)
                             result.OutputAddRange(types);
                         else
-                            result.OutputAdd("Found no class member!");
+                            result.OutputAdd($"Found no class member in Type: {ownerInstance.GetType()}");
                     }
                     return result;
                 }
@@ -86,9 +106,8 @@ namespace GHTweaks.UI.Console.Command
                     if (types.Length > 0)
                         result.OutputAddRange(types);
                     else
-                        result.OutputAdd("Found no class member!");
+                        result.OutputAdd($"Found no class member in Type: {type.GetType()}");
 
-                    result.CmdExecResult = CmdExecResult.Executed;
                     return result;
                 }
                 catch (Exception ex)
@@ -100,6 +119,7 @@ namespace GHTweaks.UI.Console.Command
                 }
             }
 
+            result.CmdExecResult = CmdExecResult.NotExecuted;
             result.OutputAdd($"Found no instance: {clsChain}. <b>Keep in mind, that some instances requires a running game session.</b>");
             return result;
         }

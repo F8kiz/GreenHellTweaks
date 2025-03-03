@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GHTweaks.UI.Console;
+using GHTweaks.UI.Console.Command.Core;
+
+using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 using UnityEngine;
@@ -85,6 +90,62 @@ namespace GHTweaks.UI
 
             LogWriter.Write($"HexCode: #{hexCode}, converted values: r: {_r} (x{r}), g: {_g} (x{g}), b: {_b} (x{b})");
             return new Color(_r, _g, _b);
+        }
+
+        public static string GetMemberInfoString(MemberInfo mi, object instance)
+        {
+            if (mi is PropertyInfo pi)
+            {
+                var readOnly = pi.CanRead ? "" : $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]";
+                var modifier = (pi.GetSetMethod()?.IsStatic ?? false) ? "public static" : "public";
+                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
+                object value = instance != null ? pi.GetValue(instance, null) : null;
+
+                if (value == null)
+                    return $"{Style.LineIndent}{readOnly} {modifier} {pi.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
+                
+                return $"{Style.LineIndent}{readOnly} {modifier} {pi.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+            }
+
+            if (mi is FieldInfo fi)
+            {
+                var readOnly = fi.IsInitOnly ? $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]" : "";
+                var modifier = fi.IsStatic ? "private static" : "private";
+                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
+                object value = instance != null ? fi.GetValue(instance) : null;
+
+                if (value == null)
+                    return $"{Style.LineIndent}{readOnly} {modifier} {fi.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
+                
+                return $"{Style.LineIndent}{readOnly} {modifier} {fi.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+            }
+
+            return mi.ToString();
+        }
+
+        public static string GetMemberInfoString(MemberInfo mi)
+        {
+            if (mi is PropertyInfo pi)
+            {
+                var readOnly = pi.CanRead ? "" : " readonly".ToColoredRTF(Style.TextColor.Error);
+                var modifier = (pi.GetSetMethod()?.IsStatic ?? false) ? "public static" : "public";
+                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
+                var acceptedTypeInfo = AssemblyHelper.GetFriendlyTypeInformation(pi.PropertyType).ToColoredRTF(Style.GetTypeColor(pi.PropertyType));
+
+                return $"{modifier}{readOnly} {pi.Name.ToShortTypeName()} :: {acceptedTypeInfo}";
+            }
+
+            if (mi is FieldInfo fi)
+            {
+                var readOnly = fi.IsInitOnly ? " readonly".ToColoredRTF(Style.TextColor.Error) : "";
+                var modifier = fi.IsStatic ? "private static" : "private";
+                modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
+                var acceptedTypeInfo = AssemblyHelper.GetFriendlyTypeInformation(fi.FieldType).ToColoredRTF(Style.GetTypeColor(fi.FieldType));
+
+                return $"{modifier}{readOnly} {fi.Name} :: {acceptedTypeInfo}";
+            }
+
+            return mi.ToString();
         }
     }
 }
