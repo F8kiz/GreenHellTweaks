@@ -36,6 +36,13 @@ namespace GHTweaks.UI.Console.Command.Core
             public override readonly string ToString() => $"{MemberPath}.{MemberName} :: {GetAccessModifier()} {MemberTypeName}";          
         }
 
+        internal struct MatchingMemberType
+        {
+            public string MemberName;
+            public Type MemberType;
+        }
+
+
 
         public static List<TypeSuggestion> GetTypeSuggestionsForPath(string path, string alias)
         {
@@ -57,17 +64,19 @@ namespace GHTweaks.UI.Console.Command.Core
                 if (alias.ToLower() == "config")
                     buffer.AddRange(typeof(Config).GetProperties(AssemblyHelper.BINDING_FLAGS_CONFIG).Select(x => ConvertToTypeSuggestion(x, alias)));
                 else
-                    buffer.AddRange(AssemblyHelper.GetSingleTonGameTypes().Select(x => ConvertToTypeSuggestion(x, alias)));
+                    buffer.AddRange(AssemblyHelper.GetSingleTonGameTypes().Select(x => ConvertToTypeSuggestion(new MatchingMemberType() { MemberName = x.Name, MemberType = x }, alias)));
                 return buffer;
             }
 
             var searchForGameTypes = alias.ToLower() == "game";
             var memberNames = path.Split('.');
             var matchingTypes = searchForGameTypes
-                ? AssemblyHelper.GetMatchingSingleTonGameTypes(path.EndsWith(".") ? $"^{memberNames[0]}$" : $"^{memberNames[0]}").ToArray()
+                ? AssemblyHelper.GetMatchingSingleTonGameTypes(path.EndsWith(".") ? $"^{memberNames[0]}$" : $"^{memberNames[0]}")
+                    .Select(x => new MatchingMemberType() { MemberName = x.Name, MemberType = x })
+                    .ToArray()
                 : typeof(Config).GetProperties(AssemblyHelper.BINDING_FLAGS_CONFIG)
                     .Where(x => x.Name.StartsWith(memberNames[0], strComparsion))
-                    .Select(a => a.PropertyType)
+                    .Select(a => new MatchingMemberType() { MemberName = a.Name, MemberType = a.PropertyType })
                     .ToArray();
 
             if (matchingTypes == null)
@@ -79,8 +88,8 @@ namespace GHTweaks.UI.Console.Command.Core
             foreach(var item in matchingTypes)
             {
                 // Find parent member type
-                var parentType = item;
-                var cPath = $"{alias}.{parentType.Name}";
+                var parentType = item.MemberType;
+                var cPath = $"{alias}.{item.MemberName}";
                 for (var i = 1; i < memberNames.Length - 1; ++i)
                 {
                     var property = parentType.GetProperty(memberNames[i], AssemblyHelper.BINDING_FLAGS_GAME);
@@ -205,14 +214,14 @@ namespace GHTweaks.UI.Console.Command.Core
             return null;
         }
 
-        private static TypeSuggestion ConvertToTypeSuggestion(Type type, string memberPath)
+        private static TypeSuggestion ConvertToTypeSuggestion(MatchingMemberType mm, string memberPath)
         {
             return new TypeSuggestion()
             {
-                MemberName = type.Name,
+                MemberName = mm.MemberName,
                 MemberPath = memberPath,
-                MemberTypeName = type.Name,
-                IsClass = type.IsClass
+                MemberTypeName = mm.MemberType.Name,
+                IsClass = mm.MemberType.IsClass
             };
         }
 

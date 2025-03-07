@@ -47,7 +47,7 @@ namespace GHTweaks.UI.Console.Command.Core
         }
 
 
-        public static IEnumerable<Type> GetMatchingSingleTonGameTypes(string pattern, RegexOptions regexOptions=RegexOptions.IgnoreCase)
+        public static List<Type> GetMatchingSingleTonGameTypes(string pattern, RegexOptions regexOptions=RegexOptions.IgnoreCase)
         {
             var result = new List<Type>();
             foreach (var type in GetSingleTonGameTypes())
@@ -265,6 +265,8 @@ namespace GHTweaks.UI.Console.Command.Core
                 suffix = $"Enum ({type.Name})";
             else if (type == typeof(string))
                 suffix = $"{type.Name} (Abc)";
+            else if (type == typeof(IList) || type.IsArray)
+                suffix = "[0-9]";
             else
                 suffix = type.Name;
 

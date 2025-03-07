@@ -2,8 +2,8 @@
 using GHTweaks.UI.Console.Command.Core;
 
 using System;
+using System.Collections;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 using UnityEngine;
@@ -94,30 +94,37 @@ namespace GHTweaks.UI
 
         public static string GetMemberInfoString(MemberInfo mi, object instance)
         {
+            static string convertValueToString(object value, bool isReadOnly, string modifier, string memberName)
+            {
+                var readOnly = isReadOnly ? "" : $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]";
+                if (value == null)
+                    return $"{Style.LineIndent}{readOnly} {modifier} {memberName} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
+
+                if (value is IList lst)
+                    value = lst.Count;
+                else if (value is Array array)
+                    value = array.Length;
+
+                return $"{Style.LineIndent}{readOnly} {modifier} {memberName} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+            }
+
+
             if (mi is PropertyInfo pi)
             {
-                var readOnly = pi.CanRead ? "" : $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]";
                 var modifier = (pi.GetSetMethod()?.IsStatic ?? false) ? "public static" : "public";
                 modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
                 object value = instance != null ? pi.GetValue(instance, null) : null;
 
-                if (value == null)
-                    return $"{Style.LineIndent}{readOnly} {modifier} {pi.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
-                
-                return $"{Style.LineIndent}{readOnly} {modifier} {pi.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+                return convertValueToString(value, pi.CanRead, modifier, pi.Name);
             }
 
             if (mi is FieldInfo fi)
             {
-                var readOnly = fi.IsInitOnly ? $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]" : "";
                 var modifier = fi.IsStatic ? "private static" : "private";
                 modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
                 object value = instance != null ? fi.GetValue(instance) : null;
 
-                if (value == null)
-                    return $"{Style.LineIndent}{readOnly} {modifier} {fi.Name} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
-                
-                return $"{Style.LineIndent}{readOnly} {modifier} {fi.Name} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+                return convertValueToString(value, fi.IsInitOnly, modifier, fi.Name);
             }
 
             return mi.ToString();

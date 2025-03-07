@@ -167,7 +167,7 @@ namespace GHTweaks.UI.Console
                 }
 
                 var chunks = userInput.Split(' ');
-                if (chunks.Length > 1)
+               if (chunks.Length > 1)
                 {
                     if (chunks[1].StartsWith("game", StringComparison.OrdinalIgnoreCase))
                     {

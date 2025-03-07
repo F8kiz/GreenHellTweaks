@@ -171,15 +171,24 @@ namespace GHTweaks.UI.Console.Command
                     result.CmdExecResult |= CmdExecResult.Error;
                 }
 
-                if (!TrySetConfigValue(ref instance, property, kvp.Value))
+                try
                 {
-                    result.OutputAdd("Setting property failed!", Style.TextColor.Error);
-                    result.CmdExecResult |= CmdExecResult.Error;
+                    object value = kvp.Value;
+                    if (value.GetType() != property.PropertyType)
+                    {
+                        value = Convert.ChangeType(value, property.PropertyType);
+                        if (value == null || value.GetType() != property.PropertyType)
+                            return;
+                    }
+                    property.SetValue(instance, value);
+                    result.OutputAdd($"{typeName}: {property.GetValue(instance)}");
                 }
-
-                result.OutputAdd($"{typeName}: {property.GetValue(instance)}");
+                catch (Exception ex)
+                {
+                    LogWriter.Write(ex);
+                    result.OutputAdd(ex.Message);
+                }
             }
-
 
             private static bool TryGetConfigValue(CommandInfo cmd, ref CommandResult result, out object instance, out PropertyInfo value)
             {
@@ -268,31 +277,6 @@ namespace GHTweaks.UI.Console.Command
                 {
                     result.OutputAdd(ex.Message);
                     result.CmdExecResult |= CmdExecResult.Exception;
-                    LogWriter.Write(ex);
-                }
-                return false;
-            }
-
-            private static bool TrySetConfigValue(ref object instance, PropertyInfo property, object value)
-            {
-                // 
-                // TODO: Add support for collections
-                //
-
-                try
-                {
-                    if (value.GetType() != property.PropertyType)
-                    {
-                        value = Convert.ChangeType(value, property.PropertyType);
-                        if (value == null || value.GetType() != property.PropertyType)
-                            return false;
-                    }
-
-                    property.SetValue(instance, value);
-                    return true;
-                }
-                catch (Exception ex)
-                {
                     LogWriter.Write(ex);
                 }
                 return false;
