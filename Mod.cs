@@ -70,8 +70,8 @@ namespace GHTweaks
                 LogWriter.Write($"Harmony initialized: {harmony != null}");
                 LogWriter.Write($"Subscribe P2PTransportLayer events...");
 
-                P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
-                P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
+                //P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
+                //P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
 
                 LogWriter.Write($"P2PTransportLayer events subscribed.");
 #if DEBUG
@@ -296,16 +296,13 @@ namespace GHTweaks
             }
         }
 
-        private void P2PTransportLayerEventHandler()
-        {
-            if (!Config.UnpatchInOnlineSessions)
-                return;
-
-            if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                RemovePatches();
-            else
-                ApplyPatches();
-        }
+        //private void P2PTransportLayerEventHandler()
+        //{
+        //    if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+        //        RemovePatches();
+        //    else
+        //        ApplyPatches();
+        //}
 
         /// <summary>
         /// Saves the current player location inside the configuration file.

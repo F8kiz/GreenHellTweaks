@@ -75,8 +75,6 @@ namespace GHTweaks.Configuration
 
         public bool ConsumeKeyStrokes { get; set; }
 
-        public bool UnpatchInOnlineSessions { get; set; }
-
         public List<KeyBinding> KeyBindings { get; set; }
 
 
@@ -99,7 +97,6 @@ namespace GHTweaks.Configuration
             AIParameterConfigs = new List<AIParam>();
             AISoundModuleConfig = new AISoundModuleConfig();
             BirdHouseConfig = new BirdHouseConfig();
-            UnpatchInOnlineSessions = true;
             ConsumeKeyStrokes = true;
             KeyBindings = new List<KeyBinding>();
 
