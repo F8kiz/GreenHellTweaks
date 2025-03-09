@@ -45,7 +45,7 @@ namespace GHTweaks.UI.Console
         private int lastExecutedCommandIndex = -1;
 
 #if DEBUG
-        private string strUserInput = "get Game.Player.m_Hit";
+        private string strUserInput = "get Game.Player.m_Hit[0]";
 #else
         private string strUserInput = "help";
 #endif

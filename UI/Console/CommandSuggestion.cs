@@ -58,24 +58,9 @@ namespace GHTweaks.UI.Console
         }
 
 
-        public string GetSelectedSuggestion()
-        {
-            if (selectedCommandSuggestions.Suggestions == null || SuggestionIndex < 0 || SuggestionIndex > selectedCommandSuggestions.Suggestions.Length - 1)
-                return null;
-            
-            // Suggestions can have a trailing type information like: " :: Int32 (0 - 9)"
-            // We need to remove them from the suggestion.
-            var value = Regex.Split(selectedCommandSuggestions.Suggestions[SuggestionIndex], "::")[0];
-            value = Regex.Replace(value, "<color=[^>]+>|</color>", "");
+        public string GetSelectedSuggestion() => GetSuggestionFromIndex(SuggestionIndex);
 
-            // There are two different types of suggestions: Command suggestions and Type suggestions.
-            // If we have a command suggestion (e.g. get BufferSize) we don't need to take care of a possible command and can early return the value.
-            if (Regex.IsMatch(value, @"^[\w_]+(\s+\w|$)"))
-                return value;
-
-            // We have to take are about the last command
-            return Regex.Replace(selectedCommandSuggestions.UserInput, @"\s+.*?$", $" {value}");
-        }
+        public string GetFirstSuggestion() => GetSuggestionFromIndex(0);
 
         public void SelectPreviousSuggestion()
         {
@@ -174,7 +159,7 @@ namespace GHTweaks.UI.Console
                         suggestions = TypeSuggestionBuilder.GetTypeSuggestionsForPath(chunks[1], "Game").Select(x =>
                         {
                             var value = x.GetFullName();
-                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType))
+                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType) && x.AcceptedArgumentType != x.MemberName)
                                 value += $" :: {x.AcceptedArgumentType}";
 
                             return value.ToSyntaxHighlightedRTF();
@@ -187,7 +172,7 @@ namespace GHTweaks.UI.Console
                         suggestions = TypeSuggestionBuilder.GetTypeSuggestionsForPath(chunks[1], "Config").Select(x =>
                         {
                             var value = x.GetFullName();
-                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType))
+                            if (!string.IsNullOrEmpty(x.AcceptedArgumentType) && x.AcceptedArgumentType != x.MemberName)
                                 value += $" :: {x.AcceptedArgumentType}";
 
                             return value.ToSyntaxHighlightedRTF();
@@ -205,6 +190,7 @@ namespace GHTweaks.UI.Console
             }
             return new string[0];
         }
+
 
         private string[] AddToCache(string userInput, string[] suggestions)
         {
@@ -295,6 +281,25 @@ namespace GHTweaks.UI.Console
                 }
             }
             return buffer;
+        }
+
+        private string GetSuggestionFromIndex(int suggestionIndex)
+        {
+            if (selectedCommandSuggestions.Suggestions == null || suggestionIndex < 0 || suggestionIndex > selectedCommandSuggestions.Suggestions.Length - 1)
+                return null;
+
+            // Suggestions can have a trailing type information like: " :: Int32 (0 - 9)"
+            // We need to remove them from the suggestion.
+            var value = Regex.Split(selectedCommandSuggestions.Suggestions[suggestionIndex], "::")[0];
+            value = Regex.Replace(value, "<color=[^>]+>|</color>", "");
+
+            // There are two different types of suggestions: Command suggestions and Type suggestions.
+            // If we have a command suggestion (e.g. get BufferSize) we don't need to take care of a possible command and can early return the value.
+            if (Regex.IsMatch(value, @"^[\w_]+(\s+\w|$)"))
+                return value;
+
+            // We have to take are about the last command
+            return Regex.Replace(selectedCommandSuggestions.UserInput, @"\s+.*?$", $" {value}");
         }
 
 

@@ -81,6 +81,17 @@ namespace GHTweaks.UI.Console
                     ProcessInput(strUserInput.Trim());
 					strUserInput = string.Empty;
 				}
+				else if (keyCode == KeyCode.Tab)
+				{
+                    if (!commandSuggestion.IsVisible)
+                        return;
+
+					var firstSuggestion = commandSuggestion.GetSelectedSuggestion() ?? commandSuggestion.GetFirstSuggestion();
+					if (!string.IsNullOrEmpty(firstSuggestion))
+						SetUserInput(firstSuggestion);
+
+					return;
+                }
 				else if (keyCode == KeyCode.UpArrow)
 				{
                     commandSuggestion.SelectPreviousSuggestion();

@@ -36,6 +36,16 @@ namespace GHTweaks.UI.Console.Command.Core
                     singleTonGameTypes = GetCSharpAssembly().GetTypes()
                         .Where(t => t.GetProperty("Instance", BINDING_FLAGS_PS) != null || t.GetMethod("Get", BINDING_FLAGS_PS) != null)
                         .ToArray();
+
+                    //var tmp = GetCSharpAssembly().GetTypes()
+                    //    .Where(t => t.GetProperty("Instance", BINDING_FLAGS_PS) != null || t.GetMethod("Get", BINDING_FLAGS_PS) != null).ToList();
+
+                    //var tmp1 = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "WorkFlowTestApp").GetTypes()
+                    //    .Where(t => t.GetProperty("Instance", BINDING_FLAGS_PS) != null || t.GetMethod("Get", BINDING_FLAGS_PS) != null)
+                    //    .ToList();
+
+                    //tmp1.AddRange(tmp);
+                    //singleTonGameTypes = tmp1.ToArray();
                 }
                 return singleTonGameTypes;
             }
@@ -286,15 +296,16 @@ namespace GHTweaks.UI.Console.Command.Core
             if (indexer.Length > 1)
                 return false;
 
-            var match = Regex.Match(propertyPath, @"^(?<list>\w+\[\w+])(?<path>\.\w+[\w.]+)?$");
+            var match = Regex.Match(propertyPath, @"^(?<list>[\w._]+\[\w+])(?<path>\.[\w._]+)?$");
             if (!match.Success)
                 return false;
 
-            var parentType = match.Groups["list"].Value;
-            var stripedParentType = parentType.RemoveAllKindsOfIndex();
+            var pathToArray = match.Groups["list"].Value; // list looks like: Class.Member[index]
+            var sourceType = pathToArray.Split('.').First();
+            var stripedParentType = pathToArray.RemoveAllKindsOfIndex();
             BindingFlags bindingFlags = BINDING_FLAGS_GAME;
 
-            if (!TryGetSingleTonGameType(stripedParentType, out Type type) || !TryGetSingleTonInstance(type, out instance))
+            if (!TryGetSingleTonGameType(sourceType, out Type type) || !TryGetSingleTonInstance(type, out instance))
             {
                 bindingFlags = BINDING_FLAGS_CONFIG;
                 var pi = typeof(Config).GetProperty(stripedParentType, bindingFlags);
@@ -307,7 +318,7 @@ namespace GHTweaks.UI.Console.Command.Core
             if (instance == null)
                 return false;
 
-            var typeNames = stripedParentType.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var typeNames = stripedParentType.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
             foreach (var member in typeNames)
             {
                 propertyInfo = (MemberInfo)instance.GetType().GetProperty(member, bindingFlags) ?? instance.GetType().GetField(member, bindingFlags);
@@ -331,16 +342,20 @@ namespace GHTweaks.UI.Console.Command.Core
                 return false;
             }
 
-            typeNames = match.Groups["path"].Value.Trim('.').Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < typeNames.Length - 1; ++i)
+            
+            if (match.Groups["path"].Success)
             {
-                var member = typeNames[i];
-                propertyInfo = (MemberInfo)instance.GetType().GetProperty(member, bindingFlags) ?? instance.GetType().GetField(member, bindingFlags);
-                if (propertyInfo == null)
-                    return false;
+                typeNames = match.Groups["path"].Value.Trim('.').Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < typeNames.Length - 1; ++i)
+                {
+                    var member = typeNames[i];
+                    propertyInfo = (MemberInfo)instance.GetType().GetProperty(member, bindingFlags) ?? instance.GetType().GetField(member, bindingFlags);
+                    if (propertyInfo == null)
+                        return false;
 
-                if ((instance = propertyInfo.GetValue(instance)) == null)
-                    return false;
+                    if ((instance = propertyInfo.GetValue(instance)) == null)
+                        return false;
+                }
             }
 
             propertyInfo = (MemberInfo)instance.GetType().GetProperty(typeNames.Last(), bindingFlags) ?? instance.GetType().GetField(typeNames.Last(), bindingFlags);

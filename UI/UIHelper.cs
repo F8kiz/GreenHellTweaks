@@ -94,18 +94,38 @@ namespace GHTweaks.UI
 
         public static string GetMemberInfoString(MemberInfo mi, object instance)
         {
+            static string getArrayLengthString(int length)
+            {
+                if (length < 1)
+                    return "(0 Items)";
+
+                if (length == 1)
+                    return "(1 item, [0])";
+
+                return $"({length} items, [0 - {length - 1}])";
+            }
+
             static string convertValueToString(object value, bool isReadOnly, string modifier, string memberName)
             {
-                var readOnly = isReadOnly ? "" : $"[ {"readonly".ToColoredRTF(Style.TextColor.Error)} ]";
+                var readOnly = isReadOnly ? $" {"readonly".ToColoredRTF(Style.TextColor.AccessModifier)}" : "";
                 if (value == null)
-                    return $"{Style.LineIndent}{readOnly} {modifier} {memberName} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
+                    return $"{Style.LineIndent}{modifier}{readOnly} {memberName} = " + "null".ToColoredRTF(Style.TextColor.NullValue);
 
                 if (value is IList lst)
-                    value = lst.Count;
-                else if (value is Array array)
-                    value = array.Length;
+                {
+                    var typeString = $"{value.GetType().Name}".ToColoredRTF(Style.GetTypeColor(value.GetType()));
+                    var range = getArrayLengthString(lst.Count);
+                    return $"{Style.LineIndent}{modifier}{readOnly} {memberName} : {typeString} {range}";
+                }
+                
+                if (value is Array array)
+                {
+                    var typeString = $"{value.GetType().Name}[]".ToColoredRTF(Style.GetTypeColor(value.GetType()));
+                    var range = getArrayLengthString(array.Length);
+                    return $"{Style.LineIndent}{modifier}{readOnly} {memberName} : {typeString} {range}";
+                }
 
-                return $"{Style.LineIndent}{readOnly} {modifier} {memberName} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
+                return $"{Style.LineIndent}{modifier}{readOnly} {memberName} : {value.GetType().Name.ToColoredRTF(Style.GetTypeColor(value.GetType()))} = {value.ToCodeRTF()}";
             }
 
 
@@ -115,7 +135,10 @@ namespace GHTweaks.UI
                 modifier = modifier.ToColoredRTF(Style.TextColor.AccessModifier);
                 object value = instance != null ? pi.GetValue(instance, null) : null;
 
-                return convertValueToString(value, pi.CanRead, modifier, pi.Name);
+                //
+                // pi.CanWrite seems to be buggy, maybe it's better to use a PropertyDescriptor?
+                //
+                return convertValueToString(value, !(pi.CanWrite || pi.SetMethod != null), modifier, pi.Name);
             }
 
             if (mi is FieldInfo fi)

@@ -33,6 +33,7 @@ namespace GHTweaks.UI.Console.Command
 
             if (clsChain.HasSomeKindOfIndex())
             {
+#if DEBUG
                 var indexer = clsChain.GetIndexer();
                 if (indexer.Length > 1)
                 {
@@ -48,6 +49,15 @@ namespace GHTweaks.UI.Console.Command
                     result.OutputAdd(str);
                     return result;
                 }
+
+                result.OutputAdd($"Found no collection '{clsChain}'");
+                result.CmdExecResult |= CmdExecResult.Error;
+                return result;
+#else
+                result.OutputAdd($"Collections are not supported.");
+                result.CmdExecResult |= CmdExecResult.Warning;
+                return result;
+#endif
             }
 
             // Try to get an instance member.
@@ -126,10 +136,18 @@ namespace GHTweaks.UI.Console.Command
 
         private CommandResult HandleSetCommand(CommandInfo cmd)
         {
-            var result = new CommandResult(cmd);
+            var result = new CommandResult(cmd, CmdExecResult.Executed);
             if (string.IsNullOrEmpty(cmd.GetFirstArgumentValue()))
             {
-                result.OutputAdd($"A value to assign to property is required but not provided.");
+                result.OutputAdd($"A value to assign to the property is required but not provided.");
+                result.CmdExecResult |= CmdExecResult.Error;
+                return result;
+            }
+
+            if (cmd.GetFirstArgumentName().HasSomeKindOfIndex())
+            {
+                result.OutputAdd($"Collections are not supported.");
+                result.CmdExecResult |= CmdExecResult.Warning;
                 return result;
             }
 

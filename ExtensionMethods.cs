@@ -1,7 +1,5 @@
 ﻿using GHTweaks.UI.Console;
 
-using HarmonyLib;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +7,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 using UnityEngine;
-using UnityEngine.Windows;
 
 namespace GHTweaks
 {
@@ -162,7 +159,7 @@ namespace GHTweaks
 
             foreach (var item in str.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (Regex.IsMatch(item, @"\w+\[\w+](\.\w+)?$"))
+                if (Regex.IsMatch(item, @"[\w._]+\[\w+](\.[\w._]+)?$"))
                     return true;
             }
             return false;

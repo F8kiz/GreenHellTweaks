@@ -92,10 +92,19 @@ namespace GHTweaks.UI.Console.Command
         {
             public static CommandResult Execute(CommandInfo cmd)
             {
-                var result = new CommandResult(cmd, CmdExecResult.Executed);
+                var result = new CommandResult(cmd);
+                if (cmd.CommandEquals("get", "Config"))
+                {
+                    var lines = AssemblyHelper.DumpMemberTypes(Mod.Instance.Config);
+                    result.OutputAddRange(lines);
+                    result.CmdExecResult = lines.Length > 0 ? CmdExecResult.Executed : CmdExecResult.Executed | CmdExecResult.Error;
+                    return result;
+                }
+
                 if (!TryGetConfigValue(cmd, ref result, out object instance, out PropertyInfo property))
                     return result;
 
+                result.CmdExecResult = CmdExecResult.Executed;
                 if (instance == null)
                 {
                     result.OutputAdd($"Got no object instance to get value of property: {property?.Name}", Style.TextColor.Warning);
