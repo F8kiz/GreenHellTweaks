@@ -1,6 +1,4 @@
-﻿using GHTweaks.Configuration;
-
-using HarmonyLib;
+﻿using HarmonyLib;
 
 namespace GHTweaks.Patches
 {

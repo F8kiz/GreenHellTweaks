@@ -298,6 +298,9 @@ namespace GHTweaks
 
         private void P2PTransportLayerEventHandler()
         {
+            if (!Config.UnpatchInOnlineSessions)
+                return;
+
             if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
                 RemovePatches();
             else

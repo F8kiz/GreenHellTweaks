@@ -1,12 +1,8 @@
 ﻿using AIs;
 
-using GHTweaks;
-using GHTweaks.Configuration.Core;
-
 using HarmonyLib;
 
 using System.Linq;
-using System.Reflection;
 
 namespace GHTweaks.Patches
 {
