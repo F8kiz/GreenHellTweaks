@@ -72,8 +72,7 @@ namespace GHTweaks
 
                 //P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
                 //P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
-
-                LogWriter.Write($"P2PTransportLayer events subscribed.");
+                //LogWriter.Write($"P2PTransportLayer events subscribed.");
 #if DEBUG
                 if (!Config.ConsumeKeyStrokes)
                     Config.ConsumeKeyStrokes = true;
