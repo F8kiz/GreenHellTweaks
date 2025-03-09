@@ -111,7 +111,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configuration\AIParamsConfig.cs.old" />
     <Compile Include="Configuration\AISoundModuleConfig.cs" />
     <Compile Include="Configuration\BirdHouseConfig.cs" />
     <Compile Include="Configuration\Core\AIParam.cs" />
