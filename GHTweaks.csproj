@@ -57,12 +57,16 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.3.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.3.3\lib\net48\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.3.5\lib\net48\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SteamLibrary\steamapps\common\Green Hell\GH_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -113,6 +117,7 @@
   <ItemGroup>
     <Compile Include="Configuration\AISoundModuleConfig.cs" />
     <Compile Include="Configuration\BirdHouseConfig.cs" />
+    <Compile Include="Configuration\CameraManagerConfig.cs" />
     <Compile Include="Configuration\Core\AIParam.cs" />
     <Compile Include="Configuration\Core\IPatchConfig.cs" />
     <Compile Include="Configuration\Core\PatchCategoryAttribute.cs" />
@@ -150,9 +155,9 @@
     <Compile Include="Configuration\PlayerConfig.cs" />
     <Compile Include="Configuration\PocketGridConfig.cs" />
     <Compile Include="Configuration\SkillConfig.cs" />
-    <None Include="packages.config" />
     <Compile Include="Patches\AIManager.InitializeParams.cs" />
     <Compile Include="StaticFileNames.cs" />
+    <None Include="packages.config" />
     <None Include="UI\Console\Command\ConfigCommandHandler.cs.old" />
     <Compile Include="UI\Console\Command\ConfigCommandHandler.cs" />
     <Compile Include="UI\Console\Command\ConsoleCommandHandler.cs" />
@@ -179,6 +184,8 @@
     <Compile Include="UI\Console\ConsoleLineBuffer.cs" />
     <Compile Include="UI\Console\ScrollInfo.cs" />
     <Compile Include="UI\Console\ConsoleWindow.cs" />
+    <Compile Include="UI\Menu\Camera\Manager.cs" />
+    <Compile Include="UI\Menu\Camera\Slider.cs" />
     <Compile Include="UI\UIHelper.cs" />
     <Compile Include="Utilities\ConstructionGhostHelper.cs" />
     <Compile Include="Utilities\GameDebug.cs" />
