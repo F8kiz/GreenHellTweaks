@@ -11,7 +11,7 @@ namespace GHTweaks.Patches
 #if DEBUG
             __instance.m_GameVersion.text = $"{GreenHellGame.s_GameVersion} (build {GreenHellGame.GetBuildVersion()}) GHTweaks ver. {Mod.Instance.Version} Debug";
 #else
-            __instance.m_GameVersion.text = $"{GreenHellGame.s_GameVersion} (build {GreenHellGame.GetBuildVersion()}) GHTweaks ver. {Mod.Instance.Version}";
+            __instance.m_GameVersion.text = $"{GreenHellGame.s_GameVersion} (build {GreenHellGame.GetBuildVersion()}) GHTweaks ver. {Mod.Instance.Version}b";
 #endif
             __instance.m_GameVersion.resizeTextForBestFit = true;
         }

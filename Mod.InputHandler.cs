@@ -1,4 +1,5 @@
 ﻿using GHTweaks.Models;
+using GHTweaks.UI.Console;
 using GHTweaks.Utilities;
 
 using UnityEngine;
@@ -55,6 +56,12 @@ namespace GHTweaks
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     GameDebug.ShowMenuDebugCamera();
+                    return;
+                }
+                if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    var instance = GreenHellGame.Instance.GetComponent<UI.Menu.Camera.Manager>() ?? GreenHellGame.Instance.AddComponentWithEvent<UI.Menu.Camera.Manager>();
+                    instance.Toggle();
                     return;
                 }
             }

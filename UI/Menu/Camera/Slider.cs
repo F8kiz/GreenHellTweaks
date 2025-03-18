@@ -18,6 +18,7 @@ namespace GHTweaks.UI.Menu.Camera
         public float Value { get; set; }
 
 
+        public Slider() { }
 
         public void InitValue()
         {
@@ -31,13 +32,20 @@ namespace GHTweaks.UI.Menu.Camera
             try
             {
                 Value = (float)MemberInfo.GetValue(cprtInstance);
-                LogWriter.Write($"Update Slider.Value of {MemberInfo.Name}: {Value}");
+                LogWriter.Write($"Init Slider.Value {MemberInfo.Name}: {Value}");
             }
             catch (Exception ex) 
             {
                 LogWriter.Write(ex);
                 Value = 0;
             }
+        }
+
+        public void SetProperties(FieldInfo fieldInfo, float minValue, float maxValue)
+        {
+            MemberInfo = fieldInfo;
+            MinValue = minValue;
+            MaxValue = maxValue;
         }
     }
 }

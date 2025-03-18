@@ -68,8 +68,7 @@ namespace GHTweaks
                 harmony = new Harmony("de.fakiz.gh.tweaks");
 
                 LogWriter.Write($"Harmony initialized: {harmony != null}");
-                LogWriter.Write($"Subscribe P2PTransportLayer events...");
-
+                //LogWriter.Write($"Subscribe P2PTransportLayer events...");
                 //P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
                 //P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
                 //LogWriter.Write($"P2PTransportLayer events subscribed.");
@@ -117,8 +116,11 @@ namespace GHTweaks
                 {
                     var attribute = info.GetCustomAttribute<PatchCategoryAttribute>();
                     if (attribute == null)
+                    {
+                        LogWriter.Write($"Config.{info.Name} is not decorated with {nameof(PatchCategoryAttribute)}", LogType.Debug);
                         continue;
-                    
+                    }
+
                     if (!(info.GetValue(Config) is IPatchConfig config))
                     {
                         LogWriter.Write($"Config.{info.Name} does not implement IPatchConfig interface", LogType.Error);
@@ -127,8 +129,6 @@ namespace GHTweaks
 
                     if (config.HasAtLeastOneEnabledPatch)
                     {
-                        Console.WriteLine($"PatchCategory.{attribute.PatchCategory}");
-
                         LogWriter.Write($"PatchCategory.{attribute.PatchCategory}");
                         harmony.PatchCategory(assembly, attribute.PatchCategory);
                     }
