@@ -1,6 +1,4 @@
-﻿using GHTweaks.UI;
-
-using HarmonyLib;
+﻿using HarmonyLib;
 
 using System.Reflection;
 

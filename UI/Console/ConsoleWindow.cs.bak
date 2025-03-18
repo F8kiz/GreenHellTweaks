@@ -1,0 +1,214 @@
+﻿using GHTweaks.Configuration;
+using GHTweaks.UI.Console.InputHandler;
+
+using System.Linq;
+using System.Reflection;
+
+using UnityEngine;
+
+namespace GHTweaks.UI.Console
+{
+    internal class ConsoleWindow : MonoBehaviour
+    {
+        public Vector2 scrollPosition = Vector2.zero;
+
+        private Vector2 lastScrollPosition = Vector2.zero;
+
+        private static readonly ConsoleLineBuffer lineBuffer = new ConsoleLineBuffer();
+
+        private string strUserInput;
+
+        private int iSelectedLineIndex = 0;
+
+        private Rect windowRect;
+
+
+
+        private ConsoleWindow() : base()
+        {
+            windowRect = new Rect(0, Screen.height - 300, Screen.width, 300);
+            enabled = false;
+        }
+
+        public static void WriteLine(string line) => lineBuffer.Add(line, false);
+
+        public void Show() => enabled = true;
+        
+        public void Hide() => enabled = false;
+        
+        public void Toggle() => enabled = !enabled;
+
+
+        private void Update()
+        {
+            if (lineBuffer.Count > 16 && lastScrollPosition.y == scrollPosition.y)
+            {
+                scrollPosition = new Vector2(0, lineBuffer.Count * 32);
+                lastScrollPosition = scrollPosition;
+            }
+            lineBuffer.Add("Update", false);
+        }
+
+        private void OnGUI() 
+        {
+            if (!enabled)
+                return;
+
+            windowRect = GUI.Window(0, windowRect, WindowFunction, "GHTweaks Console");
+           
+            if (Event.current.type == EventType.KeyUp)
+            {
+                var keyCode = Event.current.keyCode;
+                if (keyCode == KeyCode.Return || keyCode == KeyCode.KeypadEnter)
+                {
+                    ProcessInput(strUserInput.Trim());
+                    strUserInput = string.Empty;
+                }
+                else if (keyCode == KeyCode.UpArrow)
+                {
+                    iSelectedLineIndex = GetPreviousCommandIndex();
+                    if (iSelectedLineIndex > 0)
+                        strUserInput = lineBuffer[iSelectedLineIndex].Text;
+                }
+                else if (keyCode == KeyCode.DownArrow)
+                {
+                    iSelectedLineIndex = GetNextCommandIndex();
+                    if (iSelectedLineIndex > 0)
+                        strUserInput = lineBuffer[iSelectedLineIndex].Text;
+                }
+            }
+        }
+
+        private void WindowFunction(int windowID)
+        {
+            var clientArea = new Rect(10, 20, windowRect.width-10, windowRect.height-10); ; // new Rect(windowRect.x + 10, windowRect.y + 10, windowRect.width-10, windowRect.height-10);
+            var inputRect = new Rect(clientArea.x, clientArea.y, clientArea.width-10, 20);
+            var scrollViewRect = new Rect(inputRect.x + 5, inputRect.y + inputRect.height + 2, inputRect.width - 5, 250);
+            var scrollViewViewRect = new Rect(scrollViewRect.x, scrollViewRect.y, scrollViewRect.width-20, 5000);
+
+            GUI.SetNextControlName("input");
+
+            strUserInput = GUI.TextField(inputRect, strUserInput);
+
+            GUI.contentColor = Color.black;
+            using (var scrollScope = new GUI.ScrollViewScope(scrollViewRect, scrollPosition, scrollViewViewRect))
+            {
+                scrollPosition = scrollScope.scrollPosition;
+                GUI.TextArea(scrollViewViewRect, string.Join("\n", lineBuffer), "label");
+            }
+
+            if (GUI.Button(new Rect(windowRect.width - 52, 2, 50, 16), "X"))
+            {
+                Hide();
+                return;
+            }
+
+            GUI.FocusControl("input");
+        }
+
+        private void ProcessInput(string text)
+        {
+            var cmd = new ConsoleCommand(text);
+            if (string.IsNullOrEmpty(cmd.Command))
+                return;
+
+            Mod.Instance.WriteLog($"Begin to process Cmd:");
+            Mod.Instance.WriteLog(cmd.ToParsedString());
+
+            if (cmd.CommandEquals("clear"))
+            {
+                lineBuffer.Clear();
+                return;
+            }
+
+            if (cmd.CommandEquals( "close"))
+            {
+                Hide();
+                return;
+            }
+
+            if (cmd.CommandEquals("print"))
+                lineBuffer.AddConsoleMessage($"ScrollPosition: {scrollPosition}");
+
+            lineBuffer.Add(text, true);
+
+            if (CommandInputHandler.Instance.TryHandleInput(cmd, lineBuffer))
+                return;
+
+            if (CheatInputHandler.Instance.TryHandleInput(cmd, lineBuffer))
+                return;
+
+            if (UnlockInputHandler.Instance.TryHandleInput(cmd, lineBuffer))
+                return;
+
+            if (SpawnInputHandler.Instance.TryHandleInput(cmd, lineBuffer))
+                return;
+        }
+
+        private int GetPreviousCommandIndex()
+        {
+            int index = iSelectedLineIndex;
+            while (--index > 0)
+            {
+                if (lineBuffer.ElementAt(index).IsUserInput)
+                    return index;
+            }
+
+            index = lineBuffer.Count - 1;
+            while (++index > iSelectedLineIndex)
+            {
+                if (lineBuffer.ElementAt(index).IsUserInput)
+                    return index;
+            }
+
+            return -1;
+        }
+
+        private int GetNextCommandIndex()
+        {
+            int index = iSelectedLineIndex;
+            while (++index < lineBuffer.Count)
+            {
+                if (lineBuffer.ElementAt(index).IsUserInput)
+                    return index;
+            }
+
+            index = 0;
+            while (++index < iSelectedLineIndex)
+            {
+                if (lineBuffer.ElementAt(index).IsUserInput)
+                    return index;
+            }
+
+            return -1;
+        }
+
+        static bool TryGetConfigValue(string configPropertyName, string[] propertyChain, out object value)
+        {
+            value = null;
+
+            var propertyInfo = typeof(Config).GetProperty(configPropertyName);
+            if (propertyInfo == null)
+                return false;
+
+            object config = propertyInfo.GetValue(Mod.Instance.Config);
+            PropertyInfo piTemp = null;
+            foreach(string propertyName in propertyChain)
+            {
+                piTemp = propertyInfo.GetType().GetProperty(propertyName);
+                if (piTemp == null)
+                    return false;
+
+                config = propertyInfo.GetValue(config, null);
+            }
+
+            if (piTemp != null)
+            {
+                value = piTemp.GetValue(config);
+                return true;
+            }
+
+            return false;
+        }
+    }
+}

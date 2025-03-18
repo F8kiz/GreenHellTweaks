@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 namespace GHTweaks.Configuration.Core
@@ -17,12 +16,18 @@ namespace GHTweaks.Configuration.Core
 
                 var value = info.GetValue(this);
                 if (info.PropertyType != attribute.PropertyType)
+                {
+                    LogWriter.Write($"Found mismatch property types... {configuration.GetType().Name}: {info.PropertyType} != {attribute.PropertyType}");
                     continue; // TODO: report
+                }
 
-                if (value != attribute.IsDisabledIfValue)
-                    return true;
+                if (value.Equals(attribute.IsDisabledIfValue))
+                {
+                    LogWriter.Write($"Skip {configuration.GetType().Name} patch: {value} == {attribute.IsDisabledIfValue}");
+                    return false;
+                }
             }
-            return false;
+            return true;
         }
 
         protected void SetBackingField<T>(ref T field, T value)

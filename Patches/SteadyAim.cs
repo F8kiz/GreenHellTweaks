@@ -31,10 +31,14 @@ namespace GHTweaks.Patches
         {
             if (Mod.Instance.Config.PlayerConfig.SteadyAim)
             {
+                var itemInHand = __instance.GetCurrentItem();
+                if (itemInHand == null || !itemInHand.m_Info.IsWeapon())
+                    return true;
+
                 FieldInfo fiAim = AccessTools.Field(typeof(Player), "m_Aim");
                 if (fiAim == null)
                 {
-                    Mod.Instance.WriteLog($"PlayerAimPower: Failed to access m_Aim field!", LogType.Error);
+                    LogWriter.Write($"PlayerAimPower: Failed to access m_Aim field!", LogType.Error);
                     return false;
                 }
 

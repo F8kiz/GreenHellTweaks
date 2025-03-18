@@ -9,6 +9,7 @@ using GHTweaks.Models;
 using System.Linq;
 using GHTweaks.Patches;
 using GHTweaks.Configuration.Core;
+using GHTweaks.UI.Console;
 
 namespace GHTweaks
 {
@@ -19,7 +20,7 @@ namespace GHTweaks
         /// </summary>
         public static Mod Instance
         {
-            get => instance ?? (instance = new Mod());
+            get => instance ??= new Mod();
         }
         private static Mod instance;
 
@@ -35,21 +36,6 @@ namespace GHTweaks
 
         public bool IsPatchesApplied { get; private set; }
 
-        /// <summary>
-        /// Get the GHTweaksConfig.xml file path.
-        /// </summary>
-        private readonly string strModConfigFileName;
-
-        /// <summary>
-        /// Get the GHTweaks.log file path.
-        /// </summary>
-        private readonly string strLogFileName;
-
-        /// <summary>
-        /// Get the Harmony.log file path.
-        /// </summary>
-        private readonly string strHarmonyLogFileName;
-
         private readonly Harmony harmony;
 
 
@@ -59,34 +45,48 @@ namespace GHTweaks
         /// </summary>
         private Mod()
         {
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assemblyLocation);
-            Version = new Version(versionInfo.FileVersion);
-
-            string rootDir = Path.GetDirectoryName(assemblyLocation);
-            strModConfigFileName = Path.Combine(rootDir, "GHTweaksConfig.xml");
-            strLogFileName = Path.Combine(rootDir, "GHTweaks.log");
-            strHarmonyLogFileName = Path.Combine(rootDir, "harmony.log");
-
-            AppDomain.CurrentDomain.UnhandledException += (s, e) => WriteLog((e.ExceptionObject as Exception)?.ToString() ?? "AppDomain.CurrentDomain.UnhandledException invalid ExceptionObject", LogType.Exception);
-
-            WriteLog($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {strHarmonyLogFileName})", LogType.Debug);
-            Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", strHarmonyLogFileName);
-
-            harmony = new Harmony("de.fakiz.gh.tweaks");
-
-            TryDeleteLogFiles();
-            if (!TryLoadConfig() && Config == null)
+            AppDomain.CurrentDomain.UnhandledException += (s, e) 
+                => LogWriter.Write((e.ExceptionObject as Exception)?.ToString() ?? "AppDomain.CurrentDomain.UnhandledException invalid ExceptionObject", LogType.Exception);
+            try
             {
-                WriteLog($"Initialize new Config...", LogType.Info);
-                Config = new Config();
+                var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(StaticFileNames.ExecutingAssembly);
+                Version = new Version(versionInfo.FileVersion);
 
-                if (!File.Exists(strModConfigFileName) && TrySaveConfig())
-                    WriteLog($"Created new file '{strModConfigFileName}.");
+                if (!TryLoadConfig() && Config == null)
+                {
+                    LogWriter.Write($"Initialize new Config...", LogType.Info);
+                    Config = new Config();
+
+                    if (!File.Exists(StaticFileNames.ModConfigFileName) && TrySaveConfig())
+                        LogWriter.Write($"Created new file '{StaticFileNames.ModConfigFileName}.", LogType.Info);
+                }
+                LogWriter.SetWriteDebugLogs(Config.DebugModeEnabled);
+
+                LogWriter.Write($"SetEnvironmentVariable(\"HARMONY_LOG_FILE\", {StaticFileNames.HarmonyLogFileName}), and initialize...");
+                Environment.SetEnvironmentVariable("HARMONY_LOG_FILE", StaticFileNames.HarmonyLogFileName);
+
+                harmony = new Harmony("de.fakiz.gh.tweaks");
+
+                LogWriter.Write($"Harmony initialized: {harmony != null}");
+                //LogWriter.Write($"Subscribe P2PTransportLayer events...");
+                //P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
+                //P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
+                //LogWriter.Write($"P2PTransportLayer events subscribed.");
+#if DEBUG
+                if (!Config.ConsumeKeyStrokes)
+                    Config.ConsumeKeyStrokes = true;
+                
+                if (!Config.DebugModeEnabled)
+                    Config.DebugModeEnabled = true;
+
+                if (!Config.SkipIntro)
+                    Config.SkipIntro = true;
+#endif
             }
-
-            P2PTransportLayer.OnLobbyEnterEvent += (value) => P2PTransportLayerEventHandler();
-            P2PTransportLayer.OnSessionConnectStartEvent += () => P2PTransportLayerEventHandler();
+            catch(Exception ex)
+            {
+                LogWriter.Write(ex);
+            }
         }
 
 
@@ -97,7 +97,7 @@ namespace GHTweaks
                 if (IsPatchesApplied)
                     return;
                 
-                WriteLog("Apply patches...");
+                LogWriter.Write("Apply patches...");
                 Harmony.DEBUG = Config.DebugModeEnabled;
 
                 //harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -110,74 +110,61 @@ namespace GHTweaks
 #if DEBUG
                 harmony.PatchCategory(assembly, PatchCategory.AIManager);
 #endif
-
                 // Patch everything that is categorized 
                 var propertyInfos = Config.GetType().GetProperties();
                 foreach (var info in propertyInfos) 
                 {
                     var attribute = info.GetCustomAttribute<PatchCategoryAttribute>();
                     if (attribute == null)
+                    {
+                        LogWriter.Write($"Config.{info.Name} is not decorated with {nameof(PatchCategoryAttribute)}", LogType.Debug);
                         continue;
-                    
+                    }
+
                     if (!(info.GetValue(Config) is IPatchConfig config))
                     {
-                        WriteLog($"Config.{info.Name} does not implement IPatchConfig interface", LogType.Error);
+                        LogWriter.Write($"Config.{info.Name} does not implement IPatchConfig interface", LogType.Error);
                         continue;
                     }
 
                     if (config.HasAtLeastOneEnabledPatch)
                     {
-                        WriteLog($"PatchCategory.{attribute.PatchCategory}");
+                        LogWriter.Write($"PatchCategory.{attribute.PatchCategory}");
                         harmony.PatchCategory(assembly, attribute.PatchCategory);
                     }
                 }
 
                 if (Config.HasAtLeastOneChangedAIParamConfig())
                 {
-                    WriteLog($"PatchCategory.{PatchCategory.AIManager}");
+                    LogWriter.Write($"PatchCategory.{PatchCategory.AIManager}");
                     harmony.PatchCategory(assembly, PatchCategory.AIManager);
                 }
                 if (Config.ConsumeKeyStrokes)
                 {
-                    WriteLog($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
+                    LogWriter.Write($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
                     harmony.PatchCategory(assembly, PatchCategory.GreenHellGameUpdate);
                 }
-                if (Config.CheatsEnabled)
-                {
-                    WriteLog($"PatchCategory.{PatchCategory.Cheats}");
-                    harmony.PatchCategory(assembly, PatchCategory.Cheats);
-                }
-
-                //WriteLog("Patched methods:");
-                //IEnumerable<MethodBase> methods = harmony.GetPatchedMethods();
-                //foreach (MethodBase mb in methods)
-                //    WriteLog($"Patched Method '{mb.ReflectedType.Name}.{mb.Name}'");
 
                 IsPatchesApplied = true;
+                LogWriter.Write("Patches applied...");
             }
             catch (Exception ex)
             {
-                WriteLog(ex.ToString(), LogType.Exception);
+                ConsoleWindow.WriteLine(ex);
             }
         }
 
-        public void RemovePatches()
-        {
-            try
-            {
-                if (!IsPatchesApplied)
-                    return;
-                
-                WriteLog("Remove patches...");
-                harmony.UnpatchAll("de.fakiz.gh.tweaks");
-                harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
+        public void RemovePatches() => RemovePatches(false);
 
-                IsPatchesApplied = false;
-            }
-            catch (Exception ex)
-            {
-                WriteLog(ex.ToString(), LogType.Exception);
-            }
+        public void UnloadMod()
+        {
+            LogWriter.Write("Unload mod...", LogType.Info);
+            RemovePatches(true);
+            ConsoleWindow.Destroy();
+            instance = null;
+
+            LogWriter.Write("Mod unloaded.", LogType.Info);
+            GC.Collect();
         }
 
         public void ReloadConfig()
@@ -191,6 +178,27 @@ namespace GHTweaks
             {
                 PrintMessage("Failed to reload config!", LogType.Error);
             }
+        }
+
+        /// <summary>
+        /// Saves the current config.
+        /// </summary>
+        /// <returns>True if the config was saved successfully, otherwise false.</returns>
+        public bool TrySaveConfig()
+        {
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Config));
+                using StreamWriter sw = new StreamWriter(StaticFileNames.ModConfigFileName, false);
+                serializer.Serialize(sw, Config);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWindow.WriteLine(ex);
+            }
+            return false;
         }
 
         /// <summary>
@@ -214,46 +222,86 @@ namespace GHTweaks
                 HUDMessages hudMessages = (hudManager?.GetHUD(typeof(HUDMessages))) as HUDMessages;
 
                 if (hudMessages == null)
-                    WriteLog("Failed to get HUDMessage instance", LogType.Error);
+                    LogWriter.Write("Failed to get HUDMessage instance", LogType.Error);
                 else
                     hudMessages.AddMessage(message, color, HUDMessageIcon.None, "", null);
+
+                ConsoleWindow.WriteLine(message);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                WriteLog("Failed to print message, exception: " + ex.Message, LogType.Debug);
+                LogWriter.Write("Failed to print message, exception: " + ex.Message, LogType.Debug);
+                ConsoleWindow.WriteLine(ex.Message, Style.TextColor.Error);
             }
         }
 
-        /// <summary>
-        /// Write a log message to the GHTweaks.log file.
-        /// </summary>
-        /// <param name="message">The message to write to the log file.</param>
-        /// <param name="logType">The type of the log message.</param>
-        public void WriteLog(string message, LogType logType=LogType.Debug)
+        public void PauseGame(bool pause)
         {
             try
             {
-                string msg = string.Format("[{0:HH:mm:ss}][{1}] {2}", DateTime.Now, logType, message);
-                CJDebug.m_Log += $"[{logType}] {message}\n";
-
-                if (logType == LogType.Debug && !Config.DebugModeEnabled)
-                    return;
-                
-                using (StreamWriter sw = new StreamWriter(strLogFileName, true))
-                    sw.WriteLine(msg);
+                var player = Player.Get();
+                if (player != null && GreenHellGame.Instance.m_LoadGameState == LoadGameState.None)
+                {
+                    if (pause)
+                    {
+                        //PostProcessManager.Get().SetWeight(PostProcessManager.Effect.InGameMenu, 1f);
+                        CameraManager.Get().OutlineCameraToggle(false, null);
+                        player.BlockMoves();
+                        player.BlockRotation();
+                        CursorManager.Get().ShowCursor(true, false);
+                        MenuInGameManager.Get().m_CursorVisible = true;
+                        MainLevel.Instance.Pause(true);
+                    }
+                    else
+                    {
+                        player.UnblockMoves();
+                        player.UnblockRotation();
+                        if (MenuInGameManager.Get().m_CursorVisible)
+                        {
+                            CursorManager.Get().ShowCursor(false, false);
+                            MenuInGameManager.Get().m_CursorVisible = false;
+                        }
+                        CameraManager.Get().OutlineCameraToggle(true, null);
+                        //PostProcessManager.Get().SetWeight(PostProcessManager.Effect.InGameMenu, 0f);
+                        MainLevel.Instance.Pause(false);
+                    }
+                }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LogWriter.Write(ex);
+            }
         }
 
 
-
-        private void P2PTransportLayerEventHandler()
+        private void RemovePatches(bool includeRequiredPatches)
         {
-            if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
-                RemovePatches();
-            else
-                ApplyPatches();
+            try
+            {
+                if (!IsPatchesApplied)
+                    return;
+
+                LogWriter.Write("Remove patches...");
+                harmony.UnpatchAll("de.fakiz.gh.tweaks");
+
+                if (!includeRequiredPatches)
+                    harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
+
+                IsPatchesApplied = false;
+            }
+            catch (Exception ex)
+            {
+                ConsoleWindow.WriteLine(ex);
+            }
         }
+
+        //private void P2PTransportLayerEventHandler()
+        //{
+        //    if (P2PSession.Instance.GetGameVisibility() != P2PGameVisibility.Singleplayer)
+        //        RemovePatches();
+        //    else
+        //        ApplyPatches();
+        //}
 
         /// <summary>
         /// Saves the current player location inside the configuration file.
@@ -262,34 +310,13 @@ namespace GHTweaks
         {
             Vector3 worldPosition = Player.Get().GetWorldPosition();
             Config.PlayerHomePosition = new SerializableVector3(worldPosition.x, worldPosition.y, worldPosition.z);
-            WriteLog(string.Format("Current player position: {0}", Config.PlayerHomePosition));
+            LogWriter.Write(string.Format("Current player position: {0}", Config.PlayerHomePosition));
             if (!TrySaveConfig())
             {
                 PrintMessage("Failed to save ModConfig.xml", LogType.Error);
                 return;
             }
             PrintMessage("Saved new PlayerHomePosition", LogType.Info);
-        }
-
-        /// <summary>
-        /// Saves the current config.
-        /// </summary>
-        /// <returns>True if the config was saved successfully, otherwise false.</returns>
-        private bool TrySaveConfig()
-        {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(Config));
-                using (StreamWriter sw = new StreamWriter(strModConfigFileName, false))
-                    serializer.Serialize(sw, Config);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                WriteLog($"Failed to save config file! Exception: {ex.Message}", LogType.Exception);
-            }
-            return false;
         }
 
         /// <summary>
@@ -302,27 +329,27 @@ namespace GHTweaks
             Config cfg = null;
             try
             {
-                if (!File.Exists(strModConfigFileName))
+                if (!File.Exists(StaticFileNames.ModConfigFileName))
                 {
-                    WriteLog($"Found no config file, FilePath: {strModConfigFileName}", LogType.Error);
+                    LogWriter.Write($"Found no config file, FilePath: {StaticFileNames.ModConfigFileName}", LogType.Error);
                     return false;
                 }
 
                 XmlSerializer serializer = new XmlSerializer(typeof(Config));
-                using (FileStream fs = new FileStream(strModConfigFileName, FileMode.Open))
+                using (FileStream fs = new FileStream(StaticFileNames.ModConfigFileName, FileMode.Open))
                     cfg = serializer.Deserialize(fs) as Config;
 
                 Config = cfg;
             }
             catch (Exception ex)
             {
-                WriteLog(ex.Message, LogType.Exception);
+                ConsoleWindow.WriteLine(ex);
                 return false;
             }
 
             if (cfg == null)
             {
-                WriteLog($"Failed to load '{strModConfigFileName}' file!", LogType.Error);
+                LogWriter.Write($"Failed to load '{StaticFileNames.ModConfigFileName}' file!", LogType.Error);
                 return false;
             }
 
@@ -330,52 +357,5 @@ namespace GHTweaks
             Cheats.m_InstantBuild = Config.ConstructionConfig.InstantBuild;
             return true;
         }
-
-        /// <summary>
-        /// Delete the GHTweaks.log, Harmony.log and doorstop_*.log from the last session.
-        /// </summary>
-        /// <returns>True if no exception occurred, otherwise false.</returns>
-        private bool TryDeleteLogFiles()
-        {
-            try
-            {
-                if (File.Exists(strLogFileName))
-                {
-                    WriteLog($"Delete '{Path.GetFileName(strLogFileName)}' file.", LogType.Info);
-                    File.Delete(strLogFileName);
-                }
-
-                if (File.Exists(strHarmonyLogFileName))
-                {
-                    WriteLog($"Delete '{Path.GetFileName(strHarmonyLogFileName)}' file.", LogType.Info);
-                    File.Delete(strHarmonyLogFileName);
-                }
-
-                var startTime = DateTime.Now.Subtract(new TimeSpan(0,1,0));
-                var currentDirectory = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-                var parentDirectory = currentDirectory.Parent;
-                var doorstopLogFiles = parentDirectory.GetFiles("doorstop_*.log", SearchOption.TopDirectoryOnly);
-                foreach(var logFile in doorstopLogFiles)
-                {
-                    if (logFile.LastWriteTime < startTime)
-                    {
-                        try
-                        {
-                            WriteLog($"Delete '{logFile.Name}' file.", LogType.Info);
-                            logFile.Delete();
-                        }
-                        catch (Exception) { }
-                    }
-                }
-
-                return true;
-            }
-            catch(Exception ex)
-            {
-                WriteLog(ex.ToString(), LogType.Exception);
-            }
-            return false;
-        }
-
     }
 }

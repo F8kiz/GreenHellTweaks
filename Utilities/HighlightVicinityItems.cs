@@ -104,7 +104,7 @@ namespace GHTweaks.Utilities
                         }
                         catch(Exception ex)
                         {
-                            Mod.Instance.WriteLog($"HighlightVicinityItems {ex.Message}", LogType.Exception);
+                            LogWriter.Write($"HighlightVicinityItems {ex.Message}", LogType.Exception);
                         }
                         outlineCamera?.OutlineCameraToggle(false, item);
                     }
@@ -161,14 +161,14 @@ namespace GHTweaks.Utilities
             {
                 if (item == null)
                 {
-                    Mod.Instance.WriteLog("Unable to disable player collision item is null", LogType.Debug);
+                    LogWriter.Write("Unable to disable player collision item is null", LogType.Debug);
                     return;
                 }
 
                 var methodInfo = item.GetType().GetMethod("DisableCollisionsWithPlayer", BindingFlags.NonPublic | BindingFlags.Instance);
                 if (methodInfo == null)
                 {
-                    Mod.Instance.WriteLog("Failed to get DisableCollisionsWithPlayer method info", LogType.Debug);
+                    LogWriter.Write("Failed to get DisableCollisionsWithPlayer method info", LogType.Debug);
                     return;
                 }
 
@@ -180,7 +180,7 @@ namespace GHTweaks.Utilities
                 if (string.IsNullOrEmpty(exMsg))
                     exMsg = ex.ToString();
 
-                Mod.Instance.WriteLog($"HighlightVicinityItems {exMsg}", LogType.Exception);
+                LogWriter.Write($"HighlightVicinityItems {exMsg}", LogType.Exception);
             }
         }
     }

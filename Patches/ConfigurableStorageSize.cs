@@ -35,7 +35,7 @@ namespace GHTweaks.Patches
 
             if (size.RowCount <= 0 || size.ColumnCount <= 0)
             {
-                Mod.Instance.WriteLog($"PocketGrid.Initialize.Prefix skip patch because the pocket size is invalid. PocketSize: {size}");
+                LogWriter.Write($"PocketGrid.Initialize.Prefix skip patch because the pocket size is invalid. PocketSize: {size}");
                 return true;
             }
 
@@ -109,7 +109,7 @@ namespace GHTweaks.Patches
         //{
         //    FieldInfo fi = AccessTools.Field(typeof(PocketGrid), "m_Pocked");
         //    var pocket = (BackpackPocket)fi.GetValue(__instance);
-        //    Mod.Instance.WriteLog($"{pocket}: {__instance.m_GridSize}");
+        //    LogWriter.Write($"{pocket}: {__instance.m_GridSize}");
         //}
     }
 

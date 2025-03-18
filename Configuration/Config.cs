@@ -64,6 +64,9 @@ namespace GHTweaks.Configuration
         public BirdHouseConfig BirdHouseConfig { get; set; }
 
         [XmlElement(IsNullable = true)]
+        public CameraManagerConfig CameraManagerConfig { get; set; }
+
+        [XmlElement(IsNullable = true)]
         public SerializableVector3 PlayerHomePosition { get; set; }
 
         [XmlIgnore]
@@ -74,8 +77,6 @@ namespace GHTweaks.Configuration
         public bool SkipIntro { get; set; }
 
         public bool ConsumeKeyStrokes { get; set; }
-
-        public bool CheatsEnabled { get; set; }
 
         public List<KeyBinding> KeyBindings { get; set; }
 

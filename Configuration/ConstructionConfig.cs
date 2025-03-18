@@ -13,13 +13,13 @@ namespace GHTweaks.Configuration
         public bool PlaceEveryWhereEnabled { get; set; } = true;
 
         [PropertyInfo(false)]
-        public bool InstantBuild { get; set; }
+        public bool InstantBuild { get; set; } = false;
 
         [PropertyInfo(false)]
-        public bool DestroyConstructionWithoutItems { get; set; }
+        public bool DestroyConstructionWithoutItems { get; set; } = false;
 
         [PropertyInfo(false)]
-        public bool OneShotConstructions { get; set; }
+        public bool OneShotConstructions { get; set; } = false;
 
         public bool HasAtLeastOneEnabledPatch => CheckIfAtLeastOnePropertyHasNotTheDefaultValue(this);
     }

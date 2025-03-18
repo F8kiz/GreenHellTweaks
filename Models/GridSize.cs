@@ -30,6 +30,5 @@ namespace GHTweaks.Models
         public int GetHashCode(object obj) => obj.GetHashCode();
 
         public override string ToString() => $"RowCount: {RowCount}, ColumnCount: {ColumnCount}";
-
     }
 }

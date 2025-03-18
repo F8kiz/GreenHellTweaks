@@ -8,7 +8,7 @@ namespace GHTweaks.Configuration
         public float MaxWeight { get; set; } = 50f;
 
         [PropertyInfo(false)]
-        public bool UnlimitedItemStackSize { get; set; }
+        public bool UnlimitedItemStackSize { get; set; } = false;
 
         public bool HasAtLeastOneEnabledPatch => CheckIfAtLeastOnePropertyHasNotTheDefaultValue(this);
     }

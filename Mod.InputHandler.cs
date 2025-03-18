@@ -1,4 +1,5 @@
 ﻿using GHTweaks.Models;
+using GHTweaks.UI.Console;
 using GHTweaks.Utilities;
 
 using UnityEngine;
@@ -57,6 +58,12 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugCamera();
                     return;
                 }
+                if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    var instance = GreenHellGame.Instance.GetComponent<UI.Menu.Camera.Manager>() ?? GreenHellGame.Instance.AddComponentWithEvent<UI.Menu.Camera.Manager>();
+                    instance.Toggle();
+                    return;
+                }
             }
 
             if (Input.GetKeyUp(KeyCode.F5))
@@ -89,42 +96,34 @@ namespace GHTweaks
             if (Input.GetKeyUp(KeyCode.F8))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugScenario();
-                    return;
-                }
+                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F9))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugSounds();
-                    return;
-                }
-
-                MenuInGameManager.Get().ShowScreen(typeof(SaveGameMenu));
+                else
+                    MenuInGameManager.Get().ShowScreen(typeof(SaveGameMenu));
                 return;
             }
 
             if (Input.GetKeyUp(KeyCode.F10))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugSpawners();
-                    return;
-                }
-                GameDebug.ShowMenuDebugItem();
+                else
+                    GameDebug.ShowMenuDebugItem();
+                return;
             }
 
             if (Input.GetKeyUp(KeyCode.F11))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
-                {
                     GameDebug.ShowMenuDebugTeleport();
-                    return;
-                }
-                HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
+                else
+                    HighlightVicinityItems.Enabled = !HighlightVicinityItems.Enabled;
                 return;
             }
 
@@ -135,7 +134,6 @@ namespace GHTweaks
                     GameDebug.ShowMenuDebugWounds();
                     return;
                 }
-                return;
             }
 
             if (Input.GetKeyUp(KeyCode.PageUp))

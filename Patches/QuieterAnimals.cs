@@ -14,7 +14,7 @@ namespace GHTweaks.Patches
             AI ai = aiField(__instance);
             if (ai == null)
             {
-                Mod.Instance.WriteLog("AISoundModuleInitialize.Postfix Failed to access m_AI field", LogType.Error);
+                LogWriter.Write("AISoundModuleInitialize.Postfix Failed to access m_AI field", LogType.Error);
                 return;
             }
 
@@ -42,15 +42,15 @@ namespace GHTweaks.Patches
             AudioSource audioSource = audioSourceField(instance);
             if (audioSourceField == null)
             {
-                Mod.Instance.WriteLog("AISoundModuleInitialize.SetMaxDistance Failed to access m_AudioSource field", LogType.Error);
+                LogWriter.Write("AISoundModuleInitialize.SetMaxDistance Failed to access m_AudioSource field", LogType.Error);
                 return;
             }
 #if DEBUG
-            Mod.Instance.WriteLog($"AISoundModuleInitialize.SetMaxDistance Current {aiID}.maxDistance: {audioSource.maxDistance}", LogType.Debug);
+            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Current {aiID}.maxDistance: {audioSource.maxDistance}", LogType.Debug);
 #endif
             audioSource.maxDistance = ((audioSource.maxDistance / 100) * maxDistance);
 #if DEBUG
-            Mod.Instance.WriteLog($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.maxDistance to: {audioSource.maxDistance}", LogType.Debug);
+            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.maxDistance to: {audioSource.maxDistance}", LogType.Debug);
 #endif
         }
     }
