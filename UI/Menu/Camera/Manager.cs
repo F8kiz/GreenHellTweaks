@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -83,33 +81,21 @@ namespace GHTweaks.UI.Menu.Camera
                     Hide();
                     return;
                 }
+
                 postProcessLayer = cameraManager.m_MainCamera.GetComponent<PostProcessLayer>();
                 isTAASupported = postProcessLayer.temporalAntialiasing.IsSupported();
 
                 foreach (var kvp in cameraSlider)
                     kvp.Value.InitValue();
 
-                var config = Mod.Instance.Config.CameraManagerConfig;
-                if (config != null)
-                {
-                    if (config.CPRTFilterMode != null)
-                    {
-                        var name = config.CPRTFilterMode.ToString();
-                        selectedFilterMode = Math.Max(0, Array.FindIndex(filterModeNames, x => x == name));
-                    }
+                var propName = postProcessLayer.antialiasingMode.ToString();
+                selectedAntialiasing = Array.FindIndex(antialiasingNames, x => x == propName);
 
-                    if (config.CPRTProjectionType != null)
-                    {
-                        var name = config.CPRTProjectionType.ToString();
-                        selectedProjectionType = Math.Max(0, Array.FindIndex(projectionTypeNames, x => x == name));
-                    }
+                propName = cprtInstance.projectionType.ToString();
+                selectedProjectionType = Array.FindIndex(projectionTypeNames, x => x == name);
 
-                    if (config.GameAntialiasing != null)
-                    {
-                        var name = config.GameAntialiasing.ToString();
-                        selectedAntialiasing = Math.Max(0, Array.FindIndex(antialiasingNames, x => x == name));
-                    }
-                }
+                propName = cprtInstance.filterMode.ToString();
+                selectedFilterMode = Array.FindIndex(filterModeNames, x => x == name);
 
                 enabled = true;
                 Mod.Instance.PauseGame(true);
@@ -139,17 +125,17 @@ namespace GHTweaks.UI.Menu.Camera
                 mod.Config.CameraManagerConfig.CPRTAdaptivePower = cameraSlider[nameof(CPRT.adaptivePower)].Value;
                 mod.Config.CameraManagerConfig.CPRTFilterSharpen = cameraSlider[nameof(CPRT.filterSharpen)].Value;
 
-                if (Enum.TryParse(filterModeNames[selectedFilterMode], out CPRT.CPRTFilterMode filterMode))
+                if (Enum.TryParse(GetSelectedCprtFilterMode(), out CPRT.CPRTFilterMode filterMode))
                     mod.Config.CameraManagerConfig.CPRTFilterMode = filterMode;
                 else
                     mod.Config.CameraManagerConfig.CPRTFilterMode = null;
 
-                if (Enum.TryParse(projectionTypeNames[selectedProjectionType], out CPRT.CPRTType type))
+                if (Enum.TryParse(GetSelectedCprtProjectionType(), out CPRT.CPRTType type))
                     mod.Config.CameraManagerConfig.CPRTProjectionType = type;
                 else
                     mod.Config.CameraManagerConfig.CPRTProjectionType = null;
 
-                if (Enum.TryParse(antialiasingNames[selectedAntialiasing], out PostProcessLayer.Antialiasing aa))
+                if (Enum.TryParse(GetSelectedAAName(), out PostProcessLayer.Antialiasing aa))
                     mod.Config.CameraManagerConfig.GameAntialiasing = aa;
                 else
                     mod.Config.CameraManagerConfig.GameAntialiasing = null;
@@ -198,7 +184,7 @@ namespace GHTweaks.UI.Menu.Camera
                         continue;
                     }
 
-                    GUILayout.Label($"{slider.MemberInfo.Name}: {slider.Value}");
+                    GUILayout.Label($"{GetCapitalizeName(slider.MemberInfo.Name)}: {slider.Value}");
                     slider.Value = GUILayout.HorizontalSlider((float)currentValue, slider.MinValue, slider.MaxValue);
                     slider.MemberInfo.SetValue(cprtInstance, slider.Value);
                 }
@@ -209,17 +195,17 @@ namespace GHTweaks.UI.Menu.Camera
             }
 
             var previousFilterMode = selectedFilterMode;
-            GUILayout.Label($"CPRT FilterMode: {filterModeNames[selectedFilterMode]}");
-            selectedFilterMode = (int)GUILayout.HorizontalSlider(selectedFilterMode, 0, filterModeNames.Length - 1, GUILayout.MinWidth(300));
-            if (selectedProjectionType != previousFilterMode && Enum.TryParse(filterModeNames[selectedFilterMode], out CPRT.CPRTFilterMode filterMode))
+            GUILayout.Label($"CPRT FilterMode: {GetSelectedCprtFilterMode()}");
+            selectedFilterMode = (int)GUILayout.HorizontalSlider(selectedFilterMode, -1, filterModeNames.Length - 1, GUILayout.MinWidth(300));
+            if (selectedProjectionType != previousFilterMode && Enum.TryParse(GetSelectedCprtFilterMode(), out CPRT.CPRTFilterMode filterMode))
             {
                 cprtInstance.filterMode = filterMode;
             }
 
             var previousProjectionType = selectedProjectionType;
-            GUILayout.Label($"CPRT Projection Type: {projectionTypeNames[selectedProjectionType]}");
-            selectedProjectionType = (int)GUILayout.HorizontalSlider(selectedProjectionType, 0, projectionTypeNames.Length - 1, GUILayout.MinWidth(300));
-            if (selectedProjectionType != previousProjectionType && Enum.TryParse(projectionTypeNames[selectedProjectionType], out CPRT.CPRTType type))
+            GUILayout.Label($"CPRT Projection Type: {GetSelectedCprtProjectionType()}");
+            selectedProjectionType = (int)GUILayout.HorizontalSlider(selectedProjectionType, -1, projectionTypeNames.Length - 1, GUILayout.MinWidth(300));
+            if (selectedProjectionType != previousProjectionType && Enum.TryParse(GetSelectedCprtProjectionType(), out CPRT.CPRTType type))
             {
                 cprtInstance.projectionType = type;
             }
@@ -227,7 +213,7 @@ namespace GHTweaks.UI.Menu.Camera
             var previousAntialiasing = selectedAntialiasing;
             GUILayout.Label($"AntialiasingMode: {GetAAName(postProcessLayer.antialiasingMode)}");
             selectedAntialiasing = (int)GUILayout.HorizontalSlider(selectedAntialiasing, 0, antialiasingNames.Length - 1, GUILayout.MinWidth(300));
-            if (selectedAntialiasing != previousAntialiasing && Enum.TryParse(antialiasingNames[selectedAntialiasing], out PostProcessLayer.Antialiasing antialiasing))
+            if (selectedAntialiasing != previousAntialiasing && Enum.TryParse(GetSelectedAAName(), out PostProcessLayer.Antialiasing antialiasing))
             {
                 if (antialiasing != PostProcessLayer.Antialiasing.TemporalAntialiasing || isTAASupported)
                     postProcessLayer.antialiasingMode = antialiasing;
@@ -240,7 +226,32 @@ namespace GHTweaks.UI.Menu.Camera
         }
 
 
-        private string GetAAName(PostProcessLayer.Antialiasing aa)
+        private string GetSelectedCprtFilterMode()
+        {
+            if (selectedFilterMode < 0 || selectedFilterMode > filterModeNames.Length - 1)
+                return "";
+
+            return filterModeNames[selectedFilterMode];
+        }
+
+        private string GetSelectedCprtProjectionType()
+        {
+            if (selectedProjectionType < 0 || selectedProjectionType > projectionTypeNames.Length-1)
+                return "";
+
+            return projectionTypeNames[selectedProjectionType];
+        }
+
+        private string GetSelectedAAName()
+        {
+            if (selectedAntialiasing < 0 || selectedAntialiasing > antialiasingNames.Length-1)
+                return "";
+
+            return antialiasingNames[selectedAntialiasing];
+        }
+
+
+        private static string GetAAName(PostProcessLayer.Antialiasing aa)
         {
             if (aa == PostProcessLayer.Antialiasing.TemporalAntialiasing)
                 return "TAA";
@@ -251,8 +262,16 @@ namespace GHTweaks.UI.Menu.Camera
             if (aa == PostProcessLayer.Antialiasing.FastApproximateAntialiasing)
                 return "FXAA";
 
-            return "None";
+            if (aa == PostProcessLayer.Antialiasing.None)
+                return "None";
+
+            return "";
         }
 
+        private static string GetCapitalizeName(string str)
+        {
+            var firstChar = str[0].ToString().ToUpper();
+            return firstChar + str.Substring(1, str.Length - 1);
+        }
     }
 }
