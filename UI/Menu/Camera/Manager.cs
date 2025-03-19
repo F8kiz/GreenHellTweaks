@@ -3,8 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace GHTweaks.UI.Menu.Camera
 {
@@ -22,10 +25,17 @@ namespace GHTweaks.UI.Menu.Camera
 
         private int selectedFilterMode;
 
+        private readonly string[] antialiasingNames;
+
+        private int selectedAntialiasing;
 
         private CameraManager cameraManager;
 
         private CPRT cprtInstance;
+
+        private PostProcessLayer postProcessLayer;
+
+        private bool isTAASupported = false;
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 
@@ -34,6 +44,8 @@ namespace GHTweaks.UI.Menu.Camera
         {
             filterModeNames = Enum.GetNames(typeof(CPRT.CPRTFilterMode));
             projectionTypeNames = Enum.GetNames(typeof(CPRT.CPRTType));
+            antialiasingNames = Enum.GetNames(typeof(PostProcessLayer.Antialiasing));
+
             cameraSlider = new Dictionary<string, Slider>()
             {
                 { nameof(CPRT.fieldOfView), new Slider() },
@@ -71,20 +83,32 @@ namespace GHTweaks.UI.Menu.Camera
                     Hide();
                     return;
                 }
+                postProcessLayer = cameraManager.m_MainCamera.GetComponent<PostProcessLayer>();
+                isTAASupported = postProcessLayer.temporalAntialiasing.IsSupported();
 
                 foreach (var kvp in cameraSlider)
                     kvp.Value.InitValue();
 
-                if (Mod.Instance.Config.CameraManagerConfig?.CPRTFilterMode != null)
+                var config = Mod.Instance.Config.CameraManagerConfig;
+                if (config != null)
                 {
-                    var name = Mod.Instance.Config.CameraManagerConfig.CPRTFilterMode.ToString();
-                    selectedFilterMode = Math.Max(0, Array.FindIndex(filterModeNames, x => x == name));
-                }
+                    if (config.CPRTFilterMode != null)
+                    {
+                        var name = config.CPRTFilterMode.ToString();
+                        selectedFilterMode = Math.Max(0, Array.FindIndex(filterModeNames, x => x == name));
+                    }
 
-                if (Mod.Instance.Config.CameraManagerConfig?.CPRTProjectionType != null)
-                {
-                    var name = Mod.Instance.Config.CameraManagerConfig.CPRTProjectionType.ToString();
-                    selectedProjectionType = Math.Max(0, Array.FindIndex(projectionTypeNames, x => x == name));
+                    if (config.CPRTProjectionType != null)
+                    {
+                        var name = config.CPRTProjectionType.ToString();
+                        selectedProjectionType = Math.Max(0, Array.FindIndex(projectionTypeNames, x => x == name));
+                    }
+
+                    if (config.GameAntialiasing != null)
+                    {
+                        var name = config.GameAntialiasing.ToString();
+                        selectedAntialiasing = Math.Max(0, Array.FindIndex(antialiasingNames, x => x == name));
+                    }
                 }
 
                 enabled = true;
@@ -125,6 +149,11 @@ namespace GHTweaks.UI.Menu.Camera
                 else
                     mod.Config.CameraManagerConfig.CPRTProjectionType = null;
 
+                if (Enum.TryParse(antialiasingNames[selectedAntialiasing], out PostProcessLayer.Antialiasing aa))
+                    mod.Config.CameraManagerConfig.GameAntialiasing = aa;
+                else
+                    mod.Config.CameraManagerConfig.GameAntialiasing = null;
+
                 mod.TrySaveConfig();
             }
             catch (Exception ex)
@@ -145,7 +174,8 @@ namespace GHTweaks.UI.Menu.Camera
 
         private void Awake()
         {
-            windowRect = new Rect(10, 10, 320, Screen.height);
+            var width = Math.Max(320, Screen.width / 3);
+            windowRect = new Rect(10, 10, width, Screen.height);
         }
 
         private void OnGUI()
@@ -155,7 +185,8 @@ namespace GHTweaks.UI.Menu.Camera
             GUILayout.BeginVertical(GUI.skin.box);
 
             GUILayout.Label($"Is Resolution supported: {cprtInstance.IsResolutionSupported}");
-            foreach(var kvp in cameraSlider)
+            GUILayout.Label($"Is TAA supported: {isTAASupported}");
+            foreach (var kvp in cameraSlider)
             {
                 try
                 {
@@ -193,8 +224,35 @@ namespace GHTweaks.UI.Menu.Camera
                 cprtInstance.projectionType = type;
             }
 
+            var previousAntialiasing = selectedAntialiasing;
+            GUILayout.Label($"AntialiasingMode: {GetAAName(postProcessLayer.antialiasingMode)}");
+            selectedAntialiasing = (int)GUILayout.HorizontalSlider(selectedAntialiasing, 0, antialiasingNames.Length - 1, GUILayout.MinWidth(300));
+            if (selectedAntialiasing != previousAntialiasing && Enum.TryParse(antialiasingNames[selectedAntialiasing], out PostProcessLayer.Antialiasing antialiasing))
+            {
+                if (antialiasing != PostProcessLayer.Antialiasing.TemporalAntialiasing || isTAASupported)
+                    postProcessLayer.antialiasingMode = antialiasing;
+                else
+                    LogWriter.Write("Unable to set TAA because it's not supported!");
+            }
+
             GUILayout.EndVertical();
             GUI.EndGroup();
         }
+
+
+        private string GetAAName(PostProcessLayer.Antialiasing aa)
+        {
+            if (aa == PostProcessLayer.Antialiasing.TemporalAntialiasing)
+                return "TAA";
+
+            if (aa == PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing)
+                return "SMAA";
+
+            if (aa == PostProcessLayer.Antialiasing.FastApproximateAntialiasing)
+                return "FXAA";
+
+            return "None";
+        }
+
     }
 }

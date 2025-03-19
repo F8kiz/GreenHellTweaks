@@ -4,6 +4,7 @@ using HarmonyLib;
 using System;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace GHTweaks.Patches
 {
@@ -69,6 +70,15 @@ namespace GHTweaks.Patches
 
                     if (config.CPRTProjectionType != null)
                         instance.projectionType = (CPRT.CPRTType)config.CPRTProjectionType;
+
+                    if (config.GameAntialiasing != null)
+                    {
+                        var postProcessLayer = CameraManager.Get().m_MainCamera?.GetComponent<PostProcessLayer>();
+                        if (postProcessLayer == null)
+                            LogWriter.Write("Found no PostProcessLayer instance in MainCamera.");
+                        else
+                            postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)config.GameAntialiasing;
+                    }
                 }
                 catch (Exception ex)
                 {

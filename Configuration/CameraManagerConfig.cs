@@ -1,5 +1,7 @@
 ﻿using CameraProjectionRenderingToolkit;
 
+using UnityEngine.Rendering.PostProcessing;
+
 namespace GHTweaks.Configuration
 {
     public class CameraManagerConfig
@@ -25,5 +27,7 @@ namespace GHTweaks.Configuration
         public CPRT.CPRTFilterMode? CPRTFilterMode { get; set; }
 
         public CPRT.CPRTType? CPRTProjectionType { get; set; }
+
+        public PostProcessLayer.Antialiasing? GameAntialiasing { get; set; }
     }
 }
