@@ -140,6 +140,7 @@
     <Compile Include="Patches\ConfigurableStorageSize.cs" />
     <Compile Include="Patches\LiquidContainer.cs" />
     <Compile Include="Patches\LiquidContainer.UpdaeSlotActivity.cs" />
+    <Compile Include="Patches\MainLevel.cs" />
     <Compile Include="Patches\MainMenu.Constructor.cs" />
     <Compile Include="Patches\MenuDebugItem.cs" />
     <Compile Include="Patches\MenuDebugTeleport.Show.cs" />
