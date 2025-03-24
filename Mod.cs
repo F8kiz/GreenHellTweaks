@@ -97,7 +97,7 @@ namespace GHTweaks
                 if (IsPatchesApplied)
                     return;
                 
-                LogWriter.Write("Apply patches...");
+                LogWriter.Write("Apply patches...", LogType.Info);
                 Harmony.DEBUG = Config.DebugModeEnabled;
 
                 //harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -129,24 +129,24 @@ namespace GHTweaks
 
                     if (config.HasAtLeastOneEnabledPatch)
                     {
-                        LogWriter.Write($"PatchCategory.{attribute.PatchCategory}");
+                        LogWriter.Write($"PatchCategory.{attribute.PatchCategory}", LogType.Info);
                         harmony.PatchCategory(assembly, attribute.PatchCategory);
                     }
                 }
 
                 if (Config.HasAtLeastOneChangedAIParamConfig())
                 {
-                    LogWriter.Write($"PatchCategory.{PatchCategory.AIManager}");
+                    LogWriter.Write($"PatchCategory.{PatchCategory.AIManager}", LogType.Info);
                     harmony.PatchCategory(assembly, PatchCategory.AIManager);
                 }
                 if (Config.ConsumeKeyStrokes)
                 {
-                    LogWriter.Write($"PatchCategory.{PatchCategory.GreenHellGameUpdate}");
+                    LogWriter.Write($"PatchCategory.{PatchCategory.GreenHellGameUpdate}", LogType.Info);
                     harmony.PatchCategory(assembly, PatchCategory.GreenHellGameUpdate);
                 }
 
                 IsPatchesApplied = true;
-                LogWriter.Write("Patches applied...");
+                LogWriter.Write("Patches applied...", LogType.Info);
             }
             catch (Exception ex)
             {

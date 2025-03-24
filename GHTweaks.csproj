@@ -164,6 +164,7 @@
     <Compile Include="Patches\AIManager.InitializeParams.cs" />
     <Compile Include="StaticFileNames.cs" />
     <None Include="packages.config" />
+    <None Include="Patches\AddBowlToStorage.cs.old" />
     <None Include="UI\Console\Command\ConfigCommandHandler.cs.old" />
     <Compile Include="UI\Console\Command\ConfigCommandHandler.cs" />
     <Compile Include="UI\Console\Command\ConsoleCommandHandler.cs" />

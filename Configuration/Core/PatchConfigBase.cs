@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+
+using static P2PStats.ReplicationStat;
 
 namespace GHTweaks.Configuration.Core
 {
@@ -21,13 +24,11 @@ namespace GHTweaks.Configuration.Core
                     continue; // TODO: report
                 }
 
-                if (value.Equals(attribute.IsDisabledIfValue))
-                {
-                    LogWriter.Write($"Skip {configuration.GetType().Name} patch: {value} == {attribute.IsDisabledIfValue}");
-                    return false;
-                }
+                if (!value.Equals(attribute.IsDisabledIfValue))
+                    return true;
             }
-            return true;
+            LogWriter.Write($"Found no enabled patches in {configuration.GetType().Name}");
+            return false;
         }
 
         protected void SetBackingField<T>(ref T field, T value)

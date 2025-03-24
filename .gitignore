@@ -373,3 +373,4 @@ FodyWeavers.xsd
 /Patches/Torch.CheckIfInBackpack.cs.off
 /Configuration/PlayerConditionModuleConfig.cs.old
 /Patches/PlayerConditionalModule.Energy.cs.old
+/Patches/AddBowlToStorage.cs.old
