@@ -4,7 +4,7 @@ namespace GHTweaks.Configuration
 {
     public class PlayerConfig : PatchConfigBase, IPatchConfig
     {
-        [PropertyInfo(-1)]
+        [PropertyInfo(-1f)]
         public float MinFallingHeightToDealDamage { get; set; } = -1;
 
         [PropertyInfo(false)]
