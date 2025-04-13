@@ -45,13 +45,19 @@ namespace GHTweaks.Patches
                 LogWriter.Write("AISoundModuleInitialize.SetMaxDistance Failed to access m_AudioSource field", LogType.Error);
                 return;
             }
-#if DEBUG
-            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Current {aiID}.maxDistance: {audioSource.maxDistance}", LogType.Debug);
-#endif
-            audioSource.maxDistance = ((audioSource.maxDistance / 100) * maxDistance);
-#if DEBUG
-            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.maxDistance to: {audioSource.maxDistance}", LogType.Debug);
-#endif
+
+            var newValue = ((audioSource.maxDistance / 100f) * maxDistance);
+            if (newValue >= 0 && audioSource.minDistance > newValue)
+            {
+                LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.minDistance. Current value: {audioSource.minDistance}, new value: 0", LogType.Debug);
+                audioSource.minDistance = 0f;
+            }
+
+            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance Set {aiID}.maxDistance. Current value: {audioSource.maxDistance}, new value: {newValue}", LogType.Debug);
+            
+            audioSource.maxDistance = newValue;
+
+            LogWriter.Write($"AISoundModuleInitialize.SetMaxDistance {aiID}.maxDistance: {audioSource.maxDistance}", LogType.Debug);
         }
     }
 }

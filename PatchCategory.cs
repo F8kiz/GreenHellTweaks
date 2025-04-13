@@ -47,5 +47,7 @@
         public const string TimeOfDay = "TimeOfDay";
 
         public const string Torch = "Torch";
+
+        public const string AddBowlToInventory = "AddBowlToInventory";
     }
 }

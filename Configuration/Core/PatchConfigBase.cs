@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
-
-using static P2PStats.ReplicationStat;
 
 namespace GHTweaks.Configuration.Core
 {
@@ -21,7 +18,7 @@ namespace GHTweaks.Configuration.Core
                 if (info.PropertyType != attribute.PropertyType)
                 {
                     LogWriter.Write($"Found mismatch property types... {configuration.GetType().Name}: {info.PropertyType} != {attribute.PropertyType}");
-                    continue; // TODO: report
+                    continue;
                 }
 
                 if (!value.Equals(attribute.IsDisabledIfValue))

@@ -36,6 +36,8 @@ namespace GHTweaks
 
         public bool IsPatchesApplied { get; private set; }
 
+        public Harmony HarmonyInstance => harmony;
+
         private readonly Harmony harmony;
 
 
@@ -107,9 +109,12 @@ namespace GHTweaks
                     harmony.PatchCategory(assembly, PatchCategory.Required);
                 
                 harmony.PatchCategory(assembly, PatchCategory.Default);
-#if DEBUG
-                harmony.PatchCategory(assembly, PatchCategory.AIManager);
-#endif
+
+                if (Config.DebugModeEnabled)
+                {
+                    harmony.PatchCategory(assembly, PatchCategory.AddBowlToInventory);
+                }
+
                 // Patch everything that is categorized 
                 var propertyInfos = Config.GetType().GetProperties();
                 foreach (var info in propertyInfos) 
@@ -283,7 +288,7 @@ namespace GHTweaks
 
                 LogWriter.Write("Remove patches...");
                 harmony.UnpatchAll("de.fakiz.gh.tweaks");
-
+                
                 if (!includeRequiredPatches)
                     harmony.PatchCategory(Assembly.GetExecutingAssembly(), PatchCategory.Required);
 
