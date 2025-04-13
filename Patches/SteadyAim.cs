@@ -39,7 +39,7 @@ namespace GHTweaks.Patches
                 if (fiAim == null)
                 {
                     LogWriter.Write($"PlayerAimPower: Failed to access m_Aim field!", LogType.Error);
-                    return false;
+                    return true;
                 }
 
                 bool aim = (bool)fiAim.GetValue(__instance);
